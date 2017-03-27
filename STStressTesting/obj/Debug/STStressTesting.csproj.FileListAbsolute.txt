@@ -1,0 +1,6 @@
+c:\users\eschultz\documents\visual studio 2015\Projects\STStressTesting\STStressTesting\bin\Debug\STStressTesting.exe.config
+c:\users\eschultz\documents\visual studio 2015\Projects\STStressTesting\STStressTesting\bin\Debug\STStressTesting.exe
+c:\users\eschultz\documents\visual studio 2015\Projects\STStressTesting\STStressTesting\bin\Debug\STStressTesting.pdb
+c:\users\eschultz\documents\visual studio 2015\Projects\STStressTesting\STStressTesting\obj\Debug\STStressTesting.csprojResolveAssemblyReference.cache
+c:\users\eschultz\documents\visual studio 2015\Projects\STStressTesting\STStressTesting\obj\Debug\STStressTesting.exe
+c:\users\eschultz\documents\visual studio 2015\Projects\STStressTesting\STStressTesting\obj\Debug\STStressTesting.pdb
