@@ -12,13 +12,13 @@
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="startThread" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">50</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="endThread" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">50</Value>
+      <Value Profile="(Default)">21</Value>
     </Setting>
     <Setting Name="incThread" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">1</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="Server" Type="System.String" Scope="Application">
       <Value Profile="(Default)">localhost:3900</Value>

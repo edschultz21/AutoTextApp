@@ -39,12 +39,12 @@ namespace STStressTesting
                     Console.WriteLine($"Num requests: {i}");
 
                     results = Single(i);
-                    Helpers.ProcessResults(sb, 1, "Single", results, i);
+                    Helpers.ProcessResults(sb, 1, "Single", results);
 
                     Console.WriteLine();
 
                     results = Multi(i);
-                    Helpers.ProcessResults(sb, 1, "Multi", results, i);
+                    Helpers.ProcessResults(sb, 1, "Multi", results);
 
                     Console.WriteLine("===========================");
                 }

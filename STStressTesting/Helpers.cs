@@ -15,7 +15,7 @@ namespace STStressTesting
     {
         public static void WriteHeader(StringBuilder sb)
         {
-            sb.AppendLine("Iteration,Type,Thread Count, Num Requests,Total Elapsed (ms),Total Aggregate (ms),Avg Response Time (ms), Success per Minute");
+            sb.AppendLine("Iteration,Type,Thread Count,Num Requests,Problems,Exceptions,Total Elapsed (ms),Total Aggregate (ms),Avg Response Time (ms), Success per Minute");
         }
 
         public static void WriteFile(string filename, StringBuilder sb)
@@ -23,36 +23,41 @@ namespace STStressTesting
             File.WriteAllText(filename, sb.ToString());
         }
 
-        public static void ProcessResults(StringBuilder sb, int iteration, string header, StressResults results, int numResults, int threadCount = 0)
+        public static void ProcessResults(StringBuilder sb, int iteration, string header, StressResults results, int threadCount = 0)
         {
             var totalTime = results.Results.Sum();
 
+            Console.WriteLine();
             Console.WriteLine($"Results for {header} iteration {iteration}");
             Console.WriteLine($"Total elapsed: {results.TotalElapsed}");
             Console.WriteLine($"Total aggregate: {totalTime}");
+            Console.WriteLine($"Success: {results.Results.Count}, Problems: {results.TotalProblems}, Exceptions: {results.TotalExceptions}");
 
             // Note that averages are for throughput in real time. Hence we always use total elapsed:
-            var averageResponseTime = (double)results.TotalElapsed / numResults;
+            var averageResponseTime = (double)results.TotalElapsed / results.TotalRequests;
             Console.WriteLine($"Average response time: {averageResponseTime}");
-            long successPerMinute = (numResults * 1000 * 60) / results.TotalElapsed;
+            long successPerMinute = (results.TotalRequests * 1000 * 60) / results.TotalElapsed;
             Console.WriteLine($"Successful responses per minute: {successPerMinute}");
 
             var temp = threadCount == 0 ? "pooled" : threadCount.ToString();
-            sb.AppendLine($"{iteration},{header},{temp},{numResults},{results.TotalElapsed},{totalTime},{averageResponseTime},{successPerMinute}");
+            sb.AppendLine($"{iteration},{header},{temp},{results.TotalRequests},{results.TotalProblems},{results.TotalExceptions},{results.TotalElapsed},{totalTime},{averageResponseTime},{successPerMinute}");
         }
 
         public static void ReadResults(WebResponse response, bool isPDF)
         {
             if (isPDF)
             {
-                var stream = new MemoryStream();
-                response.GetResponseStream().CopyTo(stream);
+                using (var stream = new MemoryStream())
+                {
+                    response.GetResponseStream().CopyTo(stream);
+                }
             }
             else
             {
-                StreamReader sr = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8);
-                string result = sr.ReadToEnd();
-                sr.Close();
+                using (var sr = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8))
+                {
+                    string result = sr.ReadToEnd();
+                }
             }
         }
 
