@@ -15,7 +15,17 @@ namespace STStressTesting
     {
         public static void WriteHeader(StringBuilder sb)
         {
-            sb.AppendLine("Iteration,Type,Thread Count,Num Requests,Problems,Exceptions,Total Elapsed (ms),Total Aggregate (ms),Avg Response Time (ms), Success per Minute");
+            sb.AppendLine(
+                "Thread Count," +
+                "Num Requests," +
+                "Problems," +
+                "Exceptions," +
+                "Total Elapsed (ms)," +
+                "Total Aggregate (ms)," +
+                "Avg Response Time (ms)," +
+                "Requests per Minute," +
+                "Overall Throughput per Minute"
+            );
         }
 
         public static void WriteFile(string filename, StringBuilder sb)
@@ -25,22 +35,33 @@ namespace STStressTesting
 
         public static void ProcessResults(StringBuilder sb, int iteration, string header, StressResults results, int threadCount = 0)
         {
-            var totalTime = results.Results.Sum();
+            var totalAggregate = results.Results.Sum();
+            var totalRequestsSuccessful = results.TotalRequests - results.TotalProblems - results.TotalExceptions;
+            var averageResponseTime = totalRequestsSuccessful == 0 ? 0.0 : ((double)totalAggregate / totalRequestsSuccessful);
+            int requestsPerMinute = averageResponseTime == 0 ? 0 : System.Convert.ToInt32(1000 * 60 / averageResponseTime);
+            int overallThroughput = requestsPerMinute * threadCount;
 
             Console.WriteLine();
             Console.WriteLine($"Results for {header} iteration {iteration}");
-            Console.WriteLine($"Total elapsed: {results.TotalElapsed}");
-            Console.WriteLine($"Total aggregate: {totalTime}");
+            Console.WriteLine($"Total elapsed: {results.TotalElapsed}, Total aggregate: {totalAggregate}");
             Console.WriteLine($"Success: {results.Results.Count}, Problems: {results.TotalProblems}, Exceptions: {results.TotalExceptions}");
 
-            // Note that averages are for throughput in real time. Hence we always use total elapsed:
-            var averageResponseTime = (double)results.TotalElapsed / results.TotalRequests;
             Console.WriteLine($"Average response time: {averageResponseTime}");
-            long successPerMinute = (results.TotalRequests * 1000 * 60) / results.TotalElapsed;
-            Console.WriteLine($"Successful responses per minute: {successPerMinute}");
+            Console.WriteLine($"Requests per minute: {requestsPerMinute}");
+            Console.WriteLine($"Overall throughput per minute: {overallThroughput}");
 
-            var temp = threadCount == 0 ? "pooled" : threadCount.ToString();
-            sb.AppendLine($"{iteration},{header},{temp},{results.TotalRequests},{results.TotalProblems},{results.TotalExceptions},{results.TotalElapsed},{totalTime},{averageResponseTime},{successPerMinute}");
+            var sthreadCount = threadCount == 0 ? "pooled" : threadCount.ToString();
+            sb.AppendLine(
+                $"{sthreadCount}," +
+                $"{results.TotalRequests}," +
+                $"{results.TotalProblems}," +
+                $"{results.TotalExceptions}," +
+                $"{results.TotalElapsed}," +
+                $"{totalAggregate}," +
+                $"{averageResponseTime}," +
+                $"{requestsPerMinute}" +
+                $"{overallThroughput}"
+             );
         }
 
         public static void ReadResults(WebResponse response, bool isPDF)
