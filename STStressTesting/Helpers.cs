@@ -23,7 +23,7 @@ namespace STStressTesting
                 "Total Elapsed (ms)," +
                 "Total Aggregate (ms)," +
                 "Avg Response Time (ms)," +
-                "Requests per Minute," +
+                "Responses per Minute," +
                 "Overall Throughput per Minute"
             );
         }
@@ -38,8 +38,8 @@ namespace STStressTesting
             var totalAggregate = results.Results.Sum();
             var totalRequestsSuccessful = results.TotalRequests - results.TotalProblems - results.TotalExceptions;
             var averageResponseTime = totalRequestsSuccessful == 0 ? 0.0 : ((double)totalAggregate / totalRequestsSuccessful);
-            int requestsPerMinute = averageResponseTime == 0 ? 0 : System.Convert.ToInt32(1000 * 60 / averageResponseTime);
-            int overallThroughput = requestsPerMinute * threadCount;
+            int responsesPerMinute = averageResponseTime == 0 ? 0 : System.Convert.ToInt32(1000 * 60 / averageResponseTime);
+            int overallThroughput = responsesPerMinute * threadCount;
 
             Console.WriteLine();
             Console.WriteLine($"Results for {header} iteration {iteration}");
@@ -47,7 +47,7 @@ namespace STStressTesting
             Console.WriteLine($"Success: {results.Results.Count}, Problems: {results.TotalProblems}, Exceptions: {results.TotalExceptions}");
 
             Console.WriteLine($"Average response time: {averageResponseTime}");
-            Console.WriteLine($"Requests per minute: {requestsPerMinute}");
+            Console.WriteLine($"Responses per minute: {responsesPerMinute}");
             Console.WriteLine($"Overall throughput per minute: {overallThroughput}");
 
             var sthreadCount = threadCount == 0 ? "pooled" : threadCount.ToString();
@@ -59,7 +59,7 @@ namespace STStressTesting
                 $"{results.TotalElapsed}," +
                 $"{totalAggregate}," +
                 $"{averageResponseTime}," +
-                $"{requestsPerMinute}" +
+                $"{responsesPerMinute}" +
                 $"{overallThroughput}"
              );
         }
