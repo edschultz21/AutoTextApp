@@ -3,3 +3,6 @@
 *.pdb
 *.exe.config
 *Settings.Designer.cs
+packages
+bin
+TemporaryGeneratedFile*

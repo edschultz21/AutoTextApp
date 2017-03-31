@@ -1,0 +1,15 @@
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\bin\Debug\SimpleCalculator.exe.config
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\bin\Debug\SimpleCalculator.exe
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\bin\Debug\SimpleCalculator.pdb
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\bin\Debug\Antlr4.Runtime.dll
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\bin\Debug\Antlr4.Runtime.xml
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\SimpleCalculator.csprojResolveAssemblyReference.cache
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorListener.cs
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorBaseListener.cs
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorVisitor.cs
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorBaseVisitor.cs
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\SimpleCalculator.csproj.Antlr4GeneratedCodeFileListAbsolute.txt
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\SimpleCalculator.exe
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\SimpleCalculator.pdb
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorLexer.cs
+c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorParser.cs

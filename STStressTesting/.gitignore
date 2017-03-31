@@ -1,0 +1,9 @@
+*.suo
+*.exe
+*.pdb
+*.exe.config
+*Settings.Designer.cs
+packages
+bin
+obj
+TemporaryGeneratedFile*
