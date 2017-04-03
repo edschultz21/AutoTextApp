@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -40,6 +40,8 @@ namespace SimpleCalculator
             Console.WriteLine("Parsed expression:");
             Console.WriteLine(tree.ToStringTree(parser));
             Console.WriteLine();
+
+            Console.ReadLine();
         }
     }
 
