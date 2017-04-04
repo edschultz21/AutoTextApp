@@ -51,6 +51,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SemaphoreSlimImp.cs" />
     <Compile Include="StressResults.cs" />
     <Compile Include="TaskPoolTest.cs" />
     <Compile Include="ThreadTest.cs" />

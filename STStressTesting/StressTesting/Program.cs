@@ -22,14 +22,16 @@ namespace STStressTesting
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            if (settings.startThread == 0)
-            {
-                new TaskPoolTest().Run(settings);
-            }
-            else
-            {
-                new ThreadTest().Run(settings);
-            }
+            new SemaphoreSlimImp().Run(settings);
+
+            //if (settings.startThread == 0)
+            //{
+            //    new TaskPoolTest().Run(settings);
+            //}
+            //else
+            //{
+            //    new ThreadTest().Run(settings);
+            //}
 
             Console.WriteLine();
 

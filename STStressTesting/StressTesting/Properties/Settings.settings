@@ -6,7 +6,7 @@
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="endRequests" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">1000</Value>
+      <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="incRequests" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">10</Value>
