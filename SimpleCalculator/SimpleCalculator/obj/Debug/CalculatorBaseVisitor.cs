@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\Calculator.g4 by ANTLR 4.5.3
+// Generated from C:\Users\eschultz\Documents\Visual Studio 2015\Projects\development-tools\SimpleCalculator\SimpleCalculator\Calculator.g4 by ANTLR 4.5.3
 
 // Unreachable code detected
 #pragma warning disable 0162

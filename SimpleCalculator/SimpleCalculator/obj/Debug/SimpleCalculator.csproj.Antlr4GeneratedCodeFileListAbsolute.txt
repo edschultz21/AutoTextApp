@@ -1,6 +1,6 @@
-c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorLexer.cs
-c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorParser.cs
-c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorListener.cs
-c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorBaseListener.cs
-c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorVisitor.cs
-c:\users\eschultz\documents\visual studio 2015\Projects\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorBaseVisitor.cs
+C:\Users\eschultz\Documents\Visual Studio 2015\Projects\development-tools\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorLexer.cs
+C:\Users\eschultz\Documents\Visual Studio 2015\Projects\development-tools\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorParser.cs
+C:\Users\eschultz\Documents\Visual Studio 2015\Projects\development-tools\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorListener.cs
+C:\Users\eschultz\Documents\Visual Studio 2015\Projects\development-tools\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorBaseListener.cs
+C:\Users\eschultz\Documents\Visual Studio 2015\Projects\development-tools\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorVisitor.cs
+C:\Users\eschultz\Documents\Visual Studio 2015\Projects\development-tools\SimpleCalculator\SimpleCalculator\obj\Debug\CalculatorBaseVisitor.cs

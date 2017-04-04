@@ -41,7 +41,25 @@ namespace SimpleCalculator
             Console.WriteLine(tree.ToStringTree(parser));
             Console.WriteLine();
 
+
+            ParseTreeWalker walker = new ParseTreeWalker();
+            var listener = new CalculatorListener();
+            walker.Walk(listener, tree);
+
             Console.ReadLine();
+        }
+    }
+
+    class CalculatorListener : CalculatorBaseListener
+    {
+        public override void EnterMulDiv([NotNull] CalculatorParser.MulDivContext context)
+        {
+            base.EnterMulDiv(context);
+        }
+
+        public override void ExitMulDiv([NotNull] CalculatorParser.MulDivContext context)
+        {
+            base.ExitMulDiv(context);
         }
     }
 
