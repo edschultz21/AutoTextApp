@@ -64,7 +64,7 @@ namespace STStressTesting
              );
         }
 
-        public static void ReadResults(WebResponse response, bool isPDF)
+        public static string ReadResults(WebResponse response, bool isPDF)
         {
             if (isPDF)
             {
@@ -78,8 +78,11 @@ namespace STStressTesting
                 using (var sr = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8))
                 {
                     string result = sr.ReadToEnd();
+                    return result;
                 }
             }
+
+            return string.Empty;
         }
 
         public static HttpWebRequest CreateWebRequest(string server, string pages)
@@ -92,6 +95,7 @@ namespace STStressTesting
 
             var next = rand.Next(pagesList.Count);
             var uri = $"http://{server}/infoserv/s-v1/{pagesList[next]}";
+            //Console.WriteLine(uri);
             //var uri = $"http://crmls.devstats.showingtime.com/infoserv/s-v1/{pages[next]}";
 
             var request = WebRequest.CreateHttp(uri);

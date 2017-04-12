@@ -6,7 +6,7 @@
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="endRequests" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">18</Value>
     </Setting>
     <Setting Name="incRequests" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">10</Value>
@@ -28,6 +28,15 @@
     </Setting>
     <Setting Name="IsPDF" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="RenderRequestLimit" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="RenderRequestTimeoutSeconds" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="RenderRequestMaxQueueLength" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">20</Value>
     </Setting>
   </Settings>
 </SettingsFile>

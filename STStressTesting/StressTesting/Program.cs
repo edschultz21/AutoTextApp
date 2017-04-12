@@ -23,6 +23,7 @@ namespace STStressTesting
             sw.Start();
 
             new SemaphoreSlimImp().Run(settings);
+            //new SemaphoreTest().Run();
 
             //if (settings.startThread == 0)
             //{
@@ -40,6 +41,7 @@ namespace STStressTesting
 
             Console.WriteLine();
             Console.WriteLine("Done!");
+
             Console.ReadLine();
         }
     }
