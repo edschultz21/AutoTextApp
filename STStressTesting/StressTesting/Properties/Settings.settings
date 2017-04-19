@@ -2,24 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="STStressTesting.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="startRequests" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">10</Value>
-    </Setting>
-    <Setting Name="endRequests" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">18</Value>
-    </Setting>
-    <Setting Name="incRequests" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">10</Value>
-    </Setting>
-    <Setting Name="startThread" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">1</Value>
-    </Setting>
-    <Setting Name="endThread" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">21</Value>
-    </Setting>
-    <Setting Name="incThread" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">2</Value>
-    </Setting>
     <Setting Name="Server" Type="System.String" Scope="Application">
       <Value Profile="(Default)">localhost:3900</Value>
     </Setting>
@@ -29,14 +11,14 @@
     <Setting Name="IsPDF" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="RenderRequestLimit" Type="System.Int32" Scope="Application">
+    <Setting Name="NumThreads" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">8</Value>
     </Setting>
-    <Setting Name="RenderRequestTimeoutSeconds" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">20</Value>
+    <Setting Name="NumConcurrentRequests" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">100</Value>
     </Setting>
-    <Setting Name="RenderRequestMaxQueueLength" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">20</Value>
+    <Setting Name="WaitTimeBetweenRequest" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">100</Value>
     </Setting>
   </Settings>
 </SettingsFile>
