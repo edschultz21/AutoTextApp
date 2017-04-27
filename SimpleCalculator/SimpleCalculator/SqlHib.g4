@@ -6,15 +6,15 @@ sql
  ;
 
 sql_stmt
- :   select_stmt 
-   ( from_stmt )?
+ : ( get_stmt )
+     from_stmt
    ( where_stmt )?
    ( order_stmt )? 
    ( rows_returned )?
  ;
 
-select_stmt
- : SELECT result_column ( COMMA result_column )*
+get_stmt
+ : SELECT entity_path ( COMMA entity_path )*
  ;
 
 from_stmt
@@ -30,11 +30,11 @@ order_stmt
  ;
 
 table_stmt
- : table_name ( DOT column_name )? ( table_alias )?
+ : entity_path ( path_alias )?
  ;
 
-result_column
- : all_columns | table_name ( DOT ( column_name | all_columns ))?
+entity_path
+ : segment_name ( DOT segment_name )*
  ;
 
 rows_returned
@@ -51,11 +51,7 @@ skip_term
  ;
 
 ordering_term
- : column_term ( ASC | DESC )?
- ;
-
-column_term
- : ( table_name DOT )? column_name
+ : entity_path ( ASC | DESC )?
  ;
 
 /*
@@ -83,6 +79,7 @@ search_condition_not
 predicate
  : expr comparison_operator expr	# ComparisonPred
  | expr NOT? BETWEEN expr AND expr	# BetweenPred
+ | expr NOT? IN '(' expr_list ')'	# InPred
  | expr NOT? LIKE expr				# LikePred
  | expr IS null_notnull				# IsPred
  | '(' search_condition ')'			# ParensPred
@@ -90,6 +87,10 @@ predicate
 
 comparison_operator
  : '=' | '>' | '<' | '<=' | '>=' | '!=' | '<>'
+ ;
+
+expr_list
+ : expr (',' expr)*
  ;
 
 null_notnull
@@ -169,15 +170,11 @@ name
  : any_name
  ;
 
-table_name 
+segment_name 
  : any_name
  ;
 
-column_name 
- : any_name
- ;
-
-table_alias 
+path_alias 
  : any_name
  ;
 
