@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using NHibernate;
 
 namespace SqlToHibernate
 {
@@ -10,48 +11,81 @@ namespace SqlToHibernate
     {
         public bool OutputExpressionTree { get; set; }
 
-        private string RunVisitor(SqlHibBaseVisitor<string> visitor, string text)
+        private SqlHibParser GetParser(string text)
         {
-            var result = string.Empty;
-
             // This section reads the input, does its magic, and parses the input.
             AntlrInputStream input = new AntlrInputStream(text);
             SqlHibLexer lexer = new SqlHibLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             SqlHibParser parser = new SqlHibParser(tokens);
-            parser.RemoveErrorListeners();
+
+            return parser;
+        }
+
+        private ErrorListener AddErrorListener(SqlHibParser parser)
+        {
             var errorListener = new ErrorListener();
+
+            parser.RemoveErrorListeners();
             parser.AddErrorListener(errorListener);
-            IParseTree tree = parser.sql();
+
+            return errorListener;
+        }
+
+        private T RunVisitor<T>(SqlHibBaseVisitor<T> visitor, string text, ref string errors)
+        {
+            T result = default(T);
+
+            var parser = GetParser(text);
+            var errorListener = AddErrorListener(parser);
 
             // Antlr4 works off of visitors. In this visitor we walk the tree and calculate
             // the final result of the input.
-            if (!OutputExpressionTree)
+            if (errorListener.ErrorList.Count > 0)
             {
-                if (errorListener.ErrorList.Count > 0)
-                {
-                    result = string.Join(Environment.NewLine, errorListener.ErrorList);
-                }
-                else
-                {
-                    result = visitor.Visit(tree);
-                }
+                errors = string.Join(Environment.NewLine, errorListener.ErrorList);
             }
             else
             {
-                ParseTreeWalker walker = new ParseTreeWalker();
-                var listener = new SqlHibListener();
-                walker.Walk(listener, tree);
+                result = visitor.Visit(parser.sql());
+            }
 
-                result = tree.ToStringTree(parser);
+            return result;
+        }
+
+        public string RunSqlToHib(string text)
+        {
+            var errors = string.Empty;
+            var result = RunVisitor<string>(new SqlToHibernateVisitor(), text, ref errors);
+            if (errors != string.Empty)
+            {
+                return errors;
             }
 
             return result.Trim();
         }
 
-        public string RunSqlToHib(string text)
+        public object RunSqlToCriteria(string text, ISession session)
         {
-            var result = RunVisitor(new SqlToHibernateVisitor(), text);
+            var errors = string.Empty;
+            var result = RunVisitor<dynamic>(new SqlToCriteriaVisitor(session), text, ref errors);
+
+            return result;
+        }
+
+        public string GetExpressionTree(string text)
+        {
+            var result = string.Empty;
+
+            var parser = GetParser(text);
+            var errorListener = AddErrorListener(parser);
+            IParseTree tree = parser.sql();
+
+            ParseTreeWalker walker = new ParseTreeWalker();
+            var listener = new SqlHibListener();
+            walker.Walk(listener, tree);
+
+            result = tree.ToStringTree(parser);
 
             return result;
         }
