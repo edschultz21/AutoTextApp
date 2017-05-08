@@ -22,7 +22,7 @@ get_stmt
  ;
 
 from_stmt
- : FROM ( entity_alias_stmt ( COMMA entity_alias_stmt )* )
+ : FROM main_table_name ( table_alias )? ( COMMA table_alias_stmt )*
  ;
 
 where_stmt
@@ -40,12 +40,12 @@ skiptake_stmt
 
 ///////////////////////////////////////////////////////////////
 
-entity_alias_stmt
- : entity_path ( path_alias )?
+entity_path
+ : segment_name ( DOT segment_name )* ( DOT ASTERISK )?
  ;
 
-entity_path
- : segment_name ( DOT segment_name )*
+table_alias_stmt
+ : table_alias DOT segment_name  ( table_alias_defined )?
  ;
 
 take_term
@@ -156,10 +156,12 @@ keyword
  | WHERE
  ;
 
-name :				any_name;
-segment_name :		any_name;
-func_proc_name :	any_name;
-path_alias :		any_name;
+name :					any_name;
+segment_name :			any_name;
+func_proc_name :		any_name;
+table_alias :			any_name;
+main_table_name :		any_name;
+table_alias_defined :	any_name;
 
 any_name
  : IDENTIFIER 
@@ -193,6 +195,7 @@ WHERE : W H E R E;
 
 DOT : '.';
 COMMA : ',';
+ASTERISK : '*';
 
 NUMERAL :	DIGIT+;
 FLOAT :     DIG_DOT_DIG;

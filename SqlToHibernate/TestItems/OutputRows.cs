@@ -10,7 +10,14 @@ namespace SqlToHibernate
 {
     public class OutputRows
     {
-        public static string GetValues(object obj)
+        private bool _appendLine;
+
+        public OutputRows(bool appendLine)
+        {
+            _appendLine = appendLine;
+        }
+
+        public string GetValues(object obj)
         {
             var cache = new List<int>();
             StringBuilder sb = new StringBuilder();
@@ -19,7 +26,7 @@ namespace SqlToHibernate
             return sb.ToString();
         }
 
-        private static void GetValues(StringBuilder sb, object obj, List<int> cache, string prefix, string key, ref int level)
+        private void GetValues(StringBuilder sb, object obj, List<int> cache, string prefix, string key, ref int level)
         {
             if (obj == null || cache.Contains(obj.GetHashCode())) return;
 
@@ -37,7 +44,14 @@ namespace SqlToHibernate
 
                     if (level == 0)
                     {
-                        sb.AppendLine();
+                        if (_appendLine)
+                        {
+                            sb.AppendLine();
+                        }
+                        else
+                        {
+                            sb.Append("###");
+                        }
                         cache.Clear();
                         cache.Add(obj.GetHashCode());
                     }
@@ -80,7 +94,7 @@ namespace SqlToHibernate
             }
         }
 
-        private static IDictionary<string, object> CreateDictionary(string prefix, int start, int count)
+        private IDictionary<string, object> CreateDictionary(string prefix, int start, int count)
         {
             IDictionary<string, object> dict = new SortedDictionary<string, object>();
             for (var i = 0; i < count; i++)
@@ -91,7 +105,7 @@ namespace SqlToHibernate
             return dict;
         }
 
-        private static IList<object> CreateList(string prefix, int count, int dictStart, int dictCount)
+        private IList<object> CreateList(string prefix, int count, int dictStart, int dictCount)
         {
             IList<object> list = new List<object>();
             var index = dictStart;

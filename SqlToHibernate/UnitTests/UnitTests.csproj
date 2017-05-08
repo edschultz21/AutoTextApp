@@ -54,7 +54,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="SqlToCriteria.cs" />
-    <Compile Include="SqlToHibTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

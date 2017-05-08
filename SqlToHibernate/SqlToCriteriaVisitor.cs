@@ -146,7 +146,12 @@ namespace SqlToHibernate
         public override dynamic VisitFrom_stmt([NotNull] SqlHibParser.From_stmtContext context)
         {
             var entityPaths = new List<EntityPath>();
-            var statements = context.entity_alias_stmt();
+
+            var mainTable = Visit(context.main_table_name());
+            var tableAlias = (context.table_alias() != null) ? Visit(context.table_alias()) : "";
+            entityPaths.Add(new EntityPath { Path = mainTable, Alias = tableAlias });
+
+            var statements = context.table_alias_stmt();
             foreach (var statement in statements)
             {
                 var entityAlias = Visit(statement).ToString().Split(' ');
@@ -437,14 +442,6 @@ namespace SqlToHibernate
             return Eval(Visit(context.expr(0)), Visit(context.expr(1)), op);
         }
 
-        // Comparison (=, <, <=, >, >=, !=, <>)
-        public override dynamic VisitComparisonExpr([NotNull] SqlHibParser.ComparisonExprContext context)
-        {
-            var op = context.children[1].GetText();
-
-            return Visit(context.expr(0)) + op + Visit(context.expr(1));
-        }
-
         // Expression List
         // Returns a list of values that are part of this expression. We let the caller determine
         // what to do with them. 
@@ -490,14 +487,16 @@ namespace SqlToHibernate
         }
 
         // Entity/Alias pairs.
-        public override dynamic VisitEntity_alias_stmt([NotNull] SqlHibParser.Entity_alias_stmtContext context)
+        public override dynamic VisitTable_alias_stmt([NotNull] SqlHibParser.Table_alias_stmtContext context)
         {
-            var result = Visit(context.entity_path());
-            var aliasName = Visit(context.path_alias());
+            var tableAlias = Visit(context.table_alias());
+            var segmentName = Visit(context.segment_name());
+            var tableAliasDefined = (context.table_alias_defined() != null) ? Visit(context.table_alias_defined()) : "";
 
-            if (!string.IsNullOrEmpty(aliasName.ToString()))
+            var result = $"{tableAlias}.{segmentName}";
+            if (!string.IsNullOrEmpty(tableAliasDefined.ToString()))
             {
-                result += $" {aliasName}";
+                result += $" {tableAliasDefined}";
             }
 
             return result;
@@ -553,6 +552,21 @@ namespace SqlToHibernate
             return result;
         }
 
+        public override object VisitMain_table_name([NotNull] SqlHibParser.Main_table_nameContext context)
+        {
+            return context.GetText();
+        }
+
+        public override object VisitTable_alias([NotNull] SqlHibParser.Table_aliasContext context)
+        {
+            return context.GetText();
+        }
+
+        public override object VisitTable_alias_defined([NotNull] SqlHibParser.Table_alias_definedContext context)
+        {
+            return context.GetText();
+        }
+
         public override dynamic VisitSegment_name([NotNull] SqlHibParser.Segment_nameContext context)
         {
             return context.GetText();
@@ -594,11 +608,6 @@ namespace SqlToHibernate
             }
 
             return result;
-        }
-
-        public override dynamic VisitPath_alias([NotNull] SqlHibParser.Path_aliasContext context)
-        {
-            return context.GetText();
         }
 
         #endregion

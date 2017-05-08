@@ -53,18 +53,6 @@ namespace SqlToHibernate
             return result;
         }
 
-        public string RunSqlToHib(string text)
-        {
-            var errors = string.Empty;
-            var result = RunVisitor<string>(new SqlToHibernateVisitor(), text, ref errors);
-            if (errors != string.Empty)
-            {
-                return errors;
-            }
-
-            return result.Trim();
-        }
-
         public object RunSqlToCriteria(string text, ISession session)
         {
             var errors = string.Empty;
