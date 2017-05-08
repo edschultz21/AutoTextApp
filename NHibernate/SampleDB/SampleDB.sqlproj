@@ -66,6 +66,7 @@
     <Build Include="Tables\Listing.sql" />
     <Build Include="Tables\Agent.sql" />
     <Build Include="Tables\Listing_Agent.sql" />
+    <Build Include="Tables\Zip.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\SampleData.sql" />

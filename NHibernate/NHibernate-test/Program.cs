@@ -21,6 +21,11 @@ namespace NHibernate_test
         {
             var config = new Configuration();
             config.AddFile("client1.xml");
+
+            // Getting custom metadata for entities and properties
+            var x = config.GetClassMapping("Listing");            
+            Console.WriteLine(x.GetMetaAttribute("test").Value);
+
             ISessionFactory sf = config.Configure().BuildSessionFactory();
 
             dynamic l = null;
