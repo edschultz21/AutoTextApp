@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NHibernate.Proxy;
 
-namespace SqlToHibernate
+namespace DqlQuery
 {
     public class OutputRows
     {

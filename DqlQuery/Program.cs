@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
 
-namespace SqlToHibernate
+namespace DqlQuery
 {
     class Program
     {
@@ -13,7 +13,7 @@ namespace SqlToHibernate
         {
             using (ISession session = NHibernateHelper.OpenSession())
             {
-                RunSqlToCriteria(session);
+                RunDqlToCriteria(session);
             }
 
             Console.WriteLine("----------------------------------------------------");
@@ -52,7 +52,7 @@ namespace SqlToHibernate
             var output = new OutputRows(true).GetValues(results);
         }
 
-        static void RunSqlToCriteria(ISession session)
+        static void RunDqlToCriteria(ISession session)
         {
             //Test(session);
             string text =
@@ -63,11 +63,11 @@ namespace SqlToHibernate
             Console.WriteLine($"Text: {text}");
             Console.WriteLine();
 
-            var sqlParser = new SqlParser();
+            var dqlMain = new DqlMain();
             //var expressionTree = sqlParser.GetExpressionTree(text);
             //Console.WriteLine(expressionTree);
 
-            var criteria = (ICriteria)sqlParser.RunSqlToCriteria(text, session);
+            var criteria = (ICriteria)dqlMain.GetCriteria(text, session);
             var results = criteria.List();
             var output = new OutputRows(true).GetValues(results);
         }

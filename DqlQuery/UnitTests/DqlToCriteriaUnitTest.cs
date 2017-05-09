@@ -1,26 +1,26 @@
 ﻿using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SqlToHibernate;
+using DqlQuery;
 using NHibernate;
 
 namespace UnitTests
 {
     /// <summary>
-    /// Summary description for SqlToCriteria
+    /// Summary description for DqlToCriteria
     /// </summary>
     [TestClass]
-    public class SqlToCriteria
+    public class DqlToCriteriaUnitTest
     {
 
         private string RunCriteria(string text)
         {
             var output = string.Empty;
 
-            var sqlParser = new SqlParser();
+            var dqlMain = new DqlMain();
             using (ISession session = NHibernateHelper.OpenSession())
             {
-                var criteria = (ICriteria)sqlParser.RunSqlToCriteria(text, session);
-                var sql = SqlToHibernate.TestItems.GenerateSql.GetSql(criteria);
+                var criteria = (ICriteria)dqlMain.GetCriteria(text, session);
+                var sql = DqlQuery.TestItems.GenerateSql.GetSql(criteria);
                 criteria.SetFetchMode("Listing", FetchMode.Eager);
                 IList results = criteria.List();
 
@@ -32,7 +32,7 @@ namespace UnitTests
 
 
         [TestMethod]
-        public void SqlToCriteria_Test1()
+        public void DqlToCriteria_Test1()
         {
             string text =
                 "GET Listing " +
@@ -43,7 +43,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SqlToCriteria_Test2()
+        public void DqlToCriteria_Test2()
         {
             string text =
                 "GET Listing " +
@@ -55,7 +55,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SqlToCriteria_Test3()
+        public void DqlToCriteria_Test3()
         {
             string text =
                 "GET Listing " +
@@ -67,7 +67,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SqlToCriteria_Test4()
+        public void DqlToCriteria_Test4()
         {
             string text =
                 "GET Listing " +
@@ -79,7 +79,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SqlToCriteria_Test5()
+        public void DqlToCriteria_Test5()
         {
             string text =
                 "GET Listing " +
@@ -91,7 +91,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SqlToCriteria_Test6()
+        public void DqlToCriteria_Test6()
         {
             string text =
                 "GET Listing.* " +
@@ -104,7 +104,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SqlToCriteria_Test7()
+        public void DqlToCriteria_Test7()
         {
             string text =
                 "GET Listing " +

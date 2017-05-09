@@ -8,8 +8,8 @@
     <ProjectGuid>{9853FEA5-0954-493A-A580-E88D941AE510}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SqlToHibernate</RootNamespace>
-    <AssemblyName>SqlToHibernate</AssemblyName>
+    <RootNamespace>DqlQuery</RootNamespace>
+    <AssemblyName>DqlQuery</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -61,8 +61,8 @@
     <Compile Include="EntityRetriever.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlParser.cs" />
-    <Compile Include="SqlToCriteriaVisitor.cs" />
+    <Compile Include="DqlMain.cs" />
+    <Compile Include="DqlToCriteriaVisitor.cs" />
     <Compile Include="TestItems\GenerateSql.cs" />
     <Compile Include="TestItems\Main.cs" />
     <Compile Include="TestItems\NHibernateHelper.cs" />
@@ -70,9 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Antlr4 Include="SqlHib.g4">
+    <Antlr4 Include="Dql.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>SqlToHibernate</CustomToolNamespace>
+      <CustomToolNamespace>DqlQuery</CustomToolNamespace>
     </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>

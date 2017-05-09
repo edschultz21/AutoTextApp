@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SqlToHibernate
+namespace DqlQuery
 {
     class EntityRetreiver
     {

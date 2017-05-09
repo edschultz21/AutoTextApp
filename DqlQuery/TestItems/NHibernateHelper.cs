@@ -3,7 +3,7 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Dialect.Function;
 
-namespace SqlToHibernate
+namespace DqlQuery
 {
     public class NHibernateHelper
     {

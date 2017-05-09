@@ -13,9 +13,9 @@ using NHibernate.Criterion;
 // - Function calls
 // - Unit tests???
 
-namespace SqlToHibernate
+namespace DqlQuery
 {
-    public class SqlToCriteriaVisitor : SqlHibBaseVisitor<object>
+    public class DqlToCriteriaVisitor : DqlBaseVisitor<object>
     {
         private class SkipTake
         {
@@ -48,12 +48,12 @@ namespace SqlToHibernate
 
         private ISession _session;
 
-        public SqlToCriteriaVisitor(ISession session)
+        public DqlToCriteriaVisitor(ISession session)
         {
             _session = session;
         }
 
-        #region High Level SQL
+        #region High Level DQL
 
         // MAIN - Called EVERY time we traverse any subtree (ie, all of them).
         public override dynamic Visit(IParseTree tree)
@@ -62,21 +62,21 @@ namespace SqlToHibernate
             return (tree != null) ? base.Visit(tree) : null;
         }
 
-        // SQL
+        // DQL
         // Will return an ICriteria that can be executed.
-        public override dynamic VisitSql([NotNull] SqlHibParser.SqlContext context)
+        public override dynamic VisitDql([NotNull] DqlParser.DqlContext context)
         {
             // Must return a criteria object that can be executed. 
             // Note that the first element in the FROM statement is used as the first criteria
             // while all the rest are subqueries/joins.
             // Also, all of the GET items are used AFTER the criteria is executed.
-            return Visit(context.sql_stmt());
+            return Visit(context.dql_stmt());
         }
 
-        // SQL
-        public override dynamic VisitSql_stmt([NotNull] SqlHibParser.Sql_stmtContext context)
+        // DQL
+        public override dynamic VisitDql_stmt([NotNull] DqlParser.Dql_stmtContext context)
         {
-            // Traverse all of the possible SQL statements.
+            // Traverse all of the possible DQL statements.
             // DO NOT cast here as many of these can be null.
             var getEntities = Visit(context.get_stmt());
             var fromEntities = Visit(context.from_stmt());
@@ -128,7 +128,7 @@ namespace SqlToHibernate
         // GET
         // Currently we just build a list of items that we want to retrieve. This whole list
         // will be used to determine what needs to be returned.
-        public override dynamic VisitGet_stmt([NotNull] SqlHibParser.Get_stmtContext context)
+        public override dynamic VisitGet_stmt([NotNull] DqlParser.Get_stmtContext context)
         {
             var entityPaths = new List<EntityPath>();
             var paths = context.entity_path();
@@ -143,7 +143,7 @@ namespace SqlToHibernate
         // FROM
         // These values are simply stored and will be used later to create the appropriate
         // joins and subqueries to get the exact data we want.
-        public override dynamic VisitFrom_stmt([NotNull] SqlHibParser.From_stmtContext context)
+        public override dynamic VisitFrom_stmt([NotNull] DqlParser.From_stmtContext context)
         {
             var entityPaths = new List<EntityPath>();
 
@@ -173,7 +173,7 @@ namespace SqlToHibernate
         // Note that in many places one of the terms (left hand side) MUST be a property
         // while the other term MUST be a value. Note that this is NOT enforced by the 
         // grammar or the visitor. This will be a SQL execution error when we run the criteria.
-        public override dynamic VisitWhere_stmt([NotNull] SqlHibParser.Where_stmtContext context)
+        public override dynamic VisitWhere_stmt([NotNull] DqlParser.Where_stmtContext context)
         {
             var whereCriterion = (ICriterion)base.VisitWhere_stmt(context);
 
@@ -181,7 +181,7 @@ namespace SqlToHibernate
         }
 
         // ORDER BY
-        public override dynamic VisitOrder_stmt([NotNull] SqlHibParser.Order_stmtContext context)
+        public override dynamic VisitOrder_stmt([NotNull] DqlParser.Order_stmtContext context)
         {
             var orderByStatement = new List<Order>();
             var terms = context.ordering_term();
@@ -194,7 +194,7 @@ namespace SqlToHibernate
         }
 
         // SKIP / TAKE
-        public override dynamic VisitSkiptake_stmt([NotNull] SqlHibParser.Skiptake_stmtContext context)
+        public override dynamic VisitSkiptake_stmt([NotNull] DqlParser.Skiptake_stmtContext context)
         {
             var skipAmount = 0;
             var takeAmount = 0;
@@ -217,7 +217,7 @@ namespace SqlToHibernate
 
         // OR
         // If we have more than one then we have to join them with a "Disjunction".
-        public override dynamic VisitSearch_condition([NotNull] SqlHibParser.Search_conditionContext context)
+        public override dynamic VisitSearch_condition([NotNull] DqlParser.Search_conditionContext context)
         {
             var searchConditions = context.search_condition_and();
 
@@ -237,7 +237,7 @@ namespace SqlToHibernate
 
         // AND
         // If we have more than one then we have to join them with a "Conjunction".
-        public override dynamic VisitSearch_condition_and([NotNull] SqlHibParser.Search_condition_andContext context)
+        public override dynamic VisitSearch_condition_and([NotNull] DqlParser.Search_condition_andContext context)
         {
             var searchConditions = context.search_condition_not();
 
@@ -256,7 +256,7 @@ namespace SqlToHibernate
         }
 
         // NOT
-        public override dynamic VisitSearch_condition_not([NotNull] SqlHibParser.Search_condition_notContext context)
+        public override dynamic VisitSearch_condition_not([NotNull] DqlParser.Search_condition_notContext context)
         {
             var restriction = Visit(context.predicate());
 
@@ -270,7 +270,7 @@ namespace SqlToHibernate
 
         // +, -, *, /, %
         // Note that the left hand side MUST be a property and the right hand side MUST be a value.
-        public override dynamic VisitComparisonPred([NotNull] SqlHibParser.ComparisonPredContext context)
+        public override dynamic VisitComparisonPred([NotNull] DqlParser.ComparisonPredContext context)
         {
             object restriction = null;
 
@@ -305,7 +305,7 @@ namespace SqlToHibernate
 
         // BETWEEN
         // Note that first term MUST be a property while the between terms MUST be values.
-        public override dynamic VisitBetweenPred([NotNull] SqlHibParser.BetweenPredContext context)
+        public override dynamic VisitBetweenPred([NotNull] DqlParser.BetweenPredContext context)
         {
             object restriction = Restrictions.Between(Visit(context.expr(0)).ToString(), Visit(context.expr(1)), Visit(context.expr(2)));
             if (context.NOT() != null)
@@ -318,7 +318,7 @@ namespace SqlToHibernate
 
         // IN
         // Note that first term MUST be a property while the IN terms MUST be values.
-        public override dynamic VisitInPred([NotNull] SqlHibParser.InPredContext context)
+        public override dynamic VisitInPred([NotNull] DqlParser.InPredContext context)
         {
             var values = (List<object>)Visit(context.expr_list());
             return Restrictions.In(Visit(context.expr()).ToString(), values);
@@ -326,13 +326,13 @@ namespace SqlToHibernate
 
         // LIKE
         // Note that the first term MUST be a property while value MUST be a string literal.
-        public override dynamic VisitLikePred([NotNull] SqlHibParser.LikePredContext context)
+        public override dynamic VisitLikePred([NotNull] DqlParser.LikePredContext context)
         {
             return Restrictions.Like(Visit(context.expr(0)).ToString(), Visit(context.expr(1)));
         }
 
         // IS NULL / IS NOT NULL
-        public override dynamic VisitIsPred([NotNull] SqlHibParser.IsPredContext context)
+        public override dynamic VisitIsPred([NotNull] DqlParser.IsPredContext context)
         {
             object restriction = null;
 
@@ -348,7 +348,7 @@ namespace SqlToHibernate
             return restriction;
         }
 
-        public override dynamic VisitParensPred([NotNull] SqlHibParser.ParensPredContext context)
+        public override dynamic VisitParensPred([NotNull] DqlParser.ParensPredContext context)
         {
             return Visit(context.search_condition());
         }
@@ -357,13 +357,13 @@ namespace SqlToHibernate
 
         #region Expressions
 
-        public override dynamic VisitExpr([NotNull] SqlHibParser.ExprContext context)
+        public override dynamic VisitExpr([NotNull] DqlParser.ExprContext context)
         {
             return base.VisitExpr(context);
         }
 
         // NULL
-        public override dynamic VisitNullExpr([NotNull] SqlHibParser.NullExprContext context)
+        public override dynamic VisitNullExpr([NotNull] DqlParser.NullExprContext context)
         {
             // The ICriterion treats this as NULL and not "NULL".
             return context.GetText();
@@ -371,19 +371,19 @@ namespace SqlToHibernate
 
         // Constant
         // Returns the appropriate type. That is, string, int, float, or decimal.
-        public override dynamic VisitConstantExpr([NotNull] SqlHibParser.ConstantExprContext context)
+        public override dynamic VisitConstantExpr([NotNull] DqlParser.ConstantExprContext context)
         {
             return Visit(context.constant());
         }
 
         // Function Call (EZSTODO)
-        public override dynamic VisitFunctionCallExpr([NotNull] SqlHibParser.FunctionCallExprContext context)
+        public override dynamic VisitFunctionCallExpr([NotNull] DqlParser.FunctionCallExprContext context)
         {
             return base.VisitFunctionCallExpr(context);
         }
 
         // Function Call (EZSTODO)
-        public override dynamic VisitFunction_call([NotNull] SqlHibParser.Function_callContext context)
+        public override dynamic VisitFunction_call([NotNull] DqlParser.Function_callContext context)
         {
             var result = Visit(context.func_proc_name());
             //result += AddParens(Visit(context.expr_list())); // EZSTODO
@@ -392,13 +392,13 @@ namespace SqlToHibernate
 
         // Entity Path
         // Builds an entity path.
-        public override dynamic VisitEntityPathExpr([NotNull] SqlHibParser.EntityPathExprContext context)
+        public override dynamic VisitEntityPathExpr([NotNull] DqlParser.EntityPathExprContext context)
         {
             return Visit(context.entity_path());
         }
 
         // Parens
-        public override dynamic VisitParensExpr([NotNull] SqlHibParser.ParensExprContext context)
+        public override dynamic VisitParensExpr([NotNull] DqlParser.ParensExprContext context)
         {
             return Visit(context.expr());
         }
@@ -407,7 +407,7 @@ namespace SqlToHibernate
         // Both sides MUST be a numeric value type. Note that because the return types are 
         // dynamic, we can simply calculate the result of these values and it will do the
         // correct thing returning the correct type.
-        public override dynamic VisitMulDivExpr([NotNull] SqlHibParser.MulDivExprContext context)
+        public override dynamic VisitMulDivExpr([NotNull] DqlParser.MulDivExprContext context)
         {
             var op = context.children[1].GetText();
 
@@ -416,7 +416,7 @@ namespace SqlToHibernate
 
         // - (Unary)
         // The term MUST be a numeric value type.
-        public override dynamic VisitUnaryExpr([NotNull] SqlHibParser.UnaryExprContext context)
+        public override dynamic VisitUnaryExpr([NotNull] DqlParser.UnaryExprContext context)
         {
             var result = Visit(context.expr());
             if (!IsNumeric(result))
@@ -435,7 +435,7 @@ namespace SqlToHibernate
         // Both sides MUST be a numeric value type. Note that because the return types are 
         // dynamic, we can simply calculate the result of these values and it will do the
         // correct thing returning the correct type.
-        public override dynamic VisitAddSubExpr([NotNull] SqlHibParser.AddSubExprContext context)
+        public override dynamic VisitAddSubExpr([NotNull] DqlParser.AddSubExprContext context)
         {
             var op = context.children[1].GetText();
 
@@ -445,7 +445,7 @@ namespace SqlToHibernate
         // Expression List
         // Returns a list of values that are part of this expression. We let the caller determine
         // what to do with them. 
-        public override dynamic VisitExpr_list([NotNull] SqlHibParser.Expr_listContext context)
+        public override dynamic VisitExpr_list([NotNull] DqlParser.Expr_listContext context)
         {
             List<object> values = new List<object>();
 
@@ -463,14 +463,14 @@ namespace SqlToHibernate
         #region Supporting Cast
 
         // NULL / NOT NULL
-        public override dynamic VisitNull_notnull([NotNull] SqlHibParser.Null_notnullContext context)
+        public override dynamic VisitNull_notnull([NotNull] DqlParser.Null_notnullContext context)
         {
             // The ICriterion treats this as a keyword and not a string literal.
             return context.GetText();
         }
 
         // Builds the entity path.
-        public override dynamic VisitEntity_path([NotNull] SqlHibParser.Entity_pathContext context)
+        public override dynamic VisitEntity_path([NotNull] DqlParser.Entity_pathContext context)
         {
             var result = "";
             var segments = context.segment_name();
@@ -487,7 +487,7 @@ namespace SqlToHibernate
         }
 
         // Entity/Alias pairs.
-        public override dynamic VisitTable_alias_stmt([NotNull] SqlHibParser.Table_alias_stmtContext context)
+        public override dynamic VisitTable_alias_stmt([NotNull] DqlParser.Table_alias_stmtContext context)
         {
             var tableAlias = Visit(context.table_alias());
             var segmentName = Visit(context.segment_name());
@@ -503,7 +503,7 @@ namespace SqlToHibernate
         }
 
         // Ordering term (entity path ASC?DESC)
-        public override dynamic VisitOrdering_term([NotNull] SqlHibParser.Ordering_termContext context)
+        public override dynamic VisitOrdering_term([NotNull] DqlParser.Ordering_termContext context)
         {
             var entityPath = Visit(context.entity_path()).ToString();
             var result = (context.ASC() == null) ? Order.Desc(entityPath) : Order.Asc(entityPath);
@@ -513,7 +513,7 @@ namespace SqlToHibernate
 
         // SKIP
         // MUST be numeric. Note that we do not need error checking here.
-        public override dynamic VisitSkip_term([NotNull] SqlHibParser.Skip_termContext context)
+        public override dynamic VisitSkip_term([NotNull] DqlParser.Skip_termContext context)
         {
             int result;
             Int32.TryParse(context.NUMERAL().GetText(), out result);
@@ -522,7 +522,7 @@ namespace SqlToHibernate
 
         // TAKE
         // MUST be numeric. Note that we do not need error checking here.
-        public override dynamic VisitTake_term([NotNull] SqlHibParser.Take_termContext context)
+        public override dynamic VisitTake_term([NotNull] DqlParser.Take_termContext context)
         {
             double result;
             Double.TryParse(context.NUMERAL().GetText(), out result);
@@ -533,14 +533,14 @@ namespace SqlToHibernate
 
         #region Naming
 
-        public override dynamic VisitAny_name([NotNull] SqlHibParser.Any_nameContext context)
+        public override dynamic VisitAny_name([NotNull] DqlParser.Any_nameContext context)
         {
             var result = string.Empty;
-            if (context.Start.Type == SqlHibParser.IDENTIFIER)
+            if (context.Start.Type == DqlParser.IDENTIFIER)
             {
                 result = context.IDENTIFIER().Symbol.Text;
             }
-            else if (context.Start.Type == SqlHibParser.STRING_LITERAL)
+            else if (context.Start.Type == DqlParser.STRING_LITERAL)
             {
                 result = context.IDENTIFIER().Symbol.Text;
             }
@@ -552,34 +552,34 @@ namespace SqlToHibernate
             return result;
         }
 
-        public override object VisitMain_table_name([NotNull] SqlHibParser.Main_table_nameContext context)
+        public override object VisitMain_table_name([NotNull] DqlParser.Main_table_nameContext context)
         {
             return context.GetText();
         }
 
-        public override object VisitTable_alias([NotNull] SqlHibParser.Table_aliasContext context)
+        public override object VisitTable_alias([NotNull] DqlParser.Table_aliasContext context)
         {
             return context.GetText();
         }
 
-        public override object VisitTable_alias_defined([NotNull] SqlHibParser.Table_alias_definedContext context)
+        public override object VisitTable_alias_defined([NotNull] DqlParser.Table_alias_definedContext context)
         {
             return context.GetText();
         }
 
-        public override dynamic VisitSegment_name([NotNull] SqlHibParser.Segment_nameContext context)
+        public override dynamic VisitSegment_name([NotNull] DqlParser.Segment_nameContext context)
         {
             return context.GetText();
         }
 
-        public override dynamic VisitFunc_proc_name([NotNull] SqlHibParser.Func_proc_nameContext context)
+        public override dynamic VisitFunc_proc_name([NotNull] DqlParser.Func_proc_nameContext context)
         {
             return context.GetText();
         }
 
         // Determines the type of the constant, converts it into that type, and then returns the value.
         // Can return string, int, float, or real. Hence why this is dynamic.
-        public override dynamic VisitConstant([NotNull] SqlHibParser.ConstantContext context)
+        public override dynamic VisitConstant([NotNull] DqlParser.ConstantContext context)
         {
             object result;
 

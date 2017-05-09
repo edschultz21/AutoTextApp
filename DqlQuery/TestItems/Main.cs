@@ -7,7 +7,7 @@ using NHibernate.Tool.hbm2ddl;
 using System.Collections.Generic;
 using NHibernate.SqlCommand;
 
-namespace SqlToHibernate
+namespace DqlQuery
 {
     public class CustomerOrdering
     {

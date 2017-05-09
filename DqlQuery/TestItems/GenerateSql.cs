@@ -8,7 +8,7 @@ using NHibernate.Impl;
 using NHibernate.Persister.Entity;
 using NHibernate.Loader.Criteria;
 
-namespace SqlToHibernate.TestItems
+namespace DqlQuery.TestItems
 {
     public class GenerateSql
     {

@@ -53,13 +53,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="SqlToCriteria.cs" />
+    <Compile Include="DqlToCriteriaUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SqlToHibernate.csproj">
+    <ProjectReference Include="..\DqlQuery.csproj">
       <Project>{9853fea5-0954-493a-a580-e88d941ae510}</Project>
-      <Name>SqlToHibernate</Name>
+      <Name>DqlQuery</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

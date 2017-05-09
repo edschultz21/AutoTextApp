@@ -1,0 +1,12 @@
+﻿///////////////////////////////////////////////////////////////////////
+// TODO
+///////////////////////////////////////////////////////////////////////
+
+- Validate entity paths are valid.
+- Validate all aliases are valid. 
+- Need interface to filter by segment (eg, l.SegmentKey=123)
+	- intercept
+	- figure out what segment they want
+	- get joins
+	- run query
+- Implement execution of custom functions.

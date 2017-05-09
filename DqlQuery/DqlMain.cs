@@ -5,24 +5,24 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using NHibernate;
 
-namespace SqlToHibernate
+namespace DqlQuery
 {
-    public class SqlParser
+    public class DqlMain
     {
         public bool OutputExpressionTree { get; set; }
 
-        private SqlHibParser GetParser(string text)
+        private DqlParser GetParser(string text)
         {
             // This section reads the input, does its magic, and parses the input.
             AntlrInputStream input = new AntlrInputStream(text);
-            SqlHibLexer lexer = new SqlHibLexer(input);
+            DqlLexer lexer = new DqlLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            SqlHibParser parser = new SqlHibParser(tokens);
+            DqlParser parser = new DqlParser(tokens);
 
             return parser;
         }
 
-        private ErrorListener AddErrorListener(SqlHibParser parser)
+        private ErrorListener AddErrorListener(DqlParser parser)
         {
             var errorListener = new ErrorListener();
 
@@ -32,7 +32,7 @@ namespace SqlToHibernate
             return errorListener;
         }
 
-        private T RunVisitor<T>(SqlHibBaseVisitor<T> visitor, string text, ref string errors)
+        private T RunVisitor<T>(DqlBaseVisitor<T> visitor, string text, ref string errors)
         {
             T result = default(T);
 
@@ -47,16 +47,16 @@ namespace SqlToHibernate
             }
             else
             {
-                result = visitor.Visit(parser.sql());
+                result = visitor.Visit(parser.dql());
             }
 
             return result;
         }
 
-        public object RunSqlToCriteria(string text, ISession session)
+        public object GetCriteria(string text, ISession session)
         {
             var errors = string.Empty;
-            var result = RunVisitor<dynamic>(new SqlToCriteriaVisitor(session), text, ref errors);
+            var result = RunVisitor<dynamic>(new DqlToCriteriaVisitor(session), text, ref errors);
 
             return result;
         }
@@ -67,10 +67,10 @@ namespace SqlToHibernate
 
             var parser = GetParser(text);
             var errorListener = AddErrorListener(parser);
-            IParseTree tree = parser.sql();
+            IParseTree tree = parser.dql();
 
             ParseTreeWalker walker = new ParseTreeWalker();
-            var listener = new SqlHibListener();
+            var listener = new DqlListener();
             walker.Walk(listener, tree);
 
             result = tree.ToStringTree(parser);
@@ -91,7 +91,7 @@ namespace SqlToHibernate
         }
     }
 
-    class SqlHibListener : SqlHibBaseListener
+    class DqlListener : DqlBaseListener
     {
     }
 

@@ -1,11 +1,11 @@
 
-grammar SqlHib;
+grammar Dql;
 
-sql
- : sql_stmt EOF
+dql
+ : dql_stmt EOF
  ;
 
-sql_stmt
+dql_stmt
  : ( get_stmt )?
      from_stmt
    ( where_stmt )?
@@ -61,7 +61,7 @@ ordering_term
  ;
 
 /*
-    SQL operators, in order from highest to lowest precedence:
+    DQL operators, in order from highest to lowest precedence:
     *    /    %
     +    -
     <    <=   >    >=
