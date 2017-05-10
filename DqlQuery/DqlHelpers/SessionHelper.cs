@@ -1,11 +1,11 @@
 ﻿using System;
 using NHibernate;
 using NHibernate.Cfg;
-using NHibernate.Dialect.Function;
+using DqlQuery;
 
-namespace DqlQuery
+namespace DqlHelpers
 {
-    public class NHibernateHelper
+    public class SessionHelper
     {
         private static ISessionFactory _sessionFactory;
 
@@ -17,7 +17,7 @@ namespace DqlQuery
                 {
                     var configuration = new Configuration();
                     configuration.Configure();
-                    configuration.AddAssembly(typeof(NHibernateHelper).Assembly);
+                    configuration.AddAssembly(typeof(SessionHelper).Assembly);
                     _sessionFactory = configuration.BuildSessionFactory();
                 }
                 return _sessionFactory;

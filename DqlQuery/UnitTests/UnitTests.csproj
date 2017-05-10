@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DqlHelpers\DqlHelpers.csproj">
+      <Project>{a1fc123c-52e0-439f-ade7-f5f19ae5c462}</Project>
+      <Name>DqlHelpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DqlQuery.csproj">
       <Project>{9853fea5-0954-493a-a580-e88d941ae510}</Project>
       <Name>DqlQuery</Name>

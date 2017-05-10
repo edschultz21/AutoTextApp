@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using NHibernate;
 using NHibernate.Criterion;
+using DqlHelpers;
 
 // EZSTODO
 // - Aliases
 // - Multiple Criteria (subqueries)
 // - Function calls
-// - Unit tests???
 
 namespace DqlQuery
 {
+    // Note that we return dynamic as it makes the arithmetic in expressions simpler. That is,
+    // if we try to use various operations on numeric values, we need to keep track of their 
+    // type which in theory could make things very complex. Having a dynamic type alliviates
+    // all that.
     public class DqlToCriteriaVisitor : DqlBaseVisitor<object>
     {
         private class SkipTake
@@ -30,21 +32,10 @@ namespace DqlQuery
 
             public override string ToString()
             {
-                var result = Path + (!string.IsNullOrEmpty(Alias) ? " " + Alias : "");
+                var result = string.IsNullOrEmpty(Alias) ? Path : Alias + "." + Path;
                 return result;
             }
         }
-
-        private readonly Dictionary<string, string> ComparisonOperatorMap = new Dictionary<string, string>
-        {
-            { "=", "Eq" },
-            { ">", "Gt" },
-            { "<", "Lt" },
-            { "<=", "Le" },
-            { ">=", "Ge" },
-            { "!=", "NE" },
-            { "<>", "NE" },
-        };
 
         private ISession _session;
 
@@ -78,7 +69,7 @@ namespace DqlQuery
         {
             // Traverse all of the possible DQL statements.
             // DO NOT cast here as many of these can be null.
-            var getEntities = Visit(context.get_stmt());
+            var getEntities = Visit(context.get_stmt()); // Technically not needed here.
             var fromEntities = Visit(context.from_stmt());
             var whereStatement = Visit(context.where_stmt());
             var orderByStatement = Visit(context.order_stmt());
@@ -173,6 +164,7 @@ namespace DqlQuery
         // Note that in many places one of the terms (left hand side) MUST be a property
         // while the other term MUST be a value. Note that this is NOT enforced by the 
         // grammar or the visitor. This will be a SQL execution error when we run the criteria.
+        // (Note that this is less true now that we removed the comparison operator from expressions.)
         public override dynamic VisitWhere_stmt([NotNull] DqlParser.Where_stmtContext context)
         {
             var whereCriterion = (ICriterion)base.VisitWhere_stmt(context);
@@ -268,8 +260,30 @@ namespace DqlQuery
             return restriction;
         }
 
-        // +, -, *, /, %
-        // Note that the left hand side MUST be a property and the right hand side MUST be a value.
+        // =, >, >=, <, <=, !=, <>
+        //
+        // This routine is complicated only because nhibernate makes it so. For any given comparison,
+        // nhibernate gives us the following options.
+        //
+        //      Op(string propertyName, object value)
+        //      Op(IProjection projection, object value)
+        //      OpProperty(IProjection projection, string otherPropertyName)
+        //      OpProperty(string propertyName, string otherPropertyName)
+        //      OpProperty(IProjection lshProjection, IProjection rshProjection)
+        //      OpProperty(string propertyName, IProjection rshProjection)
+        //
+        // The parameters are as follows:
+        //      propertyName - EntityPath (eg, l.ListPrice)
+        //      value - numeric, string
+        //      projection - calculated value (eg, l.ListPrice / 10)
+        //
+        // For the "OpProperty" routines, all we need to know is if one or both of our parameters
+        // are entity paths as we then need to convert them to a string. Since we are with dynamics,
+        // everything will work correctly.
+        //
+        // For the "Op" property we need to know which parameter is the value. That is, we could have
+        // "l.ListPrice = 5" or "5 = l.ListPrice". We also need to know if we have an entity path, in
+        // which case we need to convert it to a string, or if we have a projection.
         public override dynamic VisitComparisonPred([NotNull] DqlParser.ComparisonPredContext context)
         {
             object restriction = null;
@@ -277,26 +291,91 @@ namespace DqlQuery
             var lhs = Visit(context.expr(0));
             var rhs = Visit(context.expr(1));
             var op = context.children[1].GetText();
+
+            if ((lhs is EntityPath || lhs is IProjection) && !(rhs is EntityPath) && !(rhs is IProjection))
+            {
+                dynamic actual = (lhs is EntityPath) ? lhs.ToString() : lhs;
+                restriction = VisitComparisonPredHelper(actual, rhs, op);
+            }
+            else if ((rhs is EntityPath || rhs is IProjection) && !(lhs is EntityPath) && !(lhs is IProjection))
+            {
+                switch (op)
+                {
+                    case ">":
+                        op = "<";
+                        break;
+                    case ">=":
+                        op = "<=";
+                        break;
+                    case "<":
+                        op = ">";
+                        break;
+                    case "<=":
+                        op = ">=";
+                        break;
+                    case "=":
+                    case "!=":
+                    case "<>":
+                        break;
+                }
+                dynamic actual = (rhs is EntityPath) ? rhs.ToString() : rhs;
+                restriction = VisitComparisonPredHelper(actual, lhs, op);
+            }
+            else
+            {
+                dynamic lhsActual = (lhs is EntityPath) ? lhs.ToString() : lhs;
+                dynamic rhsActual = (rhs is EntityPath) ? rhs.ToString() : rhs;
+                switch (op)
+                {
+                    case "=":
+                        restriction = Restrictions.EqProperty(lhsActual, rhsActual);
+                        break;
+                    case ">":
+                        restriction = Restrictions.GtProperty(lhsActual, rhsActual);
+                        break;
+                    case ">=":
+                        restriction = Restrictions.GeProperty(lhsActual, rhsActual);
+                        break;
+                    case "<":
+                        restriction = Restrictions.LtProperty(lhsActual, rhsActual);
+                        break;
+                    case "<=":
+                        restriction = Restrictions.LeProperty(lhsActual, rhsActual);
+                        break;
+                    case "!=":
+                    case "<>":
+                        restriction = Restrictions.Not(Restrictions.EqProperty(lhsActual, rhsActual));
+                        break;
+                }
+            }
+
+            return restriction;
+        }
+
+        private dynamic VisitComparisonPredHelper(dynamic lhs, dynamic rhs, string op)
+        {
+            object restriction = null;
+
             switch (op)
             {
                 case "=":
-                    restriction = Restrictions.Eq(lhs.ToString(), rhs);
+                    restriction = Restrictions.Eq(lhs, rhs);
                     break;
                 case ">":
-                    restriction = Restrictions.Gt(lhs.ToString(), rhs);
+                    restriction = Restrictions.Gt(lhs, rhs);
                     break;
                 case ">=":
-                    restriction = Restrictions.Ge(lhs.ToString(), rhs);
+                    restriction = Restrictions.Ge(lhs, rhs);
                     break;
                 case "<":
-                    restriction = Restrictions.Lt(lhs.ToString(), rhs);
+                    restriction = Restrictions.Lt(lhs, rhs);
                     break;
                 case "<=":
-                    restriction = Restrictions.Le(lhs.ToString(), rhs);
+                    restriction = Restrictions.Le(lhs, rhs);
                     break;
                 case "!=":
                 case "<>":
-                    restriction = Restrictions.Not(Restrictions.Eq(lhs.ToString(), rhs));
+                    restriction = Restrictions.Not(Restrictions.Eq(lhs, rhs));
                     break;
             }
 
@@ -390,11 +469,10 @@ namespace DqlQuery
             return result;
         }
 
-        // Entity Path
-        // Builds an entity path.
-        public override dynamic VisitEntityPathExpr([NotNull] DqlParser.EntityPathExprContext context)
+        // Specific alias.entity terms.
+        public override object VisitTableAliasTermExpr([NotNull] DqlParser.TableAliasTermExprContext context)
         {
-            return Visit(context.entity_path());
+            return Visit(context.table_alias_term());
         }
 
         // Parens
@@ -408,6 +486,17 @@ namespace DqlQuery
         // dynamic, we can simply calculate the result of these values and it will do the
         // correct thing returning the correct type.
         public override dynamic VisitMulDivExpr([NotNull] DqlParser.MulDivExprContext context)
+        {
+            var op = context.children[1].GetText();
+
+            return Eval(Visit(context.expr(0)), Visit(context.expr(1)), op);
+        }
+
+        // +, -
+        // Both sides MUST be a numeric value type. Note that because the return types are 
+        // dynamic, we can simply calculate the result of these values and it will do the
+        // correct thing returning the correct type.
+        public override dynamic VisitAddSubExpr([NotNull] DqlParser.AddSubExprContext context)
         {
             var op = context.children[1].GetText();
 
@@ -429,17 +518,6 @@ namespace DqlQuery
             }
 
             return result;
-        }
-
-        // +, -
-        // Both sides MUST be a numeric value type. Note that because the return types are 
-        // dynamic, we can simply calculate the result of these values and it will do the
-        // correct thing returning the correct type.
-        public override dynamic VisitAddSubExpr([NotNull] DqlParser.AddSubExprContext context)
-        {
-            var op = context.children[1].GetText();
-
-            return Eval(Visit(context.expr(0)), Visit(context.expr(1)), op);
         }
 
         // Expression List
@@ -486,20 +564,26 @@ namespace DqlQuery
             return result;
         }
 
-        // Entity/Alias pairs.
+        // Specific alias.entity terms.
         public override dynamic VisitTable_alias_stmt([NotNull] DqlParser.Table_alias_stmtContext context)
         {
-            var tableAlias = Visit(context.table_alias());
-            var segmentName = Visit(context.segment_name());
+            var result = ((EntityPath)Visit(context.table_alias_term())).ToString();
             var tableAliasDefined = (context.table_alias_defined() != null) ? Visit(context.table_alias_defined()) : "";
 
-            var result = $"{tableAlias}.{segmentName}";
             if (!string.IsNullOrEmpty(tableAliasDefined.ToString()))
             {
                 result += $" {tableAliasDefined}";
             }
 
             return result;
+        }
+
+        public override object VisitTable_alias_term([NotNull] DqlParser.Table_alias_termContext context)
+        {
+            var segmentName = Visit(context.segment_name());
+            var tableAlias = Visit(context.table_alias());
+
+            return new EntityPath { Path = segmentName, Alias = tableAlias };
         }
 
         // Ordering term (entity path ASC?DESC)
@@ -512,21 +596,15 @@ namespace DqlQuery
         }
 
         // SKIP
-        // MUST be numeric. Note that we do not need error checking here.
         public override dynamic VisitSkip_term([NotNull] DqlParser.Skip_termContext context)
         {
-            int result;
-            Int32.TryParse(context.NUMERAL().GetText(), out result);
-            return result;
+            return Int32.Parse(context.NUMERAL().GetText());
         }
 
         // TAKE
-        // MUST be numeric. Note that we do not need error checking here.
         public override dynamic VisitTake_term([NotNull] DqlParser.Take_termContext context)
         {
-            double result;
-            Double.TryParse(context.NUMERAL().GetText(), out result);
-            return result;
+            return Double.Parse(context.NUMERAL().GetText());
         }
 
         #endregion
@@ -540,41 +618,12 @@ namespace DqlQuery
             {
                 result = context.IDENTIFIER().Symbol.Text;
             }
-            else if (context.Start.Type == DqlParser.STRING_LITERAL)
-            {
-                result = context.IDENTIFIER().Symbol.Text;
-            }
             else
             {
                 result = base.VisitAny_name(context).ToString();
             }
 
             return result;
-        }
-
-        public override object VisitMain_table_name([NotNull] DqlParser.Main_table_nameContext context)
-        {
-            return context.GetText();
-        }
-
-        public override object VisitTable_alias([NotNull] DqlParser.Table_aliasContext context)
-        {
-            return context.GetText();
-        }
-
-        public override object VisitTable_alias_defined([NotNull] DqlParser.Table_alias_definedContext context)
-        {
-            return context.GetText();
-        }
-
-        public override dynamic VisitSegment_name([NotNull] DqlParser.Segment_nameContext context)
-        {
-            return context.GetText();
-        }
-
-        public override dynamic VisitFunc_proc_name([NotNull] DqlParser.Func_proc_nameContext context)
-        {
-            return context.GetText();
         }
 
         // Determines the type of the constant, converts it into that type, and then returns the value.
@@ -584,22 +633,20 @@ namespace DqlQuery
             object result;
 
             var hasSign = context.sign() != null && context.sign().GetText() == "-";
+
             if (context.NUMERAL() != null)
             {
-                int parsedVal;
-                Int32.TryParse(context.NUMERAL().GetText(), out parsedVal);
+                var parsedVal = Int32.Parse(context.NUMERAL().GetText());
                 result = hasSign ? -parsedVal : parsedVal;
             }
             else if (context.FLOAT() != null)
             {
-                float parsedVal;
-                Single.TryParse(context.FLOAT().GetText(), out parsedVal);
+                var parsedVal = Single.Parse(context.FLOAT().GetText());
                 result = hasSign ? -parsedVal : parsedVal;
             }
             else if (context.REAL() != null)
             {
-                decimal parsedVal;
-                Decimal.TryParse(context.REAL().GetText(), out parsedVal);
+                var parsedVal = Decimal.Parse(context.REAL().GetText());
                 result = hasSign ? -parsedVal : parsedVal;
             }
             else // LITERAL
@@ -623,36 +670,65 @@ namespace DqlQuery
 
         // Evaluates the result of two values and an operation.
         // Note that both values MUST be numeric. Otherwise we throw a runtime exception.
+        //
+        // Note that since we work with dynamic values, this will automatically convert
+        // the result to the correct type.
         private dynamic Eval(dynamic left, dynamic right, string op)
         {
-            if (!IsNumeric(left) || !IsNumeric(right))
-            {
-                throw new TypeMismatchException("Cannot evaluate statement. Invalid type specified.");
-            }
-
             dynamic result = 0;
-            switch (op)
+            if (IsNumeric(left) && IsNumeric(right))
             {
-                case "+":
-                    result = left + right;
-                    break;
-                case "-":
-                    result = left - right;
-                    break;
-                case "*":
-                    result = left * right;
-                    break;
-                case "/":
-                    result = left / right;
-                    break;
-                case "%":
-                    result = left % right;
-                    break;
-                default:
-                    throw new ArgumentException("Invalid operation specified.");
+                switch (op)
+                {
+                    case "+":
+                        result = left + right;
+                        break;
+                    case "-":
+                        result = left - right;
+                        break;
+                    case "*":
+                        result = left * right;
+                        break;
+                    case "/":
+                        result = left / right;
+                        break;
+                    case "%":
+                        result = left % right;
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid operation specified.");
+                }
+            }
+            else
+            {
+                var leftProjection = GetProjection(left);
+                var rightProjection = GetProjection(right);
+
+                // Although we know the type of the numeric (if we have one), we cannot know the type of the
+                // sql columns. Let sql deal with it.
+                result = new ArithmeticOperatorProjection(op, NHibernateUtil.Double, leftProjection, rightProjection);
             }
 
             return result;
+        }
+
+        private IProjection GetProjection(dynamic value)
+        {
+            IProjection projection = null;
+            if (IsNumeric(value))
+            {
+                projection = Projections.Constant(value);
+            }
+            else if (value is EntityPath)
+            {
+                projection = Projections.Property(value.ToString());
+            }
+            else
+            {
+                projection = Projections.Property(value);
+            }
+
+            return projection;
         }
 
         // Create Criteria

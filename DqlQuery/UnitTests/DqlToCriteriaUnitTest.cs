@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DqlQuery;
+using DqlHelpers;
 using NHibernate;
 
 namespace UnitTests
@@ -17,10 +18,10 @@ namespace UnitTests
             var output = string.Empty;
 
             var dqlMain = new DqlMain();
-            using (ISession session = NHibernateHelper.OpenSession())
+            using (ISession session = SessionHelper.OpenSession())
             {
                 var criteria = (ICriteria)dqlMain.GetCriteria(text, session);
-                var sql = DqlQuery.TestItems.GenerateSql.GetSql(criteria);
+                var sql = GenerateSql.GetSql(criteria);
                 criteria.SetFetchMode("Listing", FetchMode.Eager);
                 IList results = criteria.List();
 
@@ -110,6 +111,102 @@ namespace UnitTests
                 "GET Listing " +
                 "FROM Listing l, l.Sides s " +
                 "WHERE s.Side = 'SELL' AND l.ListPrice <= 200000";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###");
+        }
+
+        [TestMethod]
+        public void CompExprPropertyValue()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE l.ListPrice < 300000";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 14 OTHER) L5 5 100000###");
+        }
+
+        [TestMethod]
+        public void CompExprValueProperty()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE 300000 > l.ListPrice";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 14 OTHER) L5 5 100000###");
+        }
+
+        [TestMethod]
+        public void CompExprProjectionValue()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE l.ListPrice / 10 < 30000";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 14 OTHER) L5 5 100000###");
+        }
+
+        [TestMethod]
+        public void CompExprValueProjection()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE 30000 > l.ListPrice / 10";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 14 OTHER) L5 5 100000###");
+        }
+
+        [TestMethod]
+        public void CompExprProjectionProperty()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE l.ListPrice / 100000 = s.Agent";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###");
+        }
+
+        [TestMethod]
+        public void CompExprPropertyProjection()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE s.Agent = l.ListPrice / 100000";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###");
+        }
+
+        [TestMethod]
+        public void CompExprPropertyProperty()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE s.Agent = s.Listing";
+
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###");
+        }
+
+        [TestMethod]
+        public void CompExprProjectionProjection()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s " +
+                "WHERE s.Agent - 1 = l.ListPrice / 100000";
 
             var results = RunCriteria(text);
             Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###");

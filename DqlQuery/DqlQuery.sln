@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DqlQuery", "DqlQuery.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{40C5FD32-A926-4FAF-9958-458096FB1AE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "..\Main\Main.csproj", "{98CEC8CB-D5B6-4FB0-8819-76D3A74AF491}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DqlHelpers", "DqlHelpers\DqlHelpers.csproj", "{A1FC123C-52E0-439F-ADE7-F5F19AE5C462}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{40C5FD32-A926-4FAF-9958-458096FB1AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40C5FD32-A926-4FAF-9958-458096FB1AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40C5FD32-A926-4FAF-9958-458096FB1AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98CEC8CB-D5B6-4FB0-8819-76D3A74AF491}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98CEC8CB-D5B6-4FB0-8819-76D3A74AF491}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98CEC8CB-D5B6-4FB0-8819-76D3A74AF491}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98CEC8CB-D5B6-4FB0-8819-76D3A74AF491}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1FC123C-52E0-439F-ADE7-F5F19AE5C462}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1FC123C-52E0-439F-ADE7-F5F19AE5C462}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1FC123C-52E0-439F-ADE7-F5F19AE5C462}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1FC123C-52E0-439F-ADE7-F5F19AE5C462}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

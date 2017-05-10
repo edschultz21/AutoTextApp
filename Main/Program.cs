@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections;
-using System.Text;
-using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
+using DqlQuery;
+using DqlHelpers;
 
-namespace DqlQuery
+namespace Main
 {
     class Program
     {
         static void Main(string[] args)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            using (ISession session = SessionHelper.OpenSession())
             {
                 RunDqlToCriteria(session);
             }

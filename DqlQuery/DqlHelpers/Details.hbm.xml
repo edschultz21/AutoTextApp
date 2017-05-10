@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- No good place to put this. -->
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="DqlQuery"
                    assembly="DqlQuery">
@@ -26,7 +27,6 @@
 
   </class>
 
-
   <class entity-name="ListingSide" table="dbo.Listing_Agent">
     <id name="Id" type="Int32" column="Id"/>
     <property name="Side" column="Side" type="string"/>
@@ -34,7 +34,5 @@
     <many-to-one name="Agent" column="AID" entity-name="Agent" />
     <many-to-one name="Listing" column="LID" entity-name="Listing"/>
   </class>
-
-
 </hibernate-mapping>
 

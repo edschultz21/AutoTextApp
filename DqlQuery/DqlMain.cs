@@ -9,8 +9,6 @@ namespace DqlQuery
 {
     public class DqlMain
     {
-        public bool OutputExpressionTree { get; set; }
-
         private DqlParser GetParser(string text)
         {
             // This section reads the input, does its magic, and parses the input.
@@ -60,23 +58,6 @@ namespace DqlQuery
 
             return result;
         }
-
-        public string GetExpressionTree(string text)
-        {
-            var result = string.Empty;
-
-            var parser = GetParser(text);
-            var errorListener = AddErrorListener(parser);
-            IParseTree tree = parser.dql();
-
-            ParseTreeWalker walker = new ParseTreeWalker();
-            var listener = new DqlListener();
-            walker.Walk(listener, tree);
-
-            result = tree.ToStringTree(parser);
-
-            return result;
-        }
     }
 
     class ErrorListener : IAntlrErrorListener<IToken>
@@ -90,9 +71,4 @@ namespace DqlQuery
             ErrorList.Add(error);
         }
     }
-
-    class DqlListener : DqlBaseListener
-    {
-    }
-
 }

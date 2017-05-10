@@ -44,8 +44,12 @@ entity_path
  : segment_name ( DOT segment_name )* ( DOT ASTERISK )?
  ;
 
+table_alias_term
+ : table_alias DOT segment_name
+ ;
+
 table_alias_stmt
- : table_alias DOT segment_name  ( table_alias_defined )?
+ : table_alias_term ( table_alias_defined )?
  ;
 
 take_term
@@ -107,7 +111,7 @@ expr
  : NULL								# NullExpr
  | constant							# ConstantExpr
  | function_call					# FunctionCallExpr
- | entity_path						# EntityPathExpr
+ | table_alias_term					# TableAliasTermExpr
  | '(' expr ')'						# ParensExpr
  | expr op=('*' | '/' | '%') expr	# MulDivExpr
  | op=('+' | '-') expr				# UnaryExpr
