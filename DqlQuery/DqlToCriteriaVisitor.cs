@@ -5,6 +5,8 @@ using Antlr4.Runtime.Tree;
 using NHibernate;
 using NHibernate.Criterion;
 using DqlHelpers;
+using NHibernate.Impl;
+using NHibernate.Dialect.Function;
 
 // EZSTODO
 // - Aliases
@@ -294,11 +296,15 @@ namespace DqlQuery
 
             if ((lhs is EntityPath || lhs is IProjection) && !(rhs is EntityPath) && !(rhs is IProjection))
             {
+                // LHS is entity or projection and RHS is NOT.
+
                 dynamic actual = (lhs is EntityPath) ? lhs.ToString() : lhs;
                 restriction = VisitComparisonPredHelper(actual, rhs, op);
             }
             else if ((rhs is EntityPath || rhs is IProjection) && !(lhs is EntityPath) && !(lhs is IProjection))
             {
+                // RHS is entity or projection and LHS is NOT. (Need to change ops and swap)
+
                 switch (op)
                 {
                     case ">":
@@ -323,6 +329,8 @@ namespace DqlQuery
             }
             else
             {
+                // BOTH are entities or projections.
+
                 dynamic lhsActual = (lhs is EntityPath) ? lhs.ToString() : lhs;
                 dynamic rhsActual = (rhs is EntityPath) ? rhs.ToString() : rhs;
                 switch (op)
@@ -383,7 +391,6 @@ namespace DqlQuery
         }
 
         // BETWEEN
-        // Note that first term MUST be a property while the between terms MUST be values.
         public override dynamic VisitBetweenPred([NotNull] DqlParser.BetweenPredContext context)
         {
             object restriction = Restrictions.Between(Visit(context.expr(0)).ToString(), Visit(context.expr(1)), Visit(context.expr(2)));
@@ -396,15 +403,13 @@ namespace DqlQuery
         }
 
         // IN
-        // Note that first term MUST be a property while the IN terms MUST be values.
         public override dynamic VisitInPred([NotNull] DqlParser.InPredContext context)
         {
-            var values = (List<object>)Visit(context.expr_list());
+            var values = (List<object>)Visit(context.param_list());
             return Restrictions.In(Visit(context.expr()).ToString(), values);
         }
 
         // LIKE
-        // Note that the first term MUST be a property while value MUST be a string literal.
         public override dynamic VisitLikePred([NotNull] DqlParser.LikePredContext context)
         {
             return Restrictions.Like(Visit(context.expr(0)).ToString(), Visit(context.expr(1)));
@@ -455,18 +460,29 @@ namespace DqlQuery
             return Visit(context.constant());
         }
 
-        // Function Call (EZSTODO)
+        // Function Call
         public override dynamic VisitFunctionCallExpr([NotNull] DqlParser.FunctionCallExprContext context)
         {
             return base.VisitFunctionCallExpr(context);
         }
 
-        // Function Call (EZSTODO)
+        // Function Call
+        // Returns IProjection
         public override dynamic VisitFunction_call([NotNull] DqlParser.Function_callContext context)
         {
-            var result = Visit(context.func_proc_name());
-            //result += AddParens(Visit(context.expr_list())); // EZSTODO
-            return result;
+            var functions = ((SessionFactoryImpl)_session.SessionFactory).Dialect.Functions;
+
+            var funcName = Visit(context.func_proc_name());
+            var funcParams = Visit(context.param_list());
+
+            var returnType = ((ISQLFunction)functions[funcName]).ReturnType(null, null);
+            var projections = new List<IProjection>();
+            foreach (var param in funcParams)
+            {
+                projections.Add(Projections.Constant(param));
+            }
+
+            return Projections.SqlFunction(funcName, returnType, projections.ToArray());
         }
 
         // Specific alias.entity terms.
@@ -514,23 +530,24 @@ namespace DqlQuery
             }
             if (context.op.Text == "-")
             {
-                result = -result;
+                // Can't do simple "-result" as result can be an IProjection.
+                result = Eval(0, Visit(context.expr()), "-"); ;
             }
 
             return result;
         }
 
-        // Expression List
+        // Parameters List
         // Returns a list of values that are part of this expression. We let the caller determine
         // what to do with them. 
-        public override dynamic VisitExpr_list([NotNull] DqlParser.Expr_listContext context)
+        public override object VisitParam_list([NotNull] DqlParser.Param_listContext context)
         {
             List<object> values = new List<object>();
 
-            var exprList = context.expr();
-            foreach (var expr in exprList)
+            var parameters = context.expr();
+            foreach (var param in parameters)
             {
-                values.Add(Visit(expr));
+                values.Add(Visit(param));
             }
 
             return values;
@@ -610,6 +627,16 @@ namespace DqlQuery
         #endregion
 
         #region Naming
+
+        public override object VisitFunc_proc_name([NotNull] DqlParser.Func_proc_nameContext context)
+        {
+            return context.GetText();
+        }
+
+        public override object VisitSql_func_name([NotNull] DqlParser.Sql_func_nameContext context)
+        {
+            return context.GetText();
+        }
 
         public override dynamic VisitAny_name([NotNull] DqlParser.Any_nameContext context)
         {
@@ -722,6 +749,10 @@ namespace DqlQuery
             else if (value is EntityPath)
             {
                 projection = Projections.Property(value.ToString());
+            }
+            else if (value is IProjection)
+            {
+                projection = (IProjection)value;
             }
             else
             {

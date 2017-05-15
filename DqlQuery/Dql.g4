@@ -89,13 +89,13 @@ search_condition_not
 predicate
  : expr comparison_operator expr	# ComparisonPred
  | expr NOT? BETWEEN expr AND expr	# BetweenPred
- | expr NOT? IN '(' expr_list ')'	# InPred
+ | expr NOT? IN '(' param_list ')'	# InPred
  | expr NOT? LIKE expr				# LikePred
  | expr IS null_notnull				# IsPred
  | '(' search_condition ')'			# ParensPred
  ;
 
-expr_list
+param_list
  : expr (',' expr)*
  ;
 
@@ -116,11 +116,14 @@ expr
  | expr op=('*' | '/' | '%') expr	# MulDivExpr
  | op=('+' | '-') expr				# UnaryExpr
  | expr op=('+' | '-' ) expr		# AddSubExpr
- | expr comparison_operator expr	# ComparisonExpr
  ;
 
 function_call
- : func_proc_name '(' expr_list? ')'
+ : func_proc_name '(' param_list? ')'
+ ;
+
+func_proc_name
+ : sql_func_name | custom_func_name
  ;
 
 constant
@@ -160,9 +163,39 @@ keyword
  | WHERE
  ;
 
+sql_func_name
+ : COUNT 
+ | LEFT 
+ | RIGHT 
+ | LOCATE 
+ | CURRENTTIMESTAMP 
+ | SECOND 
+ | MINUTE 
+ | HOUR 
+ | DAY 
+ | MONTH 
+ | YEAR 
+ | DATE 
+ | CONCAT 
+ | UPPER 
+ | UCASE 
+ | LCASE 
+ | LOWER 
+ | LENGTH 
+ | LTRIM 
+ | RTRIM
+ | TRIM 
+ | REPLACE 
+ | SUBSTRING 
+ ;
+
+custom_func_name
+ : POWERTESTFUNC 
+ | GETDATE
+ ;
+
 name :					any_name;
 segment_name :			any_name;
-func_proc_name :		any_name;
 table_alias :			any_name;
 main_table_name :		any_name;
 table_alias_defined :	any_name;
@@ -196,6 +229,35 @@ ORDER : O R D E R;
 SKIP_ : S K I P;
 TAKE : T A K E;
 WHERE : W H E R E;
+
+// Common SQL functions.
+COUNT : C O U N T;
+LEFT : L E F T;
+RIGHT : R I G H T;
+LOCATE : L O C A T E; // charindex
+CURRENTTIMESTAMP : C U R R E N T T I M E S T A M P; // getdate
+SECOND : S E C O N D;
+MINUTE : M I N U T E;
+HOUR : H O U R;
+DAY : D A Y;
+MONTH : M O N T H;
+YEAR : Y E A R;
+DATE : D A T E; // dateadd
+CONCAT : C O N C A T;
+UPPER : U P P E R;
+UCASE : U C A S E;
+LCASE : L C A S E;
+LOWER : L O W E R;
+LENGTH : L E N G T H; // len
+LTRIM : L T R I M;
+RTRIM : R T R I M;
+TRIM : T R I M;
+REPLACE : R E P L A C E;
+SUBSTRING : S U B S T R I N G;
+
+// Custom functions
+POWERTESTFUNC : P O W E R T E S T F U N C;
+GETDATE : G E T D A T E;
 
 DOT : '.';
 COMMA : ',';

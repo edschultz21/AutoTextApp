@@ -19,6 +19,7 @@
     <id name="Id" type="Int32" column="AID"/>
     <property name="AgentId" column="AgentId" type="string"/>
     <property name="Name" column="Name" type="string"/>
+    <property name="Age" column="Age" type="Int32"/>
 
     <set name="Sides">
       <key column="AID" not-null="true"/>

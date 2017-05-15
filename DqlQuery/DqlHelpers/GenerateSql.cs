@@ -17,7 +17,12 @@ namespace DqlHelpers
             CriteriaImpl criteriaImpl;
             if (criteria is CriteriaImpl.Subcriteria)
             {
-                criteriaImpl = (CriteriaImpl)((CriteriaImpl.Subcriteria)criteria).Parent;
+                var subCriteria = criteria;
+                while (subCriteria is CriteriaImpl.Subcriteria)
+                {
+                    subCriteria = ((CriteriaImpl.Subcriteria)subCriteria).Parent;
+                }
+                criteriaImpl = (CriteriaImpl)subCriteria;
             }
             else
             {

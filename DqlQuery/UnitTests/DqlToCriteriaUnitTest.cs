@@ -117,6 +117,49 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void DqlToCriteria_Test8()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s, s.Agent a " +
+                "WHERE a.Age  = 45";
+
+            // Does not throw exception.
+            var results = RunCriteria(text);
+        }
+
+        [TestMethod]
+        public void DqlToCriteria_TrimFunction()
+        {
+            // FAIL case (does not match)
+            string text =
+                "GET Listing " +
+                "FROM Listing l " +
+                "WHERE rtrim(' ezs ') = 'ezs '";
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "");
+
+            // SUCCESS case (matches)
+            text =
+                "GET Listing " +
+                "FROM Listing l " +
+                "WHERE rtrim(' ezs ') = ' ezs'";
+            results = RunCriteria(text);
+            Assert.IsTrue(results == "( 1 SELL)( 2 SELL)( 5 BUY) L1 1 100000###( 3 BUY)( 6) L2 2 200000###( 4 SELL) L3 3 300000###( 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###( 14 OTHER) L5 5 100000### L6 6 450000###( 15 BUY) L7 7 356789###( 9 POKE) L8 8 420000### L9 9 565000###( 7 POKE)( 8 PEEK) L10 10###");
+        }
+
+        [TestMethod]
+        public void DqlToCriteria_CustomFunction()
+        {
+            string text =
+                "GET Listing " +
+                "FROM Listing l, l.Sides s, s.Agent a " +
+                "WHERE a.Age  = powertestfunc(7, 2) + 3";
+            var results = RunCriteria(text);
+            Assert.IsTrue(results == "(()(()Agent  Listing L5Agent  Listing 5Agent  Listing 100000Agent  14Agent  OTHER)Agent 8Agent 52Agent EDWARDAgent Eddie Miller 10 WAIT)( 11 wait)( 12 Wait) L4 4 255000###((()(Agent  Listing  11Agent  Listing  wait)(Agent  Listing  12Agent  Listing  Wait)Agent  Listing L4Agent  Listing 4Agent  Listing 255000Agent  10Agent  WAIT)()Agent 8Agent 52Agent EDWARDAgent Eddie Miller 14 OTHER) L5 5 100000###");
+        }
+
+        [TestMethod]
         public void CompExprPropertyValue()
         {
             string text =

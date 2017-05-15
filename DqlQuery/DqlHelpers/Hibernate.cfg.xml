@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
-  <session-factory>
+  <session-factory name="DqlQuery">
     <property name="connection.provider">NHibernate.Connection.DriverConnectionProvider</property>
-    <property name="dialect">NHibernate.Dialect.MsSql2012Dialect</property>
+    <property name="dialect">DqlQuery.CustomFunctionDialect, DqlQuery</property>
     <property name="connection.driver_class">NHibernate.Driver.SqlClientDriver</property>
     <property name="connection.connection_string">Data Source=.;Database=HibernateExample;Trusted_Connection=True;</property>
 
