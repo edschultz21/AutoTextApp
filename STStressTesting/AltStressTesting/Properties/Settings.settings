@@ -21,16 +21,16 @@
       <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="Server" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">crmls.stats.10kresearch.com</Value>
+      <Value Profile="(Default)">crmls.devstats.showingtime.com</Value>
     </Setting>
     <Setting Name="Pages" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">70vr-n4U</Value>
+      <Value Profile="(Default)">Cmqz-Umn</Value>
     </Setting>
     <Setting Name="IsPDF" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="RenderRequestLimit" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">8</Value>
+      <Value Profile="(Default)">40</Value>
     </Setting>
     <Setting Name="RenderRequestTimeoutSeconds" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">20</Value>
@@ -39,7 +39,7 @@
       <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="numThreads" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">50</Value>
+      <Value Profile="(Default)">80</Value>
     </Setting>
     <Setting Name="numRequestsPerThread" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">4</Value>
