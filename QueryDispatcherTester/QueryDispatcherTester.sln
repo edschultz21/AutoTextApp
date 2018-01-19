@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryDispatcherTester", "QueryDispatcherTester\QueryDispatcherTester.csproj", "{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLib", "Infosparks.Common\CommonLib\CommonLib.csproj", "{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Contracts", "Infosparks.Common\Common.Contracts\Common.Contracts.csproj", "{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Libs|Any CPU = Debug Libs|Any CPU
+		Debug WebService|Any CPU = Debug WebService|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		fdsaf|Any CPU = fdsaf|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Debug Libs|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Debug Libs|Any CPU.Build.0 = Debug|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Debug WebService|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Debug WebService|Any CPU.Build.0 = Debug|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.fdsaf|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.fdsaf|Any CPU.Build.0 = Release|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE9D9E3-E5B6-472E-B197-8620DB6E4B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Debug Libs|Any CPU.ActiveCfg = Debug Libs|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Debug Libs|Any CPU.Build.0 = Debug Libs|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Debug WebService|Any CPU.ActiveCfg = Debug WebService|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Debug WebService|Any CPU.Build.0 = Debug WebService|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.fdsaf|Any CPU.ActiveCfg = Debug Libs|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.fdsaf|Any CPU.Build.0 = Debug Libs|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7EAF0E3-EE33-4D16-A0EF-EA023D22865D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Debug Libs|Any CPU.ActiveCfg = Debug Libs|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Debug Libs|Any CPU.Build.0 = Debug Libs|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Debug WebService|Any CPU.ActiveCfg = Debug WebService|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Debug WebService|Any CPU.Build.0 = Debug WebService|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.fdsaf|Any CPU.ActiveCfg = Debug Libs|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.fdsaf|Any CPU.Build.0 = Debug Libs|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{273AA0CF-9C3D-4A93-8A6C-6F994BF4F3D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
