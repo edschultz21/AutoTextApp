@@ -1,0 +1,33 @@
+.infoserv-row {
+  height: 100%;
+}
+
+.infoserv-btn {
+  background-color: lightblue;
+  color: darkblue;
+  margin: 3px;
+  line-height: 1;
+  padding: 0.5rem 1rem;
+}
+
+.infoserv-select {
+  height: calc(1.1rem + 20px) !important;
+  padding: 0.5rem 1.1rem !important;
+}
+
+.infoserv-textarea {
+  overflow: auto;
+  resize: none;
+  height: 100%;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.nb-theme-corporate .btn.btn-hero-primary {
+  background-color: blue;
+}
+
+.nb-theme-corporate .btn {
+  background-color: blue;
+  color: red;
+}

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6fb9db9f-eaec-4a70-8e2b-1537e0f482eb}</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>karma.conf.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <EnableTypeScript>true</EnableTypeScript>
+    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <LastActiveSolutionConfig>Debug|Any CPU</LastActiveSolutionConfig>
+    <StartWebBrowser>True</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include=".stylelintrc.json" />
+    <Content Include="angular.json" />
+    <Content Include="package-lock.json" />
+    <Content Include="package.json" />
+    <Content Include="tsconfig.json" />
+    <Content Include="tslint.json" />
+    <Compile Include="karma.conf.js" />
+    <Compile Include="protractor.conf.js" />
+    <Content Include="src\index.html" />
+    <Content Include="src\favicon.png" />
+    <Content Include="src\favicon.ico" />
+    <Content Include="src\tsconfig.app.json" />
+    <Content Include="src\tsconfig.spec.json" />
+    <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\polyfills.ts" />
+    <TypeScriptCompile Include="src\test.ts" />
+    <TypeScriptCompile Include="src\typings.d.ts" />
+    <TypeScriptCompile Include="src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\app.component.ts" />
+    <TypeScriptCompile Include="src\app\app.module.ts" />
+    <TypeScriptCompile Include="src\environments\environment.prod.ts" />
+    <TypeScriptCompile Include="src\environments\environment.ts" />
+    <TypeScriptCompile Include="src\app\@core\core.module.ts" />
+    <TypeScriptCompile Include="src\app\@core\module-import-guard.ts" />
+    <TypeScriptCompile Include="src\app\@theme\theme.module.ts" />
+    <TypeScriptCompile Include="src\app\pages\pages-menu.ts" />
+    <TypeScriptCompile Include="src\app\pages\pages-routing.module.ts" />
+      <TypeScriptCompile Include="src\app\pages\pages.component.ts" />
+    <TypeScriptCompile Include="src\app\pages\pages.module.ts" />
+    <TypeScriptCompile Include="src\app\services\admin.service.ts" />
+    <TypeScriptCompile Include="src\app\services\clients.service.ts" />
+    <TypeScriptCompile Include="src\app\services\discovery.service.ts" />
+    <TypeScriptCompile Include="src\app\services\search-statistics.service.ts" />
+    <Content Include="src\app\@core\data\README.md" />
+    <TypeScriptCompile Include="src\app\@core\data\data.module.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\earning.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\electricity.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\layout.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\orders-chart.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\orders-profit-chart.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\periods.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\player.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\profit-bar-animation-chart.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\profit-chart.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\smart-table.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\state.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\traffic-bar.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\traffic-list.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\user-activity.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\data\users.service.ts" />
+    <TypeScriptCompile Include="src\app\@core\utils\analytics.service.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\index.ts" />
+    <TypeScriptCompile Include="src\app\@theme\layouts\index.ts" />
+    <TypeScriptCompile Include="src\app\@theme\pipes\capitalize.pipe.ts" />
+    <TypeScriptCompile Include="src\app\@theme\pipes\index.ts" />
+    <TypeScriptCompile Include="src\app\@theme\pipes\number-with-commas.pipe.ts" />
+    <TypeScriptCompile Include="src\app\@theme\pipes\plural.pipe.ts" />
+    <TypeScriptCompile Include="src\app\@theme\pipes\round.pipe.ts" />
+    <TypeScriptCompile Include="src\app\@theme\pipes\timing.pipe.ts" />
+    <TypeScriptCompile Include="src\app\@theme\styles\theme.corporate.ts" />
+    <TypeScriptCompile Include="src\app\@theme\styles\theme.cosmic.ts" />
+    <TypeScriptCompile Include="src\app\@theme\styles\theme.default.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\footer\footer.component.ts" />
+    <Content Include="src\app\@theme\components\header\header.component.html" />
+    <TypeScriptCompile Include="src\app\@theme\components\header\header.component.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\layout-direction-switcher\layout-direction-switcher.component.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\search-input\search-input.component.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\switcher\switcher.component.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\theme-settings\theme-settings.component.ts" />
+    <Content Include="src\app\@theme\components\theme-switcher\theme-switcher.component.html" />
+    <TypeScriptCompile Include="src\app\@theme\components\theme-switcher\theme-switcher.component.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\tiny-mce\tiny-mce.component.ts" />
+    <TypeScriptCompile Include="src\app\@theme\components\theme-switcher\themes-switcher-list\themes-switcher-list.component.ts" />
+    <TypeScriptCompile Include="src\app\@theme\layouts\one-column\one-column.layout.ts" />
+    <TypeScriptCompile Include="src\app\@theme\layouts\sample\sample.layout.ts" />
+    <TypeScriptCompile Include="src\app\@theme\layouts\three-columns\three-columns.layout.ts" />
+    <TypeScriptCompile Include="src\app\@theme\layouts\two-columns\two-columns.layout.ts" />
+    <Content Include="src\app\pages\infoserv\infoserv.component.html" />
+    <TypeScriptCompile Include="src\app\pages\infoserv\infoserv.component.ts" />
+    <TypeScriptCompile Include="src\app\pages\infoserv\infoserv.module.ts" />
+
+    <Content Include="src\assets\leaflet-countries\countries.geo.json" />
+    <Content Include="src\assets\map\world.json" />
+    <Content Include="src\assets\skins\lightgray\content.inline.min.css" />
+    <Content Include="src\assets\skins\lightgray\content.min.css" />
+    <Content Include="src\assets\skins\lightgray\skin.ie7.min.css" />
+    <Content Include="src\assets\skins\lightgray\skin.min.css" />
+    <Content Include="src\assets\skins\lightgray\fonts\tinymce-small.svg" />
+    <Content Include="src\assets\skins\lightgray\fonts\tinymce.svg" />
+    <Content Include="src\assets\skins\lightgray\img\anchor.gif" />
+    <Content Include="src\assets\skins\lightgray\img\loader.gif" />
+    <Content Include="src\assets\skins\lightgray\img\object.gif" />
+    <Content Include="src\assets\skins\lightgray\img\trans.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src" />
+    <Folder Include="src\app" />
+    <Folder Include="src\app\@core" />
+    <Folder Include="src\app\@core\data" />
+    <Folder Include="src\app\@core\utils" />
+    <Folder Include="src\app\@theme" />
+    <Folder Include="src\app\@theme\components" />
+    <Folder Include="src\app\@theme\components\footer" />
+    <Folder Include="src\app\@theme\components\header" />
+    <Folder Include="src\app\@theme\components\layout-direction-switcher" />
+    <Folder Include="src\app\@theme\components\search-input" />
+    <Folder Include="src\app\@theme\components\switcher" />
+    <Folder Include="src\app\@theme\components\theme-settings" />
+    <Folder Include="src\app\@theme\components\theme-switcher" />
+    <Folder Include="src\app\@theme\components\theme-switcher\themes-switcher-list" />
+    <Folder Include="src\app\@theme\components\tiny-mce" />
+    <Folder Include="src\app\@theme\directives" />
+    <Folder Include="src\app\@theme\layouts" />
+    <Folder Include="src\app\@theme\layouts\one-column" />
+    <Folder Include="src\app\@theme\layouts\sample" />
+    <Folder Include="src\app\@theme\layouts\three-columns" />
+    <Folder Include="src\app\@theme\layouts\two-columns" />
+    <Folder Include="src\app\@theme\pipes" />
+    <Folder Include="src\app\@theme\styles" />
+    <Folder Include="src\app\pages" />
+    <Folder Include="src\app\pages\infoserv" />
+    <Folder Include="src\app\services" />
+    <Folder Include="src\assets" />
+    <Folder Include="src\assets\images" />
+    <Folder Include="src\assets\leaflet-countries" />
+    <Folder Include="src\assets\map" />
+    <Folder Include="src\assets\skins" />
+    <Folder Include="src\assets\skins\lightgray" />
+    <Folder Include="src\assets\skins\lightgray\fonts" />
+    <Folder Include="src\assets\skins\lightgray\img" />
+    <Folder Include="src\environments" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
