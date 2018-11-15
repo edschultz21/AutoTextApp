@@ -99,7 +99,7 @@ export class SampleLayoutComponent implements OnDestroy {
 
         // EZSTODO
         //if (bpTo.width <= isBp.width) {
-          this.sidebarService.collapse('menu-sidebar');
+          this.sidebarService.expand('menu-sidebar');
         //}
       });
 

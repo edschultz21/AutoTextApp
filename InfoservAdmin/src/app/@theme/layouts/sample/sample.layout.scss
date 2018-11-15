@@ -71,6 +71,10 @@
         .menu-item:first-child {
           border-top: none;
         }
+
+        .menu-item {
+          cursor: pointer;
+        }
       }
     }
 

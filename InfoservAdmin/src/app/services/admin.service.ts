@@ -16,7 +16,7 @@ export class AdminService {
     return parameter + '=' + value;
   }
 
-  public getWebapi(url: string, path: string, params: string, cid: string, apiKey: string): string {
+  private getWebapi(url: string, path: string, params: string, cid: string, apiKey: string): string {
     var webapi = url + '/api/v1/' + path + '?';
     var separator = '';
 
@@ -63,7 +63,7 @@ export class AdminService {
     // configType: DATA, ENTITY, SEARCH
     var webapiRequest = this.adminService.getWebapi(url, 'admin/config', this.adminService.getParameter('type', configType), cid, apiKey);
 
-    return <ObservableResponse> { observable: this.http.get(webapiRequest, { responseType: 'text' }), apiRequest: webapiRequest };
+    return <ObservableResponse> { observable: this.adminService.http.get(webapiRequest, { responseType: 'text' }), apiRequest: webapiRequest };
   }
 
   reloadConfig(url: string, cid: string, apiKey: string): ObservableResponse {

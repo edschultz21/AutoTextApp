@@ -1,75 +1,45 @@
-<div class="row infoserv-row">
-  <div class="col-lg-3">
+<div class="row">
+   <div class="col-lg-12">
 
     <div class="form-group">
       <label for="inputUrl" class="col-form-label">URL:</label>
       <input type="text" class="form-control" id="inputUrl" [(ngModel)]="url" (change)="onUrlChanged($event)">
     </div>
 
-    <div class="form-group">
-      <label>Environment:</label>
-      <select class="form-control infoserv-select" [(ngModel)]="selectedEnvironment" (change)="onEnvironmentSelectionChanged($event)">
-        <option *ngFor="let environment of environments" [ngValue]="environment">{{environment.name}}</option>
-      </select>
-    </div>
+    <div class="row infoserv-row">
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label>Environment:</label>
+          <select class="form-control infoserv-select" [(ngModel)]="selectedEnvironment" (change)="onEnvironmentSelectionChanged($event)">
+            <option *ngFor="let environment of environments" [ngValue]="environment">{{environment.name}}</option>
+          </select>
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label>Client (cid):</label>
-      <select class="form-control infoserv-select" [(ngModel)]="selectedClient" (change)="onCidChanged($event)">
-        <option *ngFor="let client of clients?.Sources" [ngValue]="client">{{client.Code}}</option>
-      </select>
-    </div>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label>Client (cid):</label>
+          <select class="form-control infoserv-select" [(ngModel)]="selectedClient" (change)="onCidChanged($event)">
+            <option *ngFor="let client of clients?.Sources" [ngValue]="client">{{client.Code}}</option>
+          </select>
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label>User (apikey):</label>
-      <select class="form-control infoserv-select" [(ngModel)]="selectedUser" (change)="onApiKeyChanged($event)">
-        <option *ngFor="let user of users" [ngValue]="user">{{user.ApplicationName}}</option>
-      </select>
-    </div>
-
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onDiscoveryClick($event)">Discovery</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onGetClientsClick($event)">Get Clients</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onMetadataClick($event)">Meta Data</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onGetDataConfigClick($event)">Get Data Config</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onGetEntityConfigClick($event)">Get Entity Config</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onGetSearchConfigClick($event)">Get Search Config</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onConfigReloadClick($event)">Config Reload</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onReloadSegmentsClick($event)">Reload Segments</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onReloadAllSegmentsClick($event)">Reload All Segments</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onSearchStatisticsClick($event)">Search Statistics</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onRebuildSearchIndexClick($event)">Rebuild Search Index</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onReindexSearchIndexClick($event)">Reindex Search Index</button>
-    </div>
-    <div class="container-btn">
-      <button class="btn infoserv-btn btn-demo" (click)="onSyncSearchIndexClick($event)">Sync Search Index</button>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label>User (apikey):</label>
+          <select class="form-control infoserv-select" [(ngModel)]="selectedUser" (change)="onApiKeyChanged($event)">
+            <option *ngFor="let user of users" [ngValue]="user">{{user.ApplicationName}}</option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="col-lg-9">
-    <label for="apiRequest" class="col-sm-3 col-form-label">Request:</label>
+<div class="row infoserv-row">
+  <div class="col-lg-12">
+    <label for="apiRequest" class="col-form-label">Request:</label>
     <textarea class="form-control" id="apiRequest" [(ngModel)]="apiRequest" wrap="soft" readonly rows='3'></textarea>
 
     <textarea readonly wrap="off" class="infoserv-textarea">{{results}}</textarea>
