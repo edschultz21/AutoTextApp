@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { InfoservComponent } from './infoserv/infoserv.component';
+import { HelpComponent } from './help/help.component';
 
 const routes: Routes = [{
   path: '',
@@ -10,6 +11,9 @@ const routes: Routes = [{
   children: [{
     path: 'infoserv',
     component: InfoservComponent,
+  }, {
+    path: 'help',
+    component: HelpComponent,
   }, {
     path: '',
     redirectTo: 'infoserv',

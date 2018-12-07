@@ -13,33 +13,33 @@ export const MENU_ITEMS: NbMenuItem[] = [
         children: [
           {
             title: 'Get Data',
-            fragment: 'getConfigurationData',
+            data: 'getConfigurationData',
           },
           {
             title: 'Get Entity',
-            fragment: 'getConfigurationEntity',
+            data: 'getConfigurationEntity',
           },
           {
             title: 'Get Search',
-            fragment: 'getConfigurationSearch',
+            data: 'getConfigurationSearch',
           },
         ],
       },
       {
         title: 'Reload',
-        expanded: false,
+        expanded: true,
         children: [
           {
             title: 'Config',
-            fragment: 'reloadConfig',
+            data: 'reloadConfig',
           },
           {
             title: 'Segments',
-            fragment: 'reloadSegments',
+            data: 'reloadSegments',
           },
           {
             title: 'All Segments',
-            fragment: 'reloadAllSegments',
+            data: 'reloadAllSegments',
           }
         ],
       },
@@ -48,20 +48,20 @@ export const MENU_ITEMS: NbMenuItem[] = [
         expanded: false,
         children: [
           {
-            title: 'Statistics',
-            fragment: 'getSearchIndexStatistics',
-          },
-          {
             title: 'Rebuild Index',
-            fragment: 'rebuildSearchIndex',
+            data: 'rebuildSearchIndex',
           },
           {
             title: 'Reindex Index',
-            fragment: 'reindexSearchIndex',
+            data: 'reindexSearchIndex',
           },
           {
             title: 'Sync Index',
-            fragment: 'syncSearchIndex',
+            data: 'syncSearchIndex',
+          },
+          {
+            title: 'Statistics',
+            data: 'getSearchIndexStatistics',
           },
         ],
       },
@@ -70,19 +70,29 @@ export const MENU_ITEMS: NbMenuItem[] = [
         expanded: true,
         children: [
           {
-            title: 'Discovery',
-            fragment: 'getDiscovery',
+            title: 'Meta Data',
+            data: 'getMetaData',
           },
           {
-            title: 'Meta Data',
-            fragment: 'getMetaData',
+            title: 'Discovery',
+            data: 'getDiscovery',
           },
           {
             title: 'Get Clients',
-            fragment: 'getClients',
+            data: 'getClients',
           },
         ],
       },
     ],
+  },
+  {
+    title: 'Get Kibana',
+    data: 'getKibana',
+    url: 'http://localhost:5601/app/kibana#/visualize/edit/8f4d0c00-4c86-11e8-b3d7-01146121b73d?_g=()&_a=(filters:!(),linked:!f,query:(language:lucene,query:""),uiState:(vis:(legendOpen:!f)),vis:(aggs:!((enabled:!t,id:"1",params:(),schema:metric,type:count),(enabled:!t,id:"2",params:(field:Carrier,missingBucket:!f,missingBucketLabel:Missing,order:desc,orderBy:"1",otherBucket:!f,otherBucketLabel:Other,size:5),schema:segment,type:terms)),params:(addLegend:!t,addTooltip:!t,isDonut:!t,labels:(last_level:!t,show:!t,truncate:100,values:!t),legendPosition:right,type:pie),title:"%5BFlights%5D%20Airline%20Carrier",type:pie))',
+    target: '_new',
+  },
+  {
+    title: 'Help',
+    link: '/pages/help',
   }
 ];

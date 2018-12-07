@@ -1,0 +1,73 @@
+<div class="infoserv-help">
+  <h3>Config</h3>
+  <h6>Get Data</h6>
+  <p>
+    Configuration data can be stored across multiple files in a hierarchical fashion
+    where each new "layer" modifies the existing layer.
+    It may be difficult to ascertain what the final result looks like. Use this call to
+    get the final result.
+  </p>
+  <h6>Get Entity</h6>
+  <p>
+    Entity data can be stored across multiple files in a hierarchical fashion
+    where each new "layer" modifies the existing layer.
+    It may be difficult to ascertain what the final result looks like. Use this call to
+    get the final result.
+  </p>
+  <h6>Get Search</h6>
+  <p>
+    Returns information about how the search engine (elasticsearch) is constructed.
+    There should never be any reason to call this.
+  </p>
+  <h3>Reload</h3>
+  <h6>Config</h6>
+  <p>
+    Reloads the data configuration file for the specified client. Use this whenever
+    you make a change to any data configuration files related to this client.
+  </p>
+  <h6>Segments</h6>
+  <p>
+    Reloads all segments for the specified client. Use when you want to force all segments
+    to be updated for the client. Should seldom be called.
+  </p>
+  <h6>All Segments</h6>
+  <p>
+    Reloads all segments for ALL clients. Should almost NEVER be called.
+  </p>
+  <h3>Search</h3>
+  <h6>Rebuild Index</h6>
+  <p>
+    Rebuilds the search index. If for some reason search results are not working the
+    way you expect, it is possible that the search index may not be completely
+    up to date. Call this to force the index to match the data we have.
+  </p>
+  <h6>Reindex Index</h6>
+  <p>
+    This should only be used if something changes in the search configuration file.
+    This quickly rebuilds the search index using data from the existing index as
+    opposed to reading it from the database. Should seldom be called.
+  </p>
+  <h6>Sync Index</h6>
+  <p>
+    Verifies that all internal data is synced with the search index. This should
+    happend automatically so it is unlikely that this should ever be called.
+  </p>
+  <h6>Statistics</h6>
+  <p>
+    Returns search statistics for the search engine (elasticsearch).
+    Should seldom be called.
+  </p>
+  <h3>Other</h3>
+  <h6>Meta Data</h6>
+  <p>
+    Metadata.
+  </p>
+  <h6>Discovery</h6>
+  <p>
+    Returns information about all the clients in the system.
+  </p>
+  <h6>Get Clients</h6>
+  <p>
+    Returns lists of users for each client and their permissions.
+  </p>
+</div>

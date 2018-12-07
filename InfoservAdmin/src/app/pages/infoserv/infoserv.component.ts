@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { DiscoveryResponse, DiscoverySource } from '../../services/discovery.service';
 import { ObservableResponse } from '../../services/admin.service';
@@ -37,14 +38,29 @@ export class InfoservComponent {
   private apiRequest: string = '';
 
   constructor(
+    private router: Router,
     private infoservService: InfoservService,
     private menuService: NbMenuService) {
       this.url = this.selectedEnvironment.url;
       this.populateSelectBoxes();
 
+      var self = this;
       this.menuService.onItemClick().subscribe((event: {tag: string, item: any}) => {
-        if (this.infoservService[event.item.fragment]) {
-          this.infoservService[event.item.fragment](this.commonCallback.bind(this));
+        // Given my limited understanding of nebular and angular, can't think of a
+        // better way to do this. Basically, if we switch away from this page (eg, to a
+        // help page) and click on one of the infoserv items, we want to be able
+        // do display that page and then execute the command to display the output.
+        // Adding a "link" to the menu item will bring up the page but will not
+        // fire this onItemClick event. We could setup each item to have its very
+        // own link, but that seems like supreme overkill. Hence, we check to see
+        // if we are on the correct page, and if not, display it.
+        var parts = self.router.url.split('/');
+        var path = parts[parts.length - 1];
+        if (path != 'infoserv') {
+          this.router.navigate(['infoserv']);
+        }
+        else if (self.infoservService[event.item.data]) {
+          self.infoservService[event.item.data](self.commonCallback.bind(self));
         }
       });
     }
