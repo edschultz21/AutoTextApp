@@ -5,7 +5,7 @@ import { ObservableResponse } from '../../services/admin.service';
 import { ClientsResponse } from '../../services/clients.service';
 import { InfoservService } from '../../services/infoserv.service';
 import { NbMenuService } from '@nebular/theme';
-
+//import { CookieService } from 'angular2-cookie/core';
 
 interface Environment {
   name: string;
@@ -40,9 +40,13 @@ export class InfoservComponent {
   constructor(
     private router: Router,
     private infoservService: InfoservService,
-    private menuService: NbMenuService) {
+    private menuService: NbMenuService
+    //private cookieService: CookieService
+    ) {
       this.url = this.selectedEnvironment.url;
       this.populateSelectBoxes();
+
+      this.apiKey = localStorage.getItem('InfoservApiKey');
 
       var self = this;
       this.menuService.onItemClick().subscribe((event: {tag: string, item: any}) => {
@@ -79,7 +83,9 @@ export class InfoservComponent {
         observable = apiCallback(this.url, this.cid, this.apiKey);
       }
       this.apiRequest = observable.apiRequest;
-      observable.observable.subscribe(result => { this.results = resultCallback(result); });
+      observable.observable.subscribe(
+        result => { this.results = resultCallback(result); },
+        error => { this.results = resultCallback(error); });
     }
 
     private populateSelectBoxes(): void {
@@ -94,7 +100,7 @@ export class InfoservComponent {
           this.users = result;
           var admin = result.find(x => x.ApplicationName == 'admin');
           this.selectedUser = (admin === undefined) ? result[0] : admin;
-          this.apiKey = this.selectedUser.ApiKey;
+          //this.apiKey = this.selectedUser.ApiKey;
         });
     }
 
@@ -103,9 +109,13 @@ export class InfoservComponent {
       this.cid = this.selectedClient.ConfigUid;
     }
 
-    public onApiKeyChanged(event: any)
-    {
-      this.apiKey = this.selectedUser.ApiKey;
+    public onApiKeySaveClick (event: any): void {
+      localStorage.setItem('InfoservApiKey', this.apiKey);
+    }
+
+    public onApiKeyDeleteClick (event: any): void {
+      localStorage.removeItem('InfoservApiKey');
+      this.apiKey = '';
     }
 
     public onEnvironmentSelectionChanged(event: any): void {

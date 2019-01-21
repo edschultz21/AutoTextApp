@@ -7,7 +7,7 @@
     </div>
 
     <div class="row infoserv-row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="form-group">
           <label>Environment:</label>
           <select class="form-control infoserv-select" [(ngModel)]="selectedEnvironment" (change)="onEnvironmentSelectionChanged($event)">
@@ -16,7 +16,7 @@
         </div>
       </div>
 
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="form-group">
           <label>Client (cid):</label>
           <select class="form-control infoserv-select" [(ngModel)]="selectedClient" (change)="onCidChanged($event)">
@@ -25,12 +25,14 @@
         </div>
       </div>
 
-      <div class="col-sm-4">
+      <div class="col-sm-6">
         <div class="form-group">
-          <label>User (apikey):</label>
-          <select class="form-control infoserv-select" [(ngModel)]="selectedUser" (change)="onApiKeyChanged($event)">
-            <option *ngFor="let user of users" [ngValue]="user">{{user.ApplicationName}}</option>
-          </select>
+            <div class="container-btn">
+              <label for="inputApiKey">User (apikey):</label>
+              <button class="btn infoserv-btn-apikey btn-demo" (click)="onApiKeySaveClick($event)">Remember Me</button>
+              <button class="btn infoserv-btn-apikey btn-demo" (click)="onApiKeyDeleteClick($event)">Forget Me</button>
+              <input type="text" spellcheck="false" class="form-control" id="inputApiKey" [(ngModel)]="apiKey">
+            </div>
         </div>
       </div>
     </div>
