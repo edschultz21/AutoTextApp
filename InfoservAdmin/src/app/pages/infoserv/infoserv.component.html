@@ -1,5 +1,5 @@
 <div class="row">
-   <div class="col-lg-12">
+  <div class="col-lg-12">
 
     <div class="form-group">
       <label for="inputUrl" class="col-form-label">URL:</label>
@@ -27,11 +27,11 @@
 
       <div class="col-sm-6">
         <div class="form-group">
-            <div class="container-btn">
-              <label for="inputApiKey">User (apikey):</label>
-              <button class="btn infoserv-btn-apikey btn-demo" (click)="onApiKeySaveClick($event)">Remember Me</button>
-              <button class="btn infoserv-btn-apikey btn-demo" (click)="onApiKeyDeleteClick($event)">Forget Me</button>
-              <input type="text" spellcheck="false" class="form-control" id="inputApiKey" [(ngModel)]="apiKey">
+          <div class="container-btn">
+            <label for="inputApiKey">User (apikey):</label>
+            <button class="btn infoserv-btn-apikey btn-demo" (click)="onApiKeySaveClick($event)">Remember Me</button>
+            <button class="btn infoserv-btn-apikey btn-demo" (click)="onApiKeyDeleteClick($event)">Forget Me</button>
+            <input type="text" spellcheck="false" class="form-control" id="inputApiKey" [(ngModel)]="apiKey">
             </div>
         </div>
       </div>
@@ -39,11 +39,187 @@
   </div>
 </div>
 
+<p></p>
 <div class="row infoserv-row">
   <div class="col-lg-12">
     <label for="apiRequest" class="col-form-label">Request:</label>
-    <textarea class="form-control" id="apiRequest" [(ngModel)]="apiRequest" wrap="soft" readonly rows='3'></textarea>
+    <textarea class="form-control infoserv-textarea-scrollbar" id="apiRequest" [(ngModel)]="apiRequest" wrap="soft" readonly="" rows='3'></textarea>
 
-    <textarea readonly wrap="off" class="infoserv-textarea">{{results}}</textarea>
+    <label for="apiBody" class="col-form-label">Body (Data, Details, Search):</label>
+    <textarea class="form-control infoserv-textarea-scrollbar" id="apiBody" [(ngModel)]="apiBody" wrap="soft" rows='3'></textarea>
+
+    <div *ngIf="resultToDisplay == displayResultEnum.Default" class="infoserv-results">
+      <textarea readonly="" wrap="off" class="infoserv-textarea">{{stringResults}}</textarea>
+    </div>
+
+    <div *ngIf="resultToDisplay == displayResultEnum.Data" class="infoserv-results">
+      <table class="table table-hover table-condensed table-striped">
+        <tbody>
+          <ng-container *ngFor="let item of dataResults">
+            <tr *ngIf="item.Type == 'SEGMENT'">
+              <td>{{item.Type}}</td>
+              <td>{{item.Key}}</td>
+              <td>{{item.Id.join()}}</td>
+              <td></td>
+            </tr>
+            <tr *ngIf="item.Type == 'SEGMENT'">
+              <td colspan="1">&nbsp;</td>
+              <td colspan="8">
+                <div>
+                  <div class="pull-right">
+                    <table class="table table-hover table-condensed table-striped">
+                      <thead>
+                        <tr>
+                          <th>ObjectType</th>
+                          <th>SegmentKey</th>
+                          <th>DisplayName</th>
+                          <th>IsSearchable</th>
+                          <th>SegmentGroupKey</th>
+                          <th>SegmentType</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{item.Segment.ObjectType}}</td>
+                          <td>{{item.Segment.SegmentKey}}</td>
+                          <td>{{item.Segment.DisplayName}}</td>
+                          <td>{{item.Segment.IsSearchable}}</td>
+                          <td>{{item.Segment.SegmentGroupKey}}</td>
+                          <td>{{item.Segment.SegmentType}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="item.Type == 'DATA'">
+              <td>{{item.Type}}</td>
+              <td>{{item.SegmentKey}}</td>
+              <td>{{item.SegmentId.join()}}</td>
+              <td>{{item.MetricId}}</td>
+            </tr>
+            <tr *ngIf="item.Type == 'DATA'">
+              <td colspan="1">&nbsp;</td>
+              <td colspan="8">
+                <div>
+                  <div class="pull-right">
+                    <table class="table table-hover table-condensed table-striped">
+                      <thead>
+                        <tr>
+                          <th>Value</th>
+                          <th>Period</th>
+                          <th>PeriodDate</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let dataPoint of item.Data">
+                          <tr>
+                            <td>{{dataPoint.Value}}</td>
+                            <td>{{dataPoint.Period}}</td>
+                            <td>{{dataPoint.PeriodDate}}</td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="resultToDisplay == displayResultEnum.Details" class="infoserv-results">
+      <table class="table table-hover table-condensed table-striped">
+        <thead>
+          <tr>
+            <th>DisplayId</th>
+            <th>MLSOfficeKey</th>
+            <th>MLSOfficeId</th>
+            <th>Name</th>
+            <th>Website</th>
+            <th>OfficePhone</th>
+            <th>EMail</th>
+            <th>ObjectType</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of detailsResults; let i = index">
+            <!-- <tr class="infoserv-clickablerow" title="Toggle" (click)="onSegmentTableRowSelected(i, item.DisplayId)"> -->
+            <tr>
+              <td>{{item.DisplayId}}</td>
+              <td>{{item.MLSOfficeKey}}</td>
+              <td>{{item.MLSOfficeId}}</td>
+              <td>{{item.Name}}</td>
+              <td>{{item.Website}}</td>
+              <td>{{item.OfficePhone}}</td>
+              <td>{{item.Email}}</td>
+              <td>{{item.ObjectType}}</td>
+            </tr>
+            <!-- <tr [hidden]="collapsedRows[i]"> -->
+            <tr>
+              <td colspan="1">&nbsp;</td>
+              <td colspan="8">
+                <div>
+                  <div class="pull-right">
+                    <table class="table table-hover table-condensed table-striped">
+                      <thead>
+                        <tr>
+                          <th>ObjectType</th>
+                          <th>SegmentKey</th>
+                          <th>DisplayName</th>
+                          <th>IsSearchable</th>
+                          <th>SegmentGroupKey</th>
+                          <th>SegmentType</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let segment of item.Segments">
+                          <tr>
+                            <td>{{segment.ObjectType}}</td>
+                            <td>{{segment.SegmentKey}}</td>
+                            <td>{{segment.DisplayName}}</td>
+                            <td>{{segment.IsSearchable}}</td>
+                            <td>{{segment.SegmentGroupKey}}</td>
+                            <td>{{segment.SegmentType}}</td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="resultToDisplay == displayResultEnum.SegmentSearch" class="infoserv-results">
+      <table class="table table-hover table-condensed table-striped">
+        <thead>
+          <tr>
+            <th>ObjectType</th>
+            <th>SegmentKey</th>
+            <th>DisplayName</th>
+            <th>IsSearchable</th>
+            <th>SegmentGroupKey</th>
+            <th>SegmentType</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of segmentSearchResults">
+            <tr>
+              <td>{{item.ObjectType}}</td>
+              <td>{{item.SegmentKey}}</td>
+              <td>{{item.DisplayName}}</td>
+              <td>{{item.IsSearchable}}</td>
+              <td>{{item.SegmentGroupKey}}</td>
+              <td>{{item.SegmentType}}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

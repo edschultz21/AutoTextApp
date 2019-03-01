@@ -34,6 +34,12 @@
   margin-top: 10px;
 }
 
+.infoserv-results {
+  height: 100%;
+  width: 100%;
+  margin-top: 10px;
+}
+
 .nb-theme-corporate .btn.btn-hero-primary {
   background-color: blue;
 }
@@ -41,4 +47,17 @@
 .nb-theme-corporate .btn {
   background-color: blue;
   color: red;
+}
+
+.infoserv-textarea-scrollbar::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+.infoserv-clickablerow {
+  cursor: pointer;
+}
+
+.table th, .table td {
+  padding: 0.25rem;
 }

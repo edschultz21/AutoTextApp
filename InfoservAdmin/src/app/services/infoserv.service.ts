@@ -3,6 +3,9 @@ import { AdminService, ObservableResponse } from "./admin.service";
 import { ClientsService } from "./clients.service";
 import { DiscoveryService } from "./discovery.service";
 import { SearchStatisticsService } from "./search-statistics.service";
+import { DataService } from "./data.service";
+import { DetailService } from "./detail.service";
+import { SegmentSearchService } from "./segment-search.service";
 import * as convertXml from 'xml-js';
 import * as formatXml from 'xml-formatter';
 
@@ -12,27 +15,30 @@ export class InfoservService {
     private adminService: AdminService,
     private clientsService: ClientsService,
     private discoveryService: DiscoveryService,
-    private searchStatisticsService: SearchStatisticsService
+    private searchStatisticsService: SearchStatisticsService,
+    private dataService: DataService,
+    private detailService: DetailService,
+    private segmentSearchService: SegmentSearchService
   ) { }
 
   private convertXmlToJson(xml: string): string {
     return convertXml.xml2json(xml, { compact: true, spaces: 4, ignoreComment: true })
   }
 
-  private outputResults(result: any): string {
-    return JSON.stringify(result, null, 4);
+  private outputResults(result: any): object {
+    return { stringResult: JSON.stringify(result, null, 4), rawResults: result };
   }
 
-  private outputXmlResults(result: any): string {
-    return formatXml(result, { indentation: '      ' });
+  private outputXmlResults(result: any): object {
+    return { stringResult: formatXml(result, { indentation: '      ' }), rawResults: result };
   }
 
-  private outputJsonResults(result: any): string {
-    return JSON.stringify(result, null, 4);
+  private outputJsonResults(result: any): object {
+    return { stringResult: JSON.stringify(result, null, 4), rawResults: result };
   }
 
-  private outputXmlAsJson(result: any): string {
-    return this.convertXmlToJson(result);
+  private outputXmlAsJson(result: any): object {
+    return { stringResult: this.convertXmlToJson(result), rawResults: result };
   }
 
   public getConfigurationData(callback: Function): void {
@@ -94,6 +100,18 @@ export class InfoservService {
 
   public getClientsWrapper(url: string, apiKey: string): ObservableResponse {
     return this.clientsService.getClients(url, undefined, apiKey);
+  }
+
+  public getData(callback: Function): void {
+    callback(this.dataService.getData.bind(this), this.outputResults.bind(this), 'POST');
+  }
+
+  public getDetails(callback: Function): void {
+    callback(this.detailService.getDetails.bind(this), this.outputResults.bind(this), 'POST');
+  }
+
+  public searchSegments(callback: Function): void {
+    callback(this.segmentSearchService.searchSegments.bind(this), this.outputResults.bind(this), 'POST');
   }
 }
 

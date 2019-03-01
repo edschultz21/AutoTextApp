@@ -38,13 +38,13 @@ export class AdminService {
   httpGetCallback(url: string, path: string, params: string, cid: string, apiKey: string): ObservableResponse {
     var webapiRequest = this.getWebapi(url, path, params, cid, apiKey);
 
-    return <ObservableResponse> { observable: this.http.get<Object>(webapiRequest), apiRequest: webapiRequest };
+    return <ObservableResponse> { observable: this.http.get<Object>(webapiRequest), apiRequest: webapiRequest, params: params };
   }
 
-  httpPostCallback(url: string, path: string, params: string, cid: string, apiKey: string): ObservableResponse {
+  httpPostCallback(url: string, path: string, params: string, cid: string, apiKey: string, body: string): ObservableResponse {
     var webapiRequest = this.getWebapi(url, path, params, cid, apiKey);
 
-    return <ObservableResponse> { observable: this.http.post<Object>(webapiRequest, null), apiRequest: webapiRequest };
+    return <ObservableResponse> { observable: this.http.post<Object>(webapiRequest, body), apiRequest: webapiRequest };
   }
 
   reloadSegments(url: string, cid: string, apiKey: string): ObservableResponse {
@@ -67,11 +67,11 @@ export class AdminService {
   }
 
   reloadConfig(url: string, cid: string, apiKey: string): ObservableResponse {
-    return this.adminService.httpPostCallback(url, 'admin/config/reload', undefined, cid, apiKey);
+    return this.adminService.httpPostCallback(url, 'admin/config/reload', undefined, cid, apiKey, undefined);
   }
 
   private processSearchIndexRequest(url: string, cid: string, apiKey: string, op: string): ObservableResponse {
-    return this.httpPostCallback(url, 'admin/segment/search', this.getParameter('op', op), cid, apiKey);
+    return this.httpPostCallback(url, 'admin/segment/search', this.getParameter('op', op), cid, apiKey, undefined);
   }
 
   rebuildSearchIndex(url: string, cid: string, apiKey: string): ObservableResponse {
