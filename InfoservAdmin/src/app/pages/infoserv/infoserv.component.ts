@@ -130,7 +130,9 @@ export class InfoservComponent {
   public apiRequest: string = '';
   // tslint:disable-next-line: max-line-length
   // public apiBody: string = '{ "Query": "GET o.* FROM Office o WHERE o.SegmentKey IN (\'1372832\', \'1372835\', \'1372840\')"}';
-  public apiBody: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id":"TotalActiveListings","Metric":"cac","MetricModifiers":null,"Filters":null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":null}],"Fragments":null}';
+  //public apiBody: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id":"TotalActiveListings","Metric":"cac","MetricModifiers":null,"Filters":null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":null}],"Fragments":null}';
+  //public apiBody: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id": "TotalVolume","Metric": "ttv","MetricModifiers": null,"Filters": null},{"Id": "MetricRank","Metric": "ttv","MetricModifiers": ["rank"],"Filters": null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":null}],"Fragments":null}';
+  public apiBody: string = '';
   public collapsedRows: boolean[] = [true, false, true];
 
   constructor(
