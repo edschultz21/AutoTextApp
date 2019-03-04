@@ -5,98 +5,13 @@ import { ObservableResponse } from '../../services/admin.service';
 import { ClientsResponse } from '../../services/clients.service';
 import { InfoservService } from '../../services/infoserv.service';
 import { NbMenuService } from '@nebular/theme';
+import * as TypesIS from '../../pages/infoserv/infoserv.types';
 //import { CookieService } from 'angular2-cookie/core';
 
 // Testing
 // APIKey - F1FDE34C823E4671BE1926F3F892DFB5
-// SegmentSearch -
-//    query=real
-// Details -
-//    { "Query": "GET o.* FROM Office o WHERE o.SegmentKey IN ('1372832', '1372835', '1372840')"}
 
-interface Environment {
-  name: string;
-  url: string;
-}
 
-interface DataType {
-  Type: string;
-}
-
-interface DataResult {
-  Payload: DataType;
-}
-
-interface DataSegmentResult extends DataType {
-  Id: string[];
-  Key: string;
-  Segment: Segment;
-  Position: SegmentPosition;
-}
-
-interface DataDataResult extends DataType {
-  MetricId: string;
-  SegmentKey: string;
-  SegmentId: string[];
-  Data: DataDataPoint[];
-}
-
-interface DataDataPoint {
-  Value: number;
-  Period: string;
-  PeriodDate: Date;
-  AdditionalInfo: object;
-}
-
-interface DataDebug extends DataType {
-  Debug: object;
-}
-
-interface DataError extends DataType {
-  ErrorMessage: string;
-}
-
-interface DetailsResult {
-  DisplayId: string;
-  MLSOfficeKey: string;
-  MLSOfficeId: string;
-  Name: string;
-  Website: string;
-  OfficePhone: string;
-  Email: string;
-  ObjectType: string;
-  Segments: Segment[];
-}
-
-interface Segment {
-  ObjectType: string;
-  SegmentKey: string;
-  DisplayName: string;
-  IsSearchable: string;
-  SegmentGroupKey: string;
-  SegmentType: string;
-}
-
-interface SegmentPosition {
-  Value: number;
-  Total: number;
-}
-
-interface SegmentSearchResult {
-  ObjectType: string;
-  SegmentKey: string;
-  DisplayName: string;
-  IsSearchable: boolean;
-  SegmentGroupKey: string;
-  SegmentType: string;
-}
-
-enum DisplayResultEnum {
-  Default,
-  Details,
-  Data,
-  SegmentSearch
-}
 
 @Component({
   selector: 'infoserv',
@@ -104,34 +19,38 @@ enum DisplayResultEnum {
   templateUrl: './infoserv.component.html',
 })
 export class InfoservComponent {
-  public displayResultEnum = DisplayResultEnum;
-  public resultToDisplay: DisplayResultEnum = DisplayResultEnum.Default;
+
+  public displayResultEnum = TypesIS.DisplayResultEnum;
+  public resultToDisplay: TypesIS.DisplayResultEnum = TypesIS.DisplayResultEnum.Default;
 
   public url: string;
   private cid: string = 'F10B84FB252746C69AE87D36FB923408';
   public apiKey: string = 'F1FDE34C823E4671BE1926F3F892DFB5';
 
   public stringResults: string;
-  public segmentSearchResults: SegmentSearchResult[];
-  public detailsResults: DetailsResult[];
-  public dataResults: DataResult[];
+  public dataDebugResults: string;
+  public segmentSearchResults: TypesIS.SegmentSearchResult[];
+  public detailsResults: TypesIS.DetailsResult[];
+  public dataResults: TypesIS.DataResult[];
   public clients: DiscoveryResponse;
   public selectedClient: DiscoverySource;
   public users: ClientsResponse[];
   public selectedUser: ClientsResponse;
-  public environments: Environment[] = [
+  public environments: TypesIS.Environment[] = [
     { name: 'Local', url: 'http://localhost:3901' },
     { name: 'Development', url: 'http://engweb03.show2000.com:3901' },
     { name: 'Integration', url: 'http://engweb03.show2000.com:3902' },
     { name: 'Release', url: 'http://engweb03.show2000.com:3903' },
     { name: 'Custom', url: '' },
   ];
-  public selectedEnvironment: Environment = this.environments[0];
+  public selectedEnvironment: TypesIS.Environment = this.environments[0];
   public apiRequest: string = '';
-  // tslint:disable-next-line: max-line-length
-  // public apiBody: string = '{ "Query": "GET o.* FROM Office o WHERE o.SegmentKey IN (\'1372832\', \'1372835\', \'1372840\')"}';
-  //public apiBody: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id":"TotalActiveListings","Metric":"cac","MetricModifiers":null,"Filters":null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":null}],"Fragments":null}';
-  //public apiBody: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id": "TotalVolume","Metric": "ttv","MetricModifiers": null,"Filters": null},{"Id": "MetricRank","Metric": "ttv","MetricModifiers": ["rank"],"Filters": null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":null}],"Fragments":null}';
+  // public apiBodySegmentSearch = 'query=real';
+  // public apiBodyDetail: string = '{ "Query": "GET o.* FROM Office o WHERE o.SegmentKey IN (\'1372832\', \'1372835\', \'1372840\')"}';
+  // public apiBodyDataMultipleMetrics: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id": "TotalVolume","Metric": "ttv","MetricModifiers": null,"Filters": null},{"Id": "MetricRank","Metric": "ttv","MetricModifiers": ["rank"],"Filters": null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":null}],"Fragments":null}';
+  // public apiBodyDataOptionsIncludeContext: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id":"TotalActiveListings","Metric":"cac","MetricModifiers":null,"Filters":null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":{"ExperimentalFlags": "include_context"}}],"Fragments":null}';
+  // public apiBodyDataOptionsIncludeQuery: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id":"TotalActiveListings","Metric":"cac","MetricModifiers":null,"Filters":null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":{"ExperimentalFlags": "include_query"}}],"Fragments":null}';
+  // public apiBodyDataOptionsIncludeOptimizations: string = '{"Id":null,"Queries":[{"Id":null,"Filters":[{"Segments":"1273128","Filters":null,"TimeSeries":null}],"Metrics":[{"Id":"TotalActiveListings","Metric":"cac","MetricModifiers":null,"Filters":null}],"Segments":{"List":[{"Id":"zipcode","Segments":"zipcode","RemoveEmptySegments":true}],"Order":{"Limit":{"Skip":0,"Take":5}}},"TimeSeries":{"PeriodType":"month","PeriodCalculation":"none","PeriodList":"LP-11..LP"},"Options":{"ExperimentalFlags": "include_optimizations"}}],"Fragments":null}';
   public apiBody: string = '';
   public collapsedRows: boolean[] = [true, false, true];
 
@@ -166,14 +85,14 @@ export class InfoservComponent {
           var callback = parts[0];
 
           // There must be a better (and safer) way to do this.
-          this.resultToDisplay = DisplayResultEnum.Default;
+          this.resultToDisplay = TypesIS.DisplayResultEnum.Default;
           if (parts.length === 2) {
             if (parts[1] === 'Details') {
-              this.resultToDisplay = DisplayResultEnum.Details;
+              this.resultToDisplay = TypesIS.DisplayResultEnum.Details;
             } else if (parts[1] === 'Data') {
-              this.resultToDisplay = DisplayResultEnum.Data;
+              this.resultToDisplay = TypesIS.DisplayResultEnum.Data;
             } else if (parts[1] === 'SegmentSearch') {
-              this.resultToDisplay = DisplayResultEnum.SegmentSearch;
+              this.resultToDisplay = TypesIS.DisplayResultEnum.SegmentSearch;
             }
           }
           if (self.infoservService[callback]) {
@@ -210,6 +129,23 @@ export class InfoservComponent {
           this.stringResults = callbackResults.stringResult;
           this.detailsResults = callbackResults.rawResults.Payload;
           this.dataResults = callbackResults.rawResults.Payload;
+          if (this.dataResults) {
+            var dataDebug = this.dataResults.find(x => x.Type === 'DEBUG');
+            if (dataDebug) {
+              // Wish I knew a better way to do this.
+              var debugResults = (dataDebug as {} as TypesIS.DataDebugResult).Debug;
+              this.dataDebugResults = debugResults;
+              try {
+                // Should pretty print the results if it is JSON output.
+                // Not sure the best (proper) way to do this, but rebuilding the object
+                // and then stringifying it does the trick.
+                this.dataDebugResults = JSON.stringify(JSON.parse(debugResults), null, '    ');
+              }
+              catch (ex) {
+                // Outupt was not in JSON format so leave it alone.
+              }
+            }
+          }
           this.segmentSearchResults = callbackResults.rawResults;
         },
         error => { this.stringResults = resultCallback(error.stringResult); }
