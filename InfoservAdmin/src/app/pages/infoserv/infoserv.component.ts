@@ -4,13 +4,12 @@ import { DiscoveryResponse, DiscoverySource } from '../../services/discovery.ser
 import { ObservableResponse } from '../../services/admin.service';
 import { ClientsResponse } from '../../services/clients.service';
 import { InfoservService } from '../../services/infoserv.service';
-import { NbMenuService } from '@nebular/theme';
 import * as TypesIS from '../../pages/infoserv/infoserv.types';
+import { NbMenuService, NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 //import { CookieService } from 'angular2-cookie/core';
 
 // Testing
 // APIKey - F1FDE34C823E4671BE1926F3F892DFB5
-
 
 
 @Component({
@@ -44,6 +43,7 @@ export class InfoservComponent {
     { name: 'Custom', url: '' },
   ];
   public selectedEnvironment: TypesIS.Environment = this.environments[0];
+  public selectedMenuItem: string = null;
   public apiRequest: string = '';
   // public apiBodySegmentSearch = 'query=real';
   // public apiBodyDetail: string = '{ "Query": "GET o.* FROM Office o WHERE o.SegmentKey IN (\'1372832\', \'1372835\', \'1372840\')"}';
@@ -57,7 +57,7 @@ export class InfoservComponent {
   constructor(
     private router: Router,
     private infoservService: InfoservService,
-    private menuService: NbMenuService
+    private menuService: NbMenuService,
     //private cookieService: CookieService
     ) {
       this.url = this.selectedEnvironment.url;
@@ -66,7 +66,27 @@ export class InfoservComponent {
       this.apiKey = localStorage.getItem('InfoservApiKey');
 
       var self = this;
-      this.menuService.onItemClick().subscribe((event: {tag: string, item: any}) => {
+
+      // Gets called for any top level menu item that is NOT a group
+      // (does not contain sub menu items).
+      this.menuService.onItemSelect().subscribe((event: {tag: string, item: NbMenuItem}) => {
+        this.deactivateAllMenuItems();
+      });
+
+      // Gets called on any menu that is a group (contains sub menu items).
+      this.menuService.onSubmenuToggle().subscribe((event: {tag: string, item: NbMenuItem}) => {
+        this.deactivateAllMenuItems();
+      });
+
+      // Gets called on any low level menu item.
+      this.menuService.onItemClick().subscribe((event: {tag: string, item: NbMenuItem}) => {
+        this.deactivateAllMenuItems();
+
+        var selectedItem = document.querySelector('[title=\'' + event.item.title + '\']');
+        if (selectedItem) {
+          selectedItem.classList.add('active');
+        }
+
         // Given my limited understanding of nebular and angular, can't think of a
         // better way to do this. Basically, if we switch away from this page (eg, to a
         // help page) and click on one of the infoserv items, we want to be able
@@ -81,25 +101,50 @@ export class InfoservComponent {
           this.router.navigate(['infoserv']);
         }
         else {
-          parts = event.item.data.split(',');
-          var callback = parts[0];
+          this.selectedMenuItem = event.item.data;
 
-          // There must be a better (and safer) way to do this.
-          this.resultToDisplay = TypesIS.DisplayResultEnum.Default;
-          if (parts.length === 2) {
-            if (parts[1] === 'Details') {
-              this.resultToDisplay = TypesIS.DisplayResultEnum.Details;
-            } else if (parts[1] === 'Data') {
-              this.resultToDisplay = TypesIS.DisplayResultEnum.Data;
-            } else if (parts[1] === 'SegmentSearch') {
-              this.resultToDisplay = TypesIS.DisplayResultEnum.SegmentSearch;
-            }
-          }
-          if (self.infoservService[callback]) {
-            self.infoservService[callback](self.commonCallback.bind(self));
-          }
+          this.setResultToDisplay();
         }
       });
+    }
+
+    public onSendButtonClicked(event: any) {
+      var parts = this.selectedMenuItem.split(',');
+      var callback = parts[0];
+
+      if (this.infoservService[callback]) {
+        this.infoservService[callback](this.commonCallback.bind(this));
+      }
+    }
+
+    private setResultToDisplay(): void {
+      var parts = this.selectedMenuItem.split(',');
+
+      // There must be a better (and safer) way to do this.
+      this.resultToDisplay = TypesIS.DisplayResultEnum.Default;
+      if (parts.length === 2) {
+        if (parts[1] === 'Details') {
+          this.resultToDisplay = TypesIS.DisplayResultEnum.Details;
+        } else if (parts[1] === 'Data') {
+          this.resultToDisplay = TypesIS.DisplayResultEnum.Data;
+        } else if (parts[1] === 'SegmentSearch') {
+          this.resultToDisplay = TypesIS.DisplayResultEnum.SegmentSearch;
+        }
+      }
+    }
+
+    private deactivateAllMenuItems(): void {
+      var mainMenu = document.querySelector('nb-menu .active');
+      if (mainMenu) {
+        mainMenu.classList.remove('active');
+      }
+
+      this.selectedMenuItem = null;
+      this.stringResults = null;
+      this.detailsResults = null;
+      this.dataResults = null;
+      this.dataDebugResults = null;
+      this.segmentSearchResults = null;
     }
 
     public processing(): void {

@@ -1,9 +1,17 @@
 <div class="row">
   <div class="col-lg-12">
 
-    <div class="form-group">
-      <label for="inputUrl" class="col-form-label">URL:</label>
-      <input type="text" class="form-control" id="inputUrl" [(ngModel)]="url" (change)="onUrlChanged($event)">
+    <div class="row">
+      <div class="col-sm-2 text-center">
+        <button style="height: 100px;" [disabled]="selectedMenuItem === null" class="btn infoserv-btn infoserv-send-btn btn-demo" (click)="onSendButtonClicked($event)">Send</button>
+      </div>
+
+      <div class="col-sm-10">
+        <div class="form-group">
+          <label for="inputUrl" class="col-form-label">URL:</label>
+          <input type="text" class="form-control" id="inputUrl" [(ngModel)]="url" (change)="onUrlChanged($event)"/>
+        </div>
+      </div>
     </div>
 
     <div class="row infoserv-row">
@@ -39,14 +47,13 @@
   </div>
 </div>
 
-<p></p>
 <div class="row infoserv-row">
   <div class="col-lg-12">
     <label for="apiRequest" class="col-form-label">Request:</label>
     <textarea class="form-control infoserv-textarea-scrollbar" id="apiRequest" [(ngModel)]="apiRequest" wrap="soft" readonly="" rows='3'></textarea>
 
-    <label for="apiBody" class="col-form-label">Body (Data, Details, Search):</label>
-    <textarea class="form-control infoserv-textarea-scrollbar" id="apiBody" [(ngModel)]="apiBody" wrap="soft" rows='3'></textarea>
+    <label *ngIf="resultToDisplay == displayResultEnum.Data || resultToDisplay == displayResultEnum.Details || resultToDisplay == displayResultEnum.SegmentSearch" for="apiBody" class="col-form-label">Body (Data, Details, Search):</label>
+    <textarea *ngIf="resultToDisplay == displayResultEnum.Data || resultToDisplay == displayResultEnum.Details || resultToDisplay == displayResultEnum.SegmentSearch" class="form-control infoserv-textarea-scrollbar" id="apiBody" [(ngModel)]="apiBody" wrap="soft" rows='3'></textarea>
 
     <div *ngIf="resultToDisplay == displayResultEnum.Default" class="infoserv-results">
       <textarea readonly="" wrap="off" class="infoserv-textarea">{{stringResults}}</textarea>

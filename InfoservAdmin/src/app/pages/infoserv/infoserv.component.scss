@@ -10,6 +10,13 @@
   padding: 0.5rem 1rem;
 }
 
+.infoserv-send-btn {
+  height: 5.0rem;
+  width: 10.0rem;
+  margin-bottom: 1.8rem;
+  font-size: 1.5rem;
+}
+
 .infoserv-btn-apikey {
   background-color: lightblue;
   color: darkblue;
@@ -47,6 +54,10 @@
 .nb-theme-corporate .btn {
   background-color: blue;
   color: red;
+}
+
+.nb-theme-corporate .btn.disabled, .btn:disabled {
+  opacity: 0.4;
 }
 
 .infoserv-textarea-scrollbar::-webkit-scrollbar {

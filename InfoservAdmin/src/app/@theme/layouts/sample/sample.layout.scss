@@ -111,9 +111,9 @@
 
     /deep/ nb-menu {
       .menu-items > .menu-item a.active {
-        background-color: #e3e9ee;
-        border-color: #e3e9ee;
+        border-color: #6786dc;
         color: #5d5d5d;
+        border-radius: 0.5rem;
       }
 
       /*& > .menu-items {
