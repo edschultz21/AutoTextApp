@@ -27,6 +27,7 @@ export class InfoservComponent {
   public apiKey: string = 'F1FDE34C823E4671BE1926F3F892DFB5';
 
   public stringResults: string;
+  public errorResults: string;
   public dataDebugResults: string;
   public segmentSearchResults: TypesIS.SegmentSearchResult[];
   public detailsResults: TypesIS.DetailsResult[];
@@ -168,6 +169,7 @@ export class InfoservComponent {
         observable = apiCallback(this.url, this.cid, this.apiKey);
       }
       this.apiRequest = observable.apiRequest;
+      this.errorResults = null;
       observable.observable.subscribe(
         result => {
           var callbackResults = resultCallback(result);
@@ -193,7 +195,9 @@ export class InfoservComponent {
           }
           this.segmentSearchResults = callbackResults.rawResults;
         },
-        error => { this.stringResults = resultCallback(error.stringResult); }
+        error => {
+          this.errorResults = resultCallback(error.message).stringResult;
+        }
       );
     }
 

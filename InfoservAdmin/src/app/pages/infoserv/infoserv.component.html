@@ -55,6 +55,10 @@
     <label *ngIf="resultToDisplay == displayResultEnum.Data || resultToDisplay == displayResultEnum.Details || resultToDisplay == displayResultEnum.SegmentSearch" for="apiBody" class="col-form-label">Body (Data, Details, Search):</label>
     <textarea *ngIf="resultToDisplay == displayResultEnum.Data || resultToDisplay == displayResultEnum.Details || resultToDisplay == displayResultEnum.SegmentSearch" class="form-control infoserv-textarea-scrollbar" id="apiBody" [(ngModel)]="apiBody" wrap="soft" rows='3'></textarea>
 
+    <div *ngIf="errorResults != null" class="infoserv-results">
+      <textarea readonly="" wrap="off" class="infoserv-textarea">{{errorResults}}</textarea>
+    </div>
+
     <div *ngIf="resultToDisplay == displayResultEnum.Default" class="infoserv-results">
       <textarea readonly="" wrap="off" class="infoserv-textarea">{{stringResults}}</textarea>
     </div>
@@ -130,13 +134,13 @@
                 <div>
                   <div class="pull-right">
                     <table class="table table-hover table-condensed table-striped">
-                      <thead>
+                      <!-- <thead>
                         <tr>
                           <th>Value</th>
                           <th>Period</th>
                           <th>PeriodDate</th>
                         </tr>
-                      </thead>
+                      </thead> -->
                       <tbody>
                         <ng-container *ngFor="let dataPoint of item.Data">
                           <tr>
