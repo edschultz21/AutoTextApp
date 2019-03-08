@@ -10,6 +10,10 @@
   padding: 0.5rem 1rem;
 }
 
+.infoserv-btn-height {
+  height: 100px;
+}
+
 .infoserv-send-btn {
   height: 5.0rem;
   width: 10.0rem;
@@ -71,4 +75,9 @@
 
 .table th, .table td {
   padding: 0.25rem;
+  width: 20rem;
+}
+
+.infoserv-first-data-column {
+  width: 10rem !important;
 }

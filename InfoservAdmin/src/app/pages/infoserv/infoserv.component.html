@@ -3,7 +3,7 @@
 
     <div class="row">
       <div class="col-sm-2 text-center">
-        <button style="height: 100px;" [disabled]="selectedMenuItem === null" class="btn infoserv-btn infoserv-send-btn btn-demo" (click)="onSendButtonClicked($event)">Send</button>
+        <button [disabled]="selectedMenuItem === null" class="btn infoserv-btn infoserv-send-btn infoserv-btn-height btn-demo" (click)="onSendButtonClicked($event)">Send</button>
       </div>
 
       <div class="col-sm-10">
@@ -64,13 +64,13 @@
         <tbody>
           <ng-container *ngFor="let item of dataResults">
             <tr *ngIf="item.Type == 'SEGMENT'">
-              <td>{{item.Type}}</td>
+              <td class="infoserv-first-data-column">{{item.Type}}</td>
               <td>{{item.Key}}</td>
               <td>{{item.Id.join()}}</td>
               <td></td>
             </tr>
             <tr *ngIf="item.Type == 'SEGMENT'">
-              <td colspan="1">&nbsp;</td>
+              <td class="infoserv-first-data-column">&nbsp;</td>
               <td colspan="8">
                 <div *ngIf="item?.Segment != null">
                   <div class="pull-right">
@@ -119,13 +119,13 @@
               </td>
             </tr>
             <tr *ngIf="item.Type == 'DATA'">
-              <td>{{item.Type}}</td>
+              <td class="infoserv-first-data-column">{{item.Type}}</td>
               <td>{{item.SegmentKey}}</td>
               <td>{{item.SegmentId.join()}}</td>
               <td>{{item.MetricId}}</td>
             </tr>
             <tr *ngIf="item.Type == 'DATA'">
-              <td colspan="1">&nbsp;</td>
+              <td class="infoserv-first-data-column">&nbsp;</td>
               <td colspan="8">
                 <div>
                   <div class="pull-right">
