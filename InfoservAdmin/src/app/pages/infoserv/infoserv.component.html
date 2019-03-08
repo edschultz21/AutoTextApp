@@ -72,7 +72,7 @@
             <tr *ngIf="item.Type == 'SEGMENT'">
               <td colspan="1">&nbsp;</td>
               <td colspan="8">
-                <div>
+                <div *ngIf="item?.Segment != null">
                   <div class="pull-right">
                     <table class="table table-hover table-condensed table-striped">
                       <thead>
@@ -93,6 +93,24 @@
                           <td>{{item.Segment.IsSearchable}}</td>
                           <td>{{item.Segment.SegmentGroupKey}}</td>
                           <td>{{item.Segment.SegmentType}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div *ngIf="item?.Position != null">
+                  <div class="pull-right">
+                    <table class="table table-hover table-condensed table-striped">
+                      <thead>
+                        <tr>
+                          <th>Value</th>
+                          <th>Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{item.Position.Value}}</td>
+                          <td>{{item.Position.Total}}</td>
                         </tr>
                       </tbody>
                     </table>
