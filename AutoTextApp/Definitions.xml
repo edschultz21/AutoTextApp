@@ -1,0 +1,76 @@
+﻿<AutoTextDefinition>
+  <Metrics>
+    <Metric>
+      <Code>NL</Code>
+      <ShortName>New Listings</ShortName>
+      <LongName>New Listings LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>CS</Code>
+      <ShortName>Closed Sales</ShortName>
+      <LongName>Closed Sales LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>PS</Code>
+      <ShortName>Pending Sales</ShortName>
+      <LongName>Pending Sales LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>DOM</Code>
+      <ShortName>DOM</ShortName>
+      <LongName>Days on Market</LongName>
+      <IsPlural>false</IsPlural>
+      <IsIncreasePositive>false</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>INV</Code>
+      <ShortName>Inventory</ShortName>
+      <LongName>Inventory LongName</LongName>
+      <IsPlural>false</IsPlural>
+      <IsIncreasePositive>false</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>MSP</Code>
+      <ShortName>Median Sales Price</ShortName>
+      <LongName>MSP LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>MSI</Code>
+      <ShortName>Months Supplyos Inventory</ShortName>
+      <LongName>MSI LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>false</IsIncreasePositive>
+    </Metric>
+  </Metrics>
+  <Synonyms>
+    <Positive>
+      <Word>increased</Word>
+      <Word>went up</Word>
+      <Word>were up</Word>
+      <Word>improved</Word>
+      <Word>rose</Word>
+    </Positive>
+    <Negative>
+      <Word>decreased</Word>
+      <Word>fell</Word>
+      <Word>were down</Word>
+      <Word>softened</Word>
+      <Word>dropped</Word>
+    </Negative>
+    <Flat>
+      <Word>flat</Word>
+      <Word>relatively unchanged</Word>
+      <Word>consitent with</Word>
+      <Word>about the same</Word>
+      <Word>fiarly even</Word>
+    </Flat>
+  </Synonyms>
+</AutoTextDefinition>
