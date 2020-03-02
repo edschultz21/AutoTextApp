@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 // EZSTODO
@@ -74,29 +78,134 @@ using System.Xml.Serialization;
     Pending Sales decreased 3.4 percent to 57.
 */
 
+/*
+    [PRE] [METRIC NAME] [DIRECTION] [PCT INC/DEC] percent to [ACTUAL VALUE] [CONSECUTIVE TEXT]
+
+    Closed Sales increased 1.1 percent for Detached Single-Family homes but decreased 1.0 percent for Attached Single-Family homes. 
+    Median Sales Price increased 13.9 percent to $209,000 for Detached Single-Family homes and 14.2 percent to $340,250 for Attached Single-Family homes. 
+    Days on Market decreased 3.8 percent for Single Family homes but remained flat for Townhouse/Condo homes. 
+    New Listings in Franklin, Hamilton and Saint Lawrence Counties decreased 14.9 percent to 80. Pending Sales decreased 3.4 percent to 57. 
+    Inventory decreased 19.7 percent to 763. 
+    New Listings remained flat for Single Family but decreased 34.4 percent for Townhouse/Condo properties. 
+    Pending Sales increased 65.0 percent for Residential homes and 100.0 percent for Condo homes. 
+    Pending Sales decreased 3.4 percent to 57.
+
+    New Listings decreased 11.4 percent for Detached Single-Family homes and 0.8 percent for Attached Single-Family homes. 
+    [PRE] - ""
+    [METRIC NAME] - New Listings
+    [DIRECTION] - decreased
+    [PCT CHANGE] - 11.4
+    percent to/for
+    [ACTUAL VALUE] - ??? Detached Single-Family homes and 0.8 percent for Attached Single-Family homes
+    [CONSECUTIVE TEXT] - ""
+
+    CS [inc/dec] [area1 val] percent for [area1] homes [and/but] [inc/dec] [area2 val] percent for [area2] homes
+    MSP [inc/dec] [area1 val] percent to [area1 val] for [area1] and [area2 val] percent to [area2 val] for [area2] homes]
+    INV [inc/dec] [val] percent to [val]
+
+
+    INV - [METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0]
+    MSP - [METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0] for [Name0] [and/but] [DIRECTION] [PercentChange1] percent to [CurrentValue1]
+    CS  - [METRIC NAME] [DIRECTION] [PercentChange0] percent for [Name0] [and/but] [PercentChange1] percent for [Name1] 
+*/
 namespace AutoTextApp
 {
     public class AutoText
     {
-        // EZSTODO - combine these <T>
-        public AutoTextDefinition ReadDefinitions(string filename)
+        private Random _random = new Random(381654729);
+
+        public string GetDirection(AutoTextDefinition definitions, bool isPositive, bool isFlat)
         {
-            StreamReader streamReader = new StreamReader(filename);
-            XmlSerializer serializer = new XmlSerializer(typeof(AutoTextDefinition));
-            return (AutoTextDefinition)serializer.Deserialize(streamReader);
+            if (isFlat)
+            {
+                var index = _random.Next(definitions.Synonyms.Flat.Length);
+                return definitions.Synonyms.Flat[index];
+            } else if (isPositive)
+            {
+                var index = _random.Next(definitions.Synonyms.Positive.Length);
+                return definitions.Synonyms.Positive[index];
+            }
+            else
+            {
+                var index = _random.Next(definitions.Synonyms.Negative.Length);
+                return definitions.Synonyms.Negative[index];
+            }
         }
 
-        public AutoTextData ReadData(string filename)
+        public string GetSentenceFragment(AutoTextDefinition definitions, PropertyValue data, string template)
+        {
+            var metric = definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == data.Name.ToUpper());
+            if (metric == null)
+            {
+                throw new Exception($"Metric not found {data.Name}");
+            }
+
+            var result = template;
+            var isFlat = data.PercentChange < 0.05;
+            var isPositive = (data.CurrentValue - data.PreviousValue) > 0;
+            isPositive = metric.IsIncreasePostive ? isPositive : !isPositive;
+
+            var items = Regex.Matches("INV - [METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0]", @"\[([^]]*)\]");
+
+            foreach (Match item in items)
+            {
+                switch (item.Value.ToUpperInvariant())
+                {
+                    case "[METRIC CODE]":
+                        result = result.Replace(item.Value, metric.Code);
+                        break;
+                    case "[METRIC NAME]":
+                        result = result.Replace(item.Value, metric.ShortName);
+                        break;
+                    case "[METRIC LONGNAME]":
+                        result = result.Replace(item.Value, metric.LongName);
+                        break;
+                    case "[ACTUAL VALUE]":
+                        result = result.Replace(item.Value, data.CurrentValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
+                        break;
+                    case "[PREVIOUS VALUE]":
+                        result = result.Replace(item.Value, data.PreviousValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
+                        break;
+                    case "[PCT]":
+                        result = result.Replace(item.Value, $"{data.PercentChange}%");
+                        break;
+                    case "[DIR]":
+                        result = result.Replace(item.Value, GetDirection(definitions, isPositive, isFlat));
+                        break;
+                    default:
+                        // For now assume it is part of the actual text
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        public T ReadXmlData<T>(string filename)
         {
             StreamReader streamReader = new StreamReader(filename);
-            XmlSerializer serializer = new XmlSerializer(typeof(AutoTextData));
-            return (AutoTextData)serializer.Deserialize(streamReader);
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            return (T)serializer.Deserialize(streamReader);
         }
 
         public void Run()
         {
-            var definitions = ReadDefinitions("Definitions.xml");
-            var data = ReadData("CRMLS_Data.xml");
+            var definitions = ReadXmlData<AutoTextDefinition>("Definitions.xml");
+            var data = ReadXmlData<AutoTextData>("CRMLS_Data.xml");
+
+            var results = new Dictionary<PropertyValue, string>();
+            foreach (var paragraph in data.Paragraphs)
+            {
+                foreach (var sentence in paragraph.Sentences)
+                {
+                    foreach (var value in sentence.PropertyValues)
+                    {
+                        var result = GetSentenceFragment(definitions, data.Paragraphs[0].Sentences[0].PropertyValues[0], "[METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0]");
+                        results.Add(value, result);
+                    }
+                }
+            }
+            //GetSentenceFragment(definitions, data.Paragraphs[0].Sentences[0].PropertyValues[0], "[METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0]");
         }
     }
 }

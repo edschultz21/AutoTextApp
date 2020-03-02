@@ -13,6 +13,11 @@ namespace AutoTextApp
         public bool IsPlural { get; set; }
         
         public bool IsIncreasePostive { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Code}: {ShortName}, {LongName}, IsPlural:{IsPlural}, IsIncreasePositive:{IsIncreasePostive}";
+        }
     }
 
     public class Synonyms
