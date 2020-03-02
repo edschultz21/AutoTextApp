@@ -132,12 +132,13 @@ namespace AutoTextApp
             }
         }
 
-        public string GetSentenceFragment(AutoTextDefinition definitions, PropertyValue data, string template)
+        public string GetSentenceFragment(AutoTextDefinition definitions, string metricCode, PropertyValue data, string template)
         {
-            var metric = definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == data.Name.ToUpper());
+            var metric = definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == metricCode.ToUpper());
             if (metric == null)
             {
-                throw new Exception($"Metric not found {data.Name}");
+                //throw new Exception($"Metric not found {data.Name}"); - EZSTODO
+                return $"Metric not found {data.Name}";
             }
 
             var result = template;
@@ -145,7 +146,7 @@ namespace AutoTextApp
             var isPositive = (data.CurrentValue - data.PreviousValue) > 0;
             isPositive = metric.IsIncreasePostive ? isPositive : !isPositive;
 
-            var items = Regex.Matches("INV - [METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0]", @"\[([^]]*)\]");
+            var items = Regex.Matches(template, @"\[([^]]*)\]");
 
             foreach (Match item in items)
             {
@@ -200,12 +201,12 @@ namespace AutoTextApp
                 {
                     foreach (var value in sentence.PropertyValues)
                     {
-                        var result = GetSentenceFragment(definitions, data.Paragraphs[0].Sentences[0].PropertyValues[0], "[METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0]");
+                        var result = GetSentenceFragment(definitions, sentence.Code, data.Paragraphs[0].Sentences[0].PropertyValues[0], "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE]");
                         results.Add(value, result);
                     }
                 }
             }
-            //GetSentenceFragment(definitions, data.Paragraphs[0].Sentences[0].PropertyValues[0], "[METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0]");
+            //var ezs = GetSentenceFragment(definitions, data.Paragraphs[0].Sentences[0].Code, data.Paragraphs[0].Sentences[0].PropertyValues[0], "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE]");
         }
     }
 }
