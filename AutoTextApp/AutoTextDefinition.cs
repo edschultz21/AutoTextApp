@@ -32,11 +32,20 @@ namespace AutoTextApp
         public string[] Flat { get; set; }
     }
 
+    public class Variable
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
     public class AutoTextDefinition
     {
         [XmlArrayItem(typeof(MetricDefinition), ElementName = "Metric")]
         public MetricDefinition[] Metrics { get; set; }
 
         public Synonyms Synonyms { get; set; }
+
+        public Variable[] Variables { get; set; }
+
     }
 }

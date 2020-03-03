@@ -3,6 +3,13 @@ using System.Xml.Serialization;
 
 namespace AutoTextApp
 {
+    public enum DirectionType
+    {
+        POSITIVE,
+        NEGATIVE,
+        FLAT
+    }
+
     public class PropertyValue
     {
         public string Name { get; set; }
@@ -15,6 +22,9 @@ namespace AutoTextApp
         
         public int ConsecutivePeriods { get; set; }
 
+        [XmlIgnore]
+        public DirectionType Direction { get; set; }
+
         public override string ToString()
         {
             return $"{Name}: {CurrentValue}, {PreviousValue}, {PercentChange}%, {ConsecutivePeriods}";
@@ -23,10 +33,10 @@ namespace AutoTextApp
 
     public class Sentence
     {
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string Code { get; set; }
 
-        [System.Xml.Serialization.XmlElementAttribute("PropertyValue")] 
+        [XmlElementAttribute("PropertyValue")] 
         public PropertyValue[] PropertyValues { get; set; }
 
         public override string ToString()
@@ -38,13 +48,13 @@ namespace AutoTextApp
 
     public class Paragraph
     {
-        [System.Xml.Serialization.XmlElementAttribute("Sentence")]
+        [XmlElementAttribute("Sentence")]
         public Sentence[] Sentences { get; set; }
     }
 
     public class AutoTextData
     {
-        [System.Xml.Serialization.XmlElementAttribute("Paragraph")]
+        [XmlElementAttribute("Paragraph")]
         public Paragraph[] Paragraphs { get; set; }
     }
 }

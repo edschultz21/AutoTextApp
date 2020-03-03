@@ -108,43 +108,126 @@ using System.Xml.Serialization;
     MSP - [METRIC NAME] [DIRECTION] [PercentChange0] percent to [CurrentValue0] for [Name0] [and/but] [DIRECTION] [PercentChange1] percent to [CurrentValue1]
     CS  - [METRIC NAME] [DIRECTION] [PercentChange0] percent for [Name0] [and/but] [PercentChange1] percent for [Name1] 
 */
+
+/*
+ Comments from Andrei:
+    so i was thinking, maybe we could pass data to the service in pre-defined structure
+​    kinda like we do in annual, ie.. i1...iN different indices give you a data point, previous, percent change, consecutive
+​    then you can refer to them in the actual "structure" doc
+​    so you would end up with something like this: 
+​
+    "Paragraph": [
+    {
+        "Type": "simple",
+        "MetricCode": "NL",
+        "Variables": [
+            "SF",
+            "TC"
+        ]
+    },
+    {
+        "Type": "simple",
+        "MetricCode": "CS",
+        "Variables": [
+            "SF",
+            "TC"
+        ]
+    }
+    ]
+
+    It may also make sense to move away from words sentence and paragraph
+​    Since there maybe cases when we may create multiple sentences from same piece 
+
+    Like if there are 5 variables in that list, we may need to generate 2 sentences
+​    maybe take it even further.. say call paragraph a "block" and then just describe what content needs to go into the paragraph
+​    and then the service would figure out how to describe it
+​    
+    "Block": [
+        {        
+            "MetricCode": "NL",
+            "Variables": "SF"
+        },
+        {        
+            "MetricCode": "NL",
+            "Variables": "TC"
+        },
+        {        
+            "MetricCode": "CS",
+            "Variables": "SF"
+        },
+        {        
+            "MetricCode": "CS",
+            "Variables": "TC"
+        },
+    ]
+
+    this gives us possibility to phrase it 2 ways.. New listings for Single family were X ... while closed sales were Y.
+​    vs New listings for Single Family were X, and townhouse condo Z...
+​    basically each would generate a "fragment" and then you would assemble fragments into sentences.. some blocks would be one way and some ther other.. just to keep it interesting
+​    or if there is 3rd variable, then it would sound better if we talk about all metrics for each variable first.. and then move onto the next one
+​    which ends up being 3 paragraphs
+
+ */
 namespace AutoTextApp
 {
     public class AutoText
     {
-        private string GetDirection(AutoTextDefinition definitions, bool isPositive, bool isFlat, Random random)
+        private void SetDirection(AutoTextDefinition definitions, AutoTextData data)
         {
-            if (isFlat)
+            foreach (var paragraph in data.Paragraphs)
+            {
+                foreach (var sentence in paragraph.Sentences)
+                {
+                    foreach (var propertyValue in sentence.PropertyValues)
+                    {
+                        propertyValue.Direction = DirectionType.FLAT;
+                        if (propertyValue.PercentChange >= 0.05)
+                        {
+                            var isPositive = (propertyValue.CurrentValue - propertyValue.PreviousValue) > 0;
+
+                            var metric = definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == sentence.Code.ToUpper());
+                            if (metric != null)
+                            {
+                                isPositive = metric.IsIncreasePostive ? isPositive : !isPositive;
+                            }
+                            
+                            propertyValue.Direction = isPositive ? DirectionType.POSITIVE : DirectionType.NEGATIVE;
+                        }
+                    }
+                }
+            }
+        }
+
+        private string GetDirection(AutoTextDefinition definitions, DirectionType direction, Random random)
+        {
+            if (direction == DirectionType.FLAT)
             {
                 var index = random.Next(definitions.Synonyms.Flat.Length);
                 return definitions.Synonyms.Flat[index];
             }
-            else if (isPositive)
+            else if (direction == DirectionType.POSITIVE)
             {
                 var index = random.Next(definitions.Synonyms.Positive.Length);
                 return definitions.Synonyms.Positive[index];
             }
-            else
+            else // direction == DirectionType.NEGATIVE
             {
                 var index = random.Next(definitions.Synonyms.Negative.Length);
                 return definitions.Synonyms.Negative[index];
             }
         }
 
-        private string GetSentenceFragment(AutoTextDefinition definitions, string metricCode, PropertyValue data, string template, int seed)
+        private string GetSentenceFragment(AutoTextDefinition definitions, Dictionary<string, string> variables, string metricCode, PropertyValue propertyValue, string template, int seed)
         {
             var random = new Random(seed);
             var metric = definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == metricCode.ToUpper());
             if (metric == null)
             {
                 //throw new Exception($"Metric not found {data.Name}"); - EZSTODO
-                return $"Metric not found {data.Name}";
+                return $"Metric not found {propertyValue.Name}";
             }
 
             var result = template;
-            var isFlat = data.PercentChange < 0.05;
-            var isPositive = (data.CurrentValue - data.PreviousValue) > 0;
-            isPositive = metric.IsIncreasePostive ? isPositive : !isPositive;
 
             var items = Regex.Matches(template, @"\[([^]]*)\]");
 
@@ -162,19 +245,25 @@ namespace AutoTextApp
                         result = result.Replace(item.Value, metric.LongName);
                         break;
                     case "[ACTUAL VALUE]":
-                        result = result.Replace(item.Value, data.CurrentValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
+                        result = result.Replace(item.Value, propertyValue.CurrentValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
                         break;
                     case "[PREVIOUS VALUE]":
-                        result = result.Replace(item.Value, data.PreviousValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
+                        result = result.Replace(item.Value, propertyValue.PreviousValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
+                        break;
+                    case "[ACTUAL NAME]":
+                        result = result.Replace(item.Value, propertyValue.Name);
                         break;
                     case "[PCT]":
-                        result = result.Replace(item.Value, $"{data.PercentChange}%");
+                        result = result.Replace(item.Value, $"{propertyValue.PercentChange}%");
                         break;
                     case "[DIR]":
-                        result = result.Replace(item.Value, GetDirection(definitions, isPositive, isFlat, random));
+                        result = result.Replace(item.Value, GetDirection(definitions, propertyValue.Direction, random));
                         break;
                     default:
-                        // For now assume it is part of the actual text
+                        if (variables.ContainsKey(item.Value))
+                        {
+                            result = result.Replace(item.Value, variables[item.Value]);
+                        }
                         break;
                 }
             }
@@ -191,9 +280,12 @@ namespace AutoTextApp
 
         public void Run()
         {
+            Random random = new Random(381654729);
+
             var definitions = ReadXmlData<AutoTextDefinition>("Definitions.xml");
             var data = ReadXmlData<AutoTextData>("CRMLS_Data.xml");
-            Random random = new Random(381654729);
+            SetDirection(definitions, data);
+            var variables = definitions.Variables?.ToDictionary(x => $"[{x.Name}]", y => string.IsNullOrEmpty(y?.Value) ? "" : y.Value) ?? new Dictionary<string, string>();
 
             var results = new Dictionary<PropertyValue, string>();
             foreach (var paragraph in data.Paragraphs)
@@ -208,7 +300,7 @@ namespace AutoTextApp
                     // "and"ed while the two are "or"ed.
                     foreach (var propertyValue in sentence.PropertyValues)
                     {
-                        var result = GetSentenceFragment(definitions, sentence.Code, propertyValue, "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE]", seed);
+                        var result = GetSentenceFragment(definitions, variables, sentence.Code, propertyValue, "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", seed);
                         results.Add(propertyValue, result);
                     }
                 }

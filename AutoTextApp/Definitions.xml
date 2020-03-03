@@ -73,4 +73,10 @@
       <Word>fairly even</Word>
     </Flat>
   </Synonyms>
+  <Variables>
+    <Variable>
+      <Name>HOMES</Name>
+      <Value> homes</Value>
+    </Variable>
+  </Variables>
 </AutoTextDefinition>
