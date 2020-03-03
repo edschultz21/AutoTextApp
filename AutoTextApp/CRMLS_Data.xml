@@ -11,7 +11,7 @@
       </PropertyValue>
       <PropertyValue>
         <Name>Townhouse/Condo</Name>
-        <CurrentValue>100</CurrentValue>
+        <CurrentValue>82.5</CurrentValue>
         <PreviousValue>92.5</PreviousValue>
         <PercentChange>7.5</PercentChange>
         <ConsecutivePeriods>1</ConsecutivePeriods>
@@ -28,7 +28,7 @@
       </PropertyValue>
       <PropertyValue>
         <Name>Townhouse/Condo</Name>
-        <CurrentValue>100</CurrentValue>
+        <CurrentValue>86.6</CurrentValue>
         <PreviousValue>96.6</PreviousValue>
         <PercentChange>3.4</PercentChange>
         <ConsecutivePeriods>1</ConsecutivePeriods>
@@ -40,14 +40,14 @@
         <Name>Single Family</Name>
         <CurrentValue>100</CurrentValue>
         <PreviousValue>63.5</PreviousValue>
-        <PercentChange>36.5</PercentChange>
+        <PercentChange>0.04</PercentChange>
         <ConsecutivePeriods>1</ConsecutivePeriods>
       </PropertyValue>
       <PropertyValue>
         <Name>Townhouse/Condo</Name>
-        <CurrentValue>100</CurrentValue>
+        <CurrentValue>54.9</CurrentValue>
         <PreviousValue>64.9</PreviousValue>
-        <PercentChange>35.1</PercentChange>
+        <PercentChange>0.03</PercentChange>
         <ConsecutivePeriods>1</ConsecutivePeriods>
       </PropertyValue>
     </Sentence>

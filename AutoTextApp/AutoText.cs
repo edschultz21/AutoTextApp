@@ -112,28 +112,28 @@ namespace AutoTextApp
 {
     public class AutoText
     {
-        private Random _random = new Random(381654729);
-
-        public string GetDirection(AutoTextDefinition definitions, bool isPositive, bool isFlat)
+        private string GetDirection(AutoTextDefinition definitions, bool isPositive, bool isFlat, Random random)
         {
             if (isFlat)
             {
-                var index = _random.Next(definitions.Synonyms.Flat.Length);
+                var index = random.Next(definitions.Synonyms.Flat.Length);
                 return definitions.Synonyms.Flat[index];
-            } else if (isPositive)
+            }
+            else if (isPositive)
             {
-                var index = _random.Next(definitions.Synonyms.Positive.Length);
+                var index = random.Next(definitions.Synonyms.Positive.Length);
                 return definitions.Synonyms.Positive[index];
             }
             else
             {
-                var index = _random.Next(definitions.Synonyms.Negative.Length);
+                var index = random.Next(definitions.Synonyms.Negative.Length);
                 return definitions.Synonyms.Negative[index];
             }
         }
 
-        public string GetSentenceFragment(AutoTextDefinition definitions, string metricCode, PropertyValue data, string template)
+        private string GetSentenceFragment(AutoTextDefinition definitions, string metricCode, PropertyValue data, string template, int seed)
         {
+            var random = new Random(seed);
             var metric = definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == metricCode.ToUpper());
             if (metric == null)
             {
@@ -171,7 +171,7 @@ namespace AutoTextApp
                         result = result.Replace(item.Value, $"{data.PercentChange}%");
                         break;
                     case "[DIR]":
-                        result = result.Replace(item.Value, GetDirection(definitions, isPositive, isFlat));
+                        result = result.Replace(item.Value, GetDirection(definitions, isPositive, isFlat, random));
                         break;
                     default:
                         // For now assume it is part of the actual text
@@ -193,16 +193,23 @@ namespace AutoTextApp
         {
             var definitions = ReadXmlData<AutoTextDefinition>("Definitions.xml");
             var data = ReadXmlData<AutoTextData>("CRMLS_Data.xml");
+            Random random = new Random(381654729);
 
             var results = new Dictionary<PropertyValue, string>();
             foreach (var paragraph in data.Paragraphs)
             {
+                // EZSTODO - sort sentences by percent change (largest to smallest)
                 foreach (var sentence in paragraph.Sentences)
                 {
-                    foreach (var value in sentence.PropertyValues)
+                    var seed = random.Next(int.MaxValue);
+
+                    // EZSTODO - sort property values by percent change (largest to smallest)
+                    // - need to handle conjunction correctly. Above needs to be sorted by pos/neg change. All positive/negatives are
+                    // "and"ed while the two are "or"ed.
+                    foreach (var propertyValue in sentence.PropertyValues)
                     {
-                        var result = GetSentenceFragment(definitions, sentence.Code, data.Paragraphs[0].Sentences[0].PropertyValues[0], "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE]");
-                        results.Add(value, result);
+                        var result = GetSentenceFragment(definitions, sentence.Code, propertyValue, "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE]", seed);
+                        results.Add(propertyValue, result);
                     }
                 }
             }
