@@ -5,18 +5,32 @@ namespace AutoTextApp
     public class MetricDefinition
     {
         public string Code { get; set; }
-        
+
         public string ShortName { get; set; }
-        
+
         public string LongName { get; set; }
-        
+
         public bool IsPlural { get; set; }
-        
+
         public bool IsIncreasePostive { get; set; }
 
         public override string ToString()
         {
             return $"{Code}: {ShortName}, {LongName}, IsPlural:{IsPlural}, IsIncreasePositive:{IsIncreasePostive}";
+        }
+    }
+
+    public class VariableDefinition
+    {
+        public string Code { get; set; }
+
+        public string ShortName { get; set; }
+
+        public string LongName { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Code}: {ShortName}, {LongName}";
         }
     }
 
@@ -32,7 +46,7 @@ namespace AutoTextApp
         public string[] Flat { get; set; }
     }
 
-    public class Variable
+    public class MacroVariable
     {
         public string Name { get; set; }
         public string Value { get; set; }
@@ -43,9 +57,12 @@ namespace AutoTextApp
         [XmlArrayItem(typeof(MetricDefinition), ElementName = "Metric")]
         public MetricDefinition[] Metrics { get; set; }
 
+        [XmlArrayItem(typeof(VariableDefinition), ElementName = "Variable")]
+        public VariableDefinition[] Variables { get; set; }
+
         public Synonyms Synonyms { get; set; }
 
-        public Variable[] Variables { get; set; }
+        public MacroVariable[] MacroVariables { get; set; }
 
     }
 }

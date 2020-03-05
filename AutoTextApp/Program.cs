@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using Newtonsoft.Json;
 
 namespace AutoTextApp
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            new AutoText().Run();
+            var definitions = Utils.ReadXmlData<AutoTextDefinition>("Definitions.xml");
+            var data = Utils.ReadXmlData<AutoTextData>("CRMLS_Data.xml");
+            var newData = (AutoTextData1)JsonConvert.DeserializeObject(File.ReadAllText("CRMLS_Data.json"), typeof(AutoTextData1));
+            var autoText = new AutoText(definitions, data, newData);
+            
+            autoText.Run();
         }
     }
 }

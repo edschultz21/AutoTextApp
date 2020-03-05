@@ -44,24 +44,12 @@
     </Metric>
     <Metric>
       <Code>MSI</Code>
-      <ShortName>Months Supply Inventory</ShortName>
+      <ShortName>Months Supplyos Inventory</ShortName>
       <LongName>MSI LongName</LongName>
       <IsPlural>true</IsPlural>
       <IsIncreasePositive>false</IsIncreasePositive>
     </Metric>
   </Metrics>
-  <Variables>
-    <Variable>
-      <Code>SF</Code>
-      <ShortName>Single Family</ShortName>
-      <LongName>Single Family homes</LongName>
-    </Variable>
-    <Variable>
-      <Code>TC</Code>
-      <ShortName>Townhouse/Condo</ShortName>
-      <LongName>Townhouse/Condo homes</LongName>
-    </Variable>
-  </Variables>
   <Synonyms>
     <Positive>
       <Word>increased</Word>

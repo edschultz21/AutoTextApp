@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTextApp", "AutoTextApp\AutoTextApp.csproj", "{4275CF87-A80B-4214-8515-8D6241716F7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{491D0476-82BF-4514-A655-F0B6CD8FD44F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4275CF87-A80B-4214-8515-8D6241716F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4275CF87-A80B-4214-8515-8D6241716F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4275CF87-A80B-4214-8515-8D6241716F7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{491D0476-82BF-4514-A655-F0B6CD8FD44F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{491D0476-82BF-4514-A655-F0B6CD8FD44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{491D0476-82BF-4514-A655-F0B6CD8FD44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{491D0476-82BF-4514-A655-F0B6CD8FD44F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
