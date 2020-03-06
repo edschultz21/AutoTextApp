@@ -40,64 +40,6 @@ namespace AutoTextApp
         }
     }
 
-    public class MetricData_Org
-    {
-        public string Name { get; set; }
-
-        public float CurrentValue { get; set; }
-
-        public float PreviousValue { get; set; }
-
-        public float PercentChange { get; set; }
-
-        public int ConsecutivePeriods { get; set; }
-
-        [XmlIgnore]
-        public DirectionType Direction { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Name}: {CurrentValue}, {PreviousValue}, {PercentChange}%, {ConsecutivePeriods}";
-        }
-    }
-
-    public class VariableData
-    {
-        public int Id { get; set; }
-
-        public float CurrentValue { get; set; }
-
-        public float PreviousValue { get; set; }
-
-        public float PercentChange { get; set; }
-
-        public int ConsecutivePeriods { get; set; }
-
-        [JsonIgnore]
-        public DirectionType Direction { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Id}: {CurrentValue}, {PreviousValue}, {PercentChange}%, {ConsecutivePeriods}";
-        }
-    }
-
-    public class AutoTextData1
-    {
-        public IdCode[] Metrics { get; set; }
-        public IdCode[] Variables { get; set; }
-        public Block[] Blocks { get; set; }
-        public MetricData[] MetricData { get; set; }
-    }
-
-    public class MetricData
-    {
-        public int Id { get; set; }
-
-        [JsonProperty("Variables")]
-        public VariableData[] VariableData { get; set; }
-    }
-
     public class Block
     {
         [JsonConverter(typeof(StringEnumConverter))]
@@ -125,30 +67,40 @@ namespace AutoTextApp
         }
     }
 
-    public class Sentence
+    public class AutoTextData
     {
-        [XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string Code { get; set; }
+        public IdCode[] Metrics { get; set; }
+        public IdCode[] Variables { get; set; }
+        public Block[] Blocks { get; set; }
+        public MetricData[] MetricData { get; set; }
+    }
 
-        [XmlElementAttribute("PropertyValue")] 
-        public MetricData_Org[] PropertyValues { get; set; }
+    public class VariableData
+    {
+        public int Id { get; set; }
+
+        public float CurrentValue { get; set; }
+
+        public float PreviousValue { get; set; }
+
+        public float PercentChange { get; set; }
+
+        public int ConsecutivePeriods { get; set; }
+
+        [JsonIgnore]
+        public DirectionType Direction { get; set; }
 
         public override string ToString()
         {
-            var temp = string.Join(" :: ", (IEnumerable<MetricData_Org>) PropertyValues);
-            return $"{Code}: {temp}";
+            return $"{Id}: {CurrentValue}, {PreviousValue}, {PercentChange}%, {ConsecutivePeriods}";
         }
     }
 
-    public class Paragraph
+    public class MetricData
     {
-        [XmlElementAttribute("Sentence")]
-        public Sentence[] Sentences { get; set; }
-    }
+        public int Id { get; set; }
 
-    public class AutoTextData
-    {
-        [XmlElementAttribute("Paragraph")]
-        public Paragraph[] Paragraphs { get; set; }
+        [JsonProperty("Variables")]
+        public VariableData[] VariableData { get; set; }
     }
 }
