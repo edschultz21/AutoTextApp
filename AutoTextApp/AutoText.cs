@@ -11,7 +11,6 @@ namespace AutoTextApp
     {
         private AutoTextDefinition _definitions;
         private AutoTextData _data;
-        // EZSTODO - use collection dictionary
         private Dictionary<string, MacroVariable> _macroVariables; // Macro -> Value
         private Dictionary<string, int> _metricToId;
         private Dictionary<string, int> _variableToId;
@@ -28,15 +27,22 @@ namespace AutoTextApp
             SetDirection();
         }
 
-        // EZSTODO - what if missing?
-        private string GetVariableName(string code)
+        private MetricDefinition GetMetricDefinition(string code)
         {
-            return _definitions.Variables.FirstOrDefault(x => x.Code == code).ShortName;
+            // EZSTODO - use KeyedCollection
+            return _definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == code.ToUpper());
         }
 
-        private string GetVariableLongName(string code)
+        private VariableDefinition GetVariableDefinition(string variable)
         {
-            return _definitions.Variables.FirstOrDefault(x => x.Code == code).LongName;
+            // EZSTODO - use KeyedCollection
+            return _definitions.Variables.FirstOrDefault(x => x.Code.ToUpper() == variable.ToUpper());
+        }
+
+        private MacroVariable GetMacroVariable(string macroName)
+        {
+            // EZSTODO - use KeyedCollection
+            return _definitions.MacroVariables.FirstOrDefault(x => x.Name.ToUpper() == macroName.ToUpper());
         }
 
         // EZSTODO - need to handle case of no variable
@@ -69,7 +75,7 @@ namespace AutoTextApp
                         var metricIdCode = _data.Metrics.FirstOrDefault(x => x.Id == metricData.Id);
                         if (metricIdCode != null)
                         {
-                            var metric = _definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == metricIdCode.Code.ToUpper());
+                            var metric = GetMetricDefinition(metricIdCode.Code);
                             if (metric != null)
                             {
                                 isPositive = metric.IsIncreasePostive ? isPositive : !isPositive;
@@ -108,7 +114,7 @@ namespace AutoTextApp
         public string GetSentenceFragment(string metricCode, string variableCode, string template, int seed)
         {
             var random = new Random(seed);
-            var metric = _definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == metricCode.ToUpper());
+            var metric = GetMetricDefinition(metricCode);
             if (metric == null)
             {
                 //throw new Exception($"Metric not found {data.Name}"); - EZSTODO
@@ -140,25 +146,28 @@ namespace AutoTextApp
                             if (!string.IsNullOrEmpty(macro.Type))
                             {
                                 var reflectedType = Type.GetType($"{GetType().Namespace}.{macro.Type}");
-                                var macroVariable = _definitions.MacroVariables.FirstOrDefault(x => x.Name.ToUpper() == macro.Name.ToUpper());
-                                if (metric.GetType().Name == macro.Type)
+                                var macroVariable = GetMacroVariable(macro.Name);
+                                if (macroVariable != null)
                                 {
-                                    macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(metric).ToString();
-                                }
-                                else if (variableData.GetType().Name == macro.Type)
-                                {
-                                    macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variableData).ToString();
-                                }
-                                else if (!string.IsNullOrEmpty(variableCode))
-                                {
-                                    var variable = _definitions.Variables.FirstOrDefault(x => x.Code == variableCode);
-                                    if (variable.GetType().Name == macro.Type)
+                                    if (metric.GetType().Name == macro.Type)
                                     {
-                                        macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variable).ToString();
+                                        macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(metric).ToString();
+                                    }
+                                    else if (variableData.GetType().Name == macro.Type)
+                                    {
+                                        macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variableData).ToString();
+                                    }
+                                    else if (!string.IsNullOrEmpty(variableCode))
+                                    {
+                                        var variable = GetVariableDefinition(variableCode);
+                                        if (variable?.GetType().Name == macro.Type)
+                                        {
+                                            macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variable).ToString();
+                                        }
                                     }
                                 }
                             }
-                            
+
                             if (macroValue != null)
                             {
                                 if (!string.IsNullOrEmpty(macro.Format))
