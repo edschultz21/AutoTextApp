@@ -11,15 +11,16 @@ namespace AutoTextApp
     {
         private AutoTextDefinition _definitions;
         private AutoTextData _data;
-        private Dictionary<string, MacroVariable> _macroVariables; // Macro -> Value
+        private Dictionary<string, MacroVariable> _macroVariables; // Macro -> Value (consider using KeyedCollection)
         private Dictionary<string, int> _metricToId;
         private Dictionary<string, int> _variableToId;
 
-        // EZSTODO - need to ensure all codes are in UPPER case
-        public AutoText(AutoTextDefinition definitions, AutoTextData data1)
+        public AutoText(AutoTextDefinition definitions, AutoTextData data)
         {
             _definitions = definitions;
-            _data = data1;
+            _data = data;
+
+            NormalizeCasing();
 
             _macroVariables = _definitions.MacroVariables?.ToDictionary(x => $"[{x.Name}]", y => y) ?? new Dictionary<string, MacroVariable>();
             _metricToId = _data.Metrics.ToDictionary(x => x.Code, x => x.Id, StringComparer.OrdinalIgnoreCase);
@@ -27,38 +28,21 @@ namespace AutoTextApp
             SetDirection();
         }
 
-        private MetricDefinition GetMetricDefinition(string code)
+        private void NormalizeCasing()
         {
-            // EZSTODO - use KeyedCollection
-            return _definitions.Metrics.FirstOrDefault(x => x.Code.ToUpper() == code.ToUpper());
-        }
+            // Definitions
+            Array.ForEach(_definitions.Metrics, x => x.Code = x.Code.ToUpper());
+            Array.ForEach(_definitions.Variables, x => x.Code = x.Code.ToUpper());
+            Array.ForEach(_definitions.MacroVariables, x => x.Name = x.Name.ToUpper());
 
-        private VariableDefinition GetVariableDefinition(string variable)
-        {
-            // EZSTODO - use KeyedCollection
-            return _definitions.Variables.FirstOrDefault(x => x.Code.ToUpper() == variable.ToUpper());
-        }
-
-        private MacroVariable GetMacroVariable(string macroName)
-        {
-            // EZSTODO - use KeyedCollection
-            return _definitions.MacroVariables.FirstOrDefault(x => x.Name.ToUpper() == macroName.ToUpper());
-        }
-
-        // EZSTODO - need to handle case of no variable
-        // EZSTODO - need to handle cases of missing metric/variable
-        private VariableData GetVariableData(string metricCode, string variableCode)
-        {
-            if (_metricToId.TryGetValue(metricCode, out int metricId) && _variableToId.TryGetValue(variableCode, out int variableId))
-            {
-                var metricData = _data.MetricData.FirstOrDefault(x => x.Id == metricId);
-                if (metricData != null)
-                {
-                    return metricData.VariableData.FirstOrDefault(x => x.Id == variableId);
-                }
-            }
-
-            return null;
+            // Data
+            Array.ForEach(_data.Blocks, 
+                x => Array.ForEach(x.BlockItems, y => {
+                    y.MetricCode = y.MetricCode.ToUpper();
+                    y.Variables = Array.ConvertAll(y.Variables, z => z.ToUpper());
+                }));
+            Array.ForEach(_data.Metrics, x => x.Code = x.Code.ToUpper());
+            Array.ForEach(_data.Variables, x => x.Code = x.Code.ToUpper());
         }
 
         private void SetDirection()
@@ -88,6 +72,37 @@ namespace AutoTextApp
             }
         }
 
+        private MetricDefinition GetMetricDefinition(string code)
+        {
+            return _definitions.Metrics.FirstOrDefault(x => x.Code == code);
+        }
+
+        private VariableDefinition GetVariableDefinition(string variable)
+        {
+            return _definitions.Variables.FirstOrDefault(x => x.Code == variable);
+        }
+
+        private MacroVariable GetMacroVariable(string macroName)
+        {
+            return _definitions.MacroVariables.FirstOrDefault(x => x.Name == macroName);
+        }
+
+        // EZSTODO - need to handle case of no variable
+        // EZSTODO - need to handle cases of missing metric/variable
+        private VariableData GetVariableData(string metricCode, string variableCode)
+        {
+            if (_metricToId.TryGetValue(metricCode, out int metricId) && _variableToId.TryGetValue(variableCode, out int variableId))
+            {
+                var metricData = _data.MetricData.FirstOrDefault(x => x.Id == metricId);
+                if (metricData != null)
+                {
+                    return metricData.VariableData.FirstOrDefault(x => x.Id == variableId);
+                }
+            }
+
+            return null;
+        }
+
         private string GetDirection(DirectionType direction, Random random)
         {
             if (direction == DirectionType.FLAT)
@@ -107,23 +122,25 @@ namespace AutoTextApp
             }
         }
 
-        // EZSTODO - consider passing in variable code instead of MetricData
         // EZSTODO - how to handle complicated fragments
         // EZSTODO - figure out what we should pass here
         // EZSTODO - private?
         public string GetSentenceFragment(string metricCode, string variableCode, string template, int seed)
         {
+            metricCode = metricCode.ToUpper();
+            variableCode = variableCode.ToUpper();
+
             var random = new Random(seed);
             var metric = GetMetricDefinition(metricCode);
             if (metric == null)
             {
-                //throw new Exception($"Metric not found {data.Name}"); - EZSTODO
+                //throw new Exception($"Metric not found {metricCode}"); - EZSTODO
                 return $"Metric not found {metricCode}";
             }
             var variableData = GetVariableData(metricCode, variableCode);
             if (variableData == null)
             {
-                //throw new Exception($"Metric not found {data.Name}"); - EZSTODO
+                //throw new Exception($"Metric not found {variableCode}"); - EZSTODO
                 return $"Variable not found {variableCode}";
             }
 
@@ -133,15 +150,17 @@ namespace AutoTextApp
 
             foreach (Match item in items)
             {
-                switch (item.Value.ToUpperInvariant())
+                var itemValue = item.Value.ToUpper();
+
+                switch (itemValue)
                 {
                     case "[DIR]":
                         result = result.Replace(item.Value, GetDirection(variableData.Direction, random));
                         break;
                     default:
-                        if (_macroVariables.TryGetValue(item.Value, out MacroVariable macro))
+                        if (_macroVariables.TryGetValue(itemValue, out MacroVariable macro))
                         {
-                            string macroValue = _macroVariables[item.Value]?.Value;
+                            string macroValue = _macroVariables[itemValue]?.Value;
 
                             if (!string.IsNullOrEmpty(macro.Type))
                             {
