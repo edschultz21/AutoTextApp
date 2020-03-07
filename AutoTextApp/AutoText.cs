@@ -11,7 +11,8 @@ namespace AutoTextApp
     {
         private AutoTextDefinition _definitions;
         private AutoTextData _data;
-        private Dictionary<string, string> _macroVariables; // Macro -> Value
+        // EZSTODO - use collection dictionary
+        private Dictionary<string, MacroVariable> _macroVariables; // Macro -> Value
         private Dictionary<string, int> _metricToId;
         private Dictionary<string, int> _variableToId;
 
@@ -21,17 +22,21 @@ namespace AutoTextApp
             _definitions = definitions;
             _data = data1;
 
-            _macroVariables = _definitions.MacroVariables?.ToDictionary(x => $"[{x.Name}]", y => string.IsNullOrEmpty(y?.Value) ? "" : y.Value) ?? new Dictionary<string, string>();
+            _macroVariables = _definitions.MacroVariables?.ToDictionary(x => $"[{x.Name}]", y => y) ?? new Dictionary<string, MacroVariable>();
             _metricToId = _data.Metrics.ToDictionary(x => x.Code, x => x.Id, StringComparer.OrdinalIgnoreCase);
             _variableToId = _data.Variables.ToDictionary(x => x.Code, x => x.Id, StringComparer.OrdinalIgnoreCase);
             SetDirection();
         }
 
-        // EZSTODO - short/long name
         // EZSTODO - what if missing?
         private string GetVariableName(string code)
         {
             return _definitions.Variables.FirstOrDefault(x => x.Code == code).ShortName;
+        }
+
+        private string GetVariableLongName(string code)
+        {
+            return _definitions.Variables.FirstOrDefault(x => x.Code == code).LongName;
         }
 
         // EZSTODO - need to handle case of no variable
@@ -124,34 +129,44 @@ namespace AutoTextApp
             {
                 switch (item.Value.ToUpperInvariant())
                 {
-                    case "[METRIC CODE]":
-                        result = result.Replace(item.Value, metric.Code);
-                        break;
-                    case "[METRIC NAME]":
-                        result = result.Replace(item.Value, metric.ShortName);
-                        break;
-                    case "[METRIC LONGNAME]":
-                        result = result.Replace(item.Value, metric.LongName);
-                        break;
-                    case "[ACTUAL VALUE]":
-                        result = result.Replace(item.Value, variableData.CurrentValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
-                        break;
-                    case "[PREVIOUS VALUE]":
-                        result = result.Replace(item.Value, variableData.PreviousValue.ToString()); // EZSTODO - need to figure out formatting (eg, 579000 -> $579,000)
-                        break;
-                    case "[ACTUAL NAME]":
-                        result = result.Replace(item.Value, GetVariableName(variableCode));
-                        break;
-                    case "[PCT]":
-                        result = result.Replace(item.Value, $"{variableData.PercentChange}%");
-                        break;
                     case "[DIR]":
                         result = result.Replace(item.Value, GetDirection(variableData.Direction, random));
                         break;
                     default:
-                        if (_macroVariables.ContainsKey(item.Value))
+                        if (_macroVariables.TryGetValue(item.Value, out MacroVariable macro))
                         {
-                            result = result.Replace(item.Value, _macroVariables[item.Value]);
+                            string macroValue = _macroVariables[item.Value]?.Value;
+
+                            if (!string.IsNullOrEmpty(macro.Type))
+                            {
+                                var reflectedType = Type.GetType($"{GetType().Namespace}.{macro.Type}");
+                                var macroVariable = _definitions.MacroVariables.FirstOrDefault(x => x.Name.ToUpper() == macro.Name.ToUpper());
+                                if (metric.GetType().Name == macro.Type)
+                                {
+                                    macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(metric).ToString();
+                                }
+                                else if (variableData.GetType().Name == macro.Type)
+                                {
+                                    macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variableData).ToString();
+                                }
+                                else if (!string.IsNullOrEmpty(variableCode))
+                                {
+                                    var variable = _definitions.Variables.FirstOrDefault(x => x.Code == variableCode);
+                                    if (variable.GetType().Name == macro.Type)
+                                    {
+                                        macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variable).ToString();
+                                    }
+                                }
+                            }
+                            
+                            if (macroValue != null)
+                            {
+                                if (!string.IsNullOrEmpty(macro.Format))
+                                {
+                                    macroValue = string.Format(macro.Format, macroValue);
+                                }
+                                result = result.Replace(item.Value, macroValue);
+                            }
                         }
                         break;
                 }

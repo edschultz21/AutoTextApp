@@ -88,7 +88,49 @@
   <MacroVariables>
     <MacroVariable>
       <Name>HOMES</Name>
+      <Type></Type>
       <Value> homes</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>METRIC CODE</Name>
+      <Type>MetricDefinition</Type>
+      <Value>Code</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>METRIC NAME</Name>
+      <Type>MetricDefinition</Type>
+      <Value>ShortName</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>METRIC LONGNAME</Name>
+      <Type>MetricDefinition</Type>
+      <Value>LongName</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>ACTUAL VALUE</Name>
+      <Type>VariableData</Type>
+      <Value>CurrentValue</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>PREVIOUS VALUE</Name>
+      <Type>VariableData</Type>
+      <Value>PreviousValue</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>PCT</Name>
+      <Type>VariableData</Type>
+      <Value>PercentChange</Value>
+      <Format>{0}%</Format>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>ACTUAL NAME</Name>
+      <Type>VariableDefinition</Type>
+      <Value>ShortName</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>ACTUAL LONGNAME</Name>
+      <Type>VariableDefinition</Type>
+      <Value>LongName</Value>
     </MacroVariable>
   </MacroVariables>
 </AutoTextDefinition>

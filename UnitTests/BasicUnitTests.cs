@@ -22,39 +22,50 @@ namespace UnitTests
             _seed = _random.Next(int.MaxValue);
         }
 
+        private AutoText GetAutoText(string definitionsFilename, string testDataFilename)
+        {
+            var definitions = Utils.ReadXmlData<AutoTextDefinition>(definitionsFilename);
+            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(testDataFilename), typeof(AutoTextData));
+            return new AutoText(definitions, data);
+        }
+
         [TestMethod]
-        public void TestMethod1()
+        public void SentenceFragment1()
         {
             // Closed Sales increased 1.1 percent for Detached Single-Family homes but decreased 1.0 percent for Attached Single-Family homes. 
-            var definitions = Utils.ReadXmlData<AutoTextDefinition>("TestDefinitions.xml");
-            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText("Test1_Data.json"), typeof(AutoTextData));
-            var autoText = new AutoText(definitions, data);
+            var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
             var result = autoText.GetSentenceFragment("NL", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
             Assert.AreEqual("New Listings were up 7.5% percent to 82.5 for Single Family homes", result);
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void SentenceFragment2()
         {
             // Closed Sales increased 1.1 percent for Detached Single-Family homes but decreased 1.0 percent for Attached Single-Family homes. 
-            var definitions = Utils.ReadXmlData<AutoTextDefinition>("TestDefinitions.xml");
-            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText("Test1_Data.json"), typeof(AutoTextData));
-            var autoText = new AutoText(definitions, data);
+            var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
             var result = autoText.GetSentenceFragment("CS", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
             Assert.AreEqual("Closed Sales consistent with 0.04% percent to 82.5 for Single Family homes", result);
         }
 
         [TestMethod]
-        public void TestMethod3()
+        public void SentenceFragment3()
         {
             // Closed Sales increased 1.1 percent for Detached Single-Family homes but decreased 1.0 percent for Attached Single-Family homes. 
-            var definitions = Utils.ReadXmlData<AutoTextDefinition>("TestDefinitions.xml");
-            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText("Test1_Data.json"), typeof(AutoTextData));
-            var autoText = new AutoText(definitions, data);
+            var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
             var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
+            Assert.AreEqual("Variable not found SF", result);
+        }
+
+        [TestMethod]
+        public void VariableLongName()
+        {
+            // Closed Sales increased 1.1 percent for Detached Single-Family homes but decreased 1.0 percent for Attached Single-Family homes. 
+            var autoText = GetAutoText("Definitions1.xml", "Data1.json");
+
+            var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL LONGNAME]", _seed);
             Assert.AreEqual("Variable not found SF", result);
         }
     }
