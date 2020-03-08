@@ -9,6 +9,7 @@ namespace AutoTextApp
 {
     public class AutoText
     {
+        private const string DIR_TEXT = "[DIR]";
         private AutoTextDefinition _definitions;
         private AutoTextData _data;
         private Dictionary<string, MacroVariable> _macroVariables; // Macro -> Value (consider using KeyedCollection)
@@ -128,6 +129,31 @@ namespace AutoTextApp
             }
         }
 
+        // If we have a direction that is flat, we need to remove some descriptive text that
+        // would be there otherwise. Currently we assume that we have a "for" before the variable
+        // so that we need to know how much to remove. If this does not work out, we need to be 
+        // able to bracket the text that needs to be removed.
+        // For example, this:
+        // [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME]
+        // needs to change to this:
+        // [DIR] for [ACTUAL NAME]
+        private string FixDirectionText(string text)
+        {
+            var dirIndex = text.IndexOf(DIR_TEXT, StringComparison.InvariantCultureIgnoreCase);
+            // Sanity check
+            if (dirIndex != -1)
+            {
+                var forIndex = text.IndexOf(" for", dirIndex + 1, StringComparison.InvariantCultureIgnoreCase);
+                if (forIndex != -1)
+                {
+                    var temp = text.Substring(0, dirIndex + DIR_TEXT.Length) + text.Substring(forIndex);
+                    return temp;
+                }
+            }
+
+            return text;
+        }
+
         // EZSTODO - how to handle complicated fragments
         // EZSTODO - figure out what we should pass here
         // EZSTODO - private?
@@ -160,7 +186,11 @@ namespace AutoTextApp
 
                 switch (itemValue)
                 {
-                    case "[DIR]":
+                    case DIR_TEXT:
+                        if (variableData.Direction == DirectionType.FLAT)
+                        {
+                            result = FixDirectionText(result);
+                        }
                         result = result.Replace(item.Value, GetDirection(variableData.Direction, random));
                         break;
                     default:

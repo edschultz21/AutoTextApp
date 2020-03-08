@@ -43,9 +43,8 @@ namespace UnitTests
         {
             var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
-            // EZSTODO - fix flat
             var result = autoText.GetSentenceFragment("CS", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
-            Assert.AreEqual("Closed Sales consistent with 0.04% percent to 82.5 for Single Family homes", result);
+            Assert.AreEqual("Closed Sales were about the same for Single Family homes", result);
         }
 
         [TestMethod]
@@ -81,7 +80,7 @@ namespace UnitTests
             var autoText = GetAutoText("DefinitionsMixedCasing.xml", "DataMixedCasing.json");
 
             var result = autoText.GetSentenceFragment("CS", "sf", "[METRIC name] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
-            Assert.AreEqual("Closed Sales consistent with 0.04% percent to 82.5 for Single Family homes", result);
+            Assert.AreEqual("Closed Sales were about the same for Single Family homes", result);
         }
 
         [TestMethod]
@@ -108,7 +107,7 @@ namespace UnitTests
             var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
             var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC CODE], [METRIC NAME], [METRIC LONGNAME], [ACTUAL VALUE], [PREVIOUS VALUE], [PCT], [DIR], [ACTUAL NAME], [ACTUAL LONGNAME], [HOMES], [MATCHES NONE]", _seed);
-            Assert.AreEqual("MSP, Median Sales Price, MSP LongName, 82.5, 92.5, 0.04%, consistent with, Single Family, Single Family homes,  homes, [MATCHES NONE]", result);
+            Assert.AreEqual("MSP, Median Sales Price, MSP LongName, 82.5, 92.5, 0.04%, were about the same, Single Family, Single Family homes,  homes, [MATCHES NONE]", result);
         }
     }
 }

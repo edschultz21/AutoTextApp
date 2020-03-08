@@ -70,8 +70,7 @@ http://wiki.10kresearch.com:8090/pages/viewpage.action?spaceKey=IN&title=Autotex
     
     One paragraph:
     The overall Median Sales Price was up 1.3 percent to $299,900. 
-    The property type with the largest price gain was the Single Family Homes segment, 
-    where prices increased 1.3 percent to $405,000. 
+    The property type with the largest price gain was the Single Family Homes segment, where prices increased 1.3 percent to $405,000. 
     The price range that tended to sell the quickest was the Less than $300,000 range at 87 days; 
     the price range that tended to sell the slowest was the $1,000,000 to $2,000,000 range at 151 days.
 
