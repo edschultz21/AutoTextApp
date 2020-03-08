@@ -30,34 +30,44 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SentenceFragment1()
+        public void FragmentOneValue1()
         {
             var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
-            var result = autoText.GetSentenceFragment("NL", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
-            Assert.AreEqual("New Listings were up 7.5% percent to 82.5 for Single Family homes", result);
+            var result = autoText.GetSentenceFragment("NL", "SF", "[METRIC NAME] [DIR] [PCT] to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
+            Assert.AreEqual("New Listings were up 7.5% to 82.5 for Single Family homes", result);
         }
 
         [TestMethod]
-        public void SentenceFragment2()
+        public void FragmentOneValue2()
         {
             var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
+            // EZSTODO - fix flat
             var result = autoText.GetSentenceFragment("CS", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
             Assert.AreEqual("Closed Sales consistent with 0.04% percent to 82.5 for Single Family homes", result);
         }
 
         [TestMethod]
-        public void SentenceFragment3()
+        public void FragmentOneValue3()
         {
             var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
-            var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
-            Assert.AreEqual("Variable not found SF", result);
+            var result = autoText.GetSentenceFragment("MSP", "DT", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", _seed);
+            Assert.AreEqual("Variable not found DT", result);
         }
 
         [TestMethod]
-        public void SentenceFragmentCasing1()
+        public void FragmentTwoValues1()
+        {
+            var autoText = GetAutoText("Definitions1.xml", "Data1.json");
+
+            var result = autoText.GetSentenceFragment("MSP", "TC", "[METRIC NAME] [DIR] [PCT] to [ACTUAL VALUE] for [ACTUAL LONGNAME]", _seed);
+            Assert.AreEqual("Median Sales Price were down 13.9% to $209,000 for Townhouse/Condo homes", result);
+        }
+
+        [TestMethod]
+        public void FragmentCasing1()
         {
             var autoText = GetAutoText("DefinitionsMixedCasing.xml", "DataMixedCasing.json");
 
@@ -66,7 +76,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SentenceFragmentCasing2()
+        public void FragmentCasing2()
         {
             var autoText = GetAutoText("DefinitionsMixedCasing.xml", "DataMixedCasing.json");
 
@@ -75,7 +85,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SentenceFragmentCasing3()
+        public void FragmentCasing3()
         {
             var autoText = GetAutoText("DefinitionsMixedCasing.xml", "DataMixedCasing.json");
 
@@ -86,11 +96,19 @@ namespace UnitTests
         [TestMethod]
         public void VariableLongName()
         {
-            // Closed Sales increased 1.1 percent for Detached Single-Family homes but decreased 1.0 percent for Attached Single-Family homes. 
             var autoText = GetAutoText("Definitions1.xml", "Data1.json");
 
-            var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL LONGNAME]", _seed);
-            Assert.AreEqual("Variable not found SF", result);
+            var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC NAME] has a long name of '[ACTUAL LONGNAME]'", _seed);
+            Assert.AreEqual("Median Sales Price has a long name of 'Single Family homes'", result);
+        }
+
+        [TestMethod]
+        public void AllVariables()
+        {
+            var autoText = GetAutoText("Definitions1.xml", "Data1.json");
+
+            var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC CODE], [METRIC NAME], [METRIC LONGNAME], [ACTUAL VALUE], [PREVIOUS VALUE], [PCT], [DIR], [ACTUAL NAME], [ACTUAL LONGNAME], [HOMES], [MATCHES NONE]", _seed);
+            Assert.AreEqual("MSP, Median Sales Price, MSP LongName, 82.5, 92.5, 0.04%, consistent with, Single Family, Single Family homes,  homes, [MATCHES NONE]", result);
         }
     }
 }

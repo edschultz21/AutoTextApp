@@ -87,6 +87,8 @@ namespace AutoTextApp
 
         public int ConsecutivePeriods { get; set; }
 
+        public string DataFormat { get; set; }
+
         [JsonIgnore]
         public DirectionType Direction { get; set; }
 

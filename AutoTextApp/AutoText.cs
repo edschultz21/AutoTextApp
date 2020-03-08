@@ -36,8 +36,9 @@ namespace AutoTextApp
             Array.ForEach(_definitions.MacroVariables, x => x.Name = x.Name.ToUpper());
 
             // Data
-            Array.ForEach(_data.Blocks, 
-                x => Array.ForEach(x.BlockItems, y => {
+            Array.ForEach(_data.Blocks,
+                x => Array.ForEach(x.BlockItems, y =>
+                {
                     y.MetricCode = y.MetricCode.ToUpper();
                     y.Variables = Array.ConvertAll(y.Variables, z => z.ToUpper());
                 }));
@@ -85,6 +86,11 @@ namespace AutoTextApp
         private MacroVariable GetMacroVariable(string macroName)
         {
             return _definitions.MacroVariables.FirstOrDefault(x => x.Name == macroName);
+        }
+
+        private bool ContainsValue(string text)
+        {
+            return text.EndsWith("Value");
         }
 
         // EZSTODO - need to handle case of no variable
@@ -175,6 +181,10 @@ namespace AutoTextApp
                                     else if (variableData.GetType().Name == macro.Type)
                                     {
                                         macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variableData).ToString();
+                                        if (!string.IsNullOrEmpty(variableData.DataFormat) && ContainsValue(macroVariable.Value))
+                                        {
+                                            macroValue = string.Format(variableData.DataFormat, float.Parse(macroValue));
+                                        }
                                     }
                                     else if (!string.IsNullOrEmpty(variableCode))
                                     {
