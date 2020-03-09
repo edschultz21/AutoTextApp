@@ -74,6 +74,12 @@ http://wiki.10kresearch.com:8090/pages/viewpage.action?spaceKey=IN&title=Autotex
     The price range that tended to sell the quickest was the Less than $300,000 range at 87 days; 
     the price range that tended to sell the slowest was the $1,000,000 to $2,000,000 range at 151 days.
 
+    MetricFragment - (eg, New Listings, New Listings and Closed Sales)
+    MetricLocationFragment - (eg, "", "in Franklin, Hamilton and Saint Lawrence Counties")
+    ChangeFragment - (eg, increased 1.1%, stayed the same, decreased 13.9 percent to $209,000)
+    VariableFragment - (eg, for Single Family, for Single Family and Townhouse/Condos)
+
+
 ================================================================================================================
     [PRE] [METRIC NAME] [DIRECTION] [PCT INC/DEC] percent to [ACTUAL VALUE] [CONSECUTIVE TEXT]
 
@@ -162,4 +168,63 @@ http://wiki.10kresearch.com:8090/pages/viewpage.action?spaceKey=IN&title=Autotex
 ​    or if there is 3rd variable, then it would sound better if we talk about all metrics for each variable first.. and then move onto the next one
 ​    which ends up being 3 paragraphs
 
+More comments from Andrei:
+    yeah, we'd have both raw and display values​
+    so you would use raw for that, but display values for actual display
+​
+    i think you should try to abstract it a bit more rather than using functions right from the start
+​
+    say you have a Iphrase  as the base type​
+    then MetricFragment could be class responsible for generating `[DIR] [PCT] percent to [ACTUAL VALUE]`​
+    and everything that it needs to do that will be encapsulated there​
+    this would allow you to write unit tests for each individual class rather than final result
+​
+    then you have IFragmentJoiner base type that joins multiple Fragments together​
+    TemplateFragmentJoiner takes in template, and Fragment objects (MetricFragment/VariableFragment) and creates sentencefragment
+​
+    you could also avoid dealing with things as strings, if you just keep fragments in list
+    and then implement toSTring at the end
+
+    this way instead of ```
+    private string FixDirectionText(string text)
+        {
+            var dirIndex = text.IndexOf(DIR_TEXT, StringComparison.InvariantCultureIgnoreCase);
+            // Sanity check
+            if (dirIndex != -1)
+            {
+                var forIndex = text.IndexOf(" for", dirIndex + 1, StringComparison.InvariantCultureIgnoreCase);
+                if (forIndex != -1)
+                {
+                    var temp = text.Substring(0, dirIndex + DIR_TEXT.Length) + text.Substring(forIndex);
+                    return temp;
+                }
+            }
+
  
+
+            return text;
+        }
+
+    
+    you could just create a property "ShowShortForm" or something​
+    which will skip "[PCT] percent to [ACTUAL VALUE]"
+​
+    this is very similar to where we were wtih mdxquery object structures when we started with infoserv
+​
+    i think we need to keep things as objects all the way until the end and only generate string all the way at the end
+​
+    say you want a sentence with 3 sentence fragments.. you can implement logic in joiner to do , follwed by and​
+    and if there are 2, then just "and" etc​
+    you could also access previous sentence to add stuff  like "however" etc
+
+
+    I guess start off with IFragment <- MetricFragment/VariableFragment
+​    then ISentenceFragment <- TemplateFragment / StandardFragment
+    and only generate strings when ToString() is called
+    even for determining direction, i wouldnt put it into metric fragment
+
+    you could have incoming data->parse into object->process object to determine direction->pass direction directly into metric fragment. 
+    this would allow you to create tests with arbitrary direction without worrying about the data
+
+    and for direction words, that should probably come from Provider where you pass in direction and maybe magnitude and it gives you word to use.. 
+
