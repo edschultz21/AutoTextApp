@@ -1,0 +1,135 @@
+﻿<AutoTextDefinition>
+  <Metrics>
+    <Metric>
+      <Code>NL</Code>
+      <ShortName>New Listings</ShortName>
+      <LongName>New Listings LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>CS</Code>
+      <ShortName>Closed Sales</ShortName>
+      <LongName>Closed Sales LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>PS</Code>
+      <ShortName>Pending Sales</ShortName>
+      <LongName>Pending Sales LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>DOM</Code>
+      <ShortName>DOM</ShortName>
+      <LongName>Days on Market</LongName>
+      <IsPlural>false</IsPlural>
+      <IsIncreasePositive>false</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>INV</Code>
+      <ShortName>Inventory</ShortName>
+      <LongName>Inventory LongName</LongName>
+      <IsPlural>false</IsPlural>
+      <IsIncreasePositive>false</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>MSP</Code>
+      <ShortName>Median Sales Price</ShortName>
+      <LongName>MSP LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>true</IsIncreasePositive>
+    </Metric>
+    <Metric>
+      <Code>MSI</Code>
+      <ShortName>Months Supply Inventory</ShortName>
+      <LongName>MSI LongName</LongName>
+      <IsPlural>true</IsPlural>
+      <IsIncreasePositive>false</IsIncreasePositive>
+    </Metric>
+  </Metrics>
+  <Variables>
+    <Variable>
+      <Code>SF</Code>
+      <ShortName>Single Family</ShortName>
+      <LongName>Single Family homes</LongName>
+    </Variable>
+    <Variable>
+      <Code>TC</Code>
+      <ShortName>Townhouse/Condo</ShortName>
+      <LongName>Townhouse/Condo homes</LongName>
+    </Variable>
+  </Variables>
+  <Synonyms>
+    <Positive>
+      <Word>increased</Word>
+      <Word>went up</Word>
+      <Word>were up</Word>
+      <Word>improved</Word>
+      <Word>rose</Word>
+    </Positive>
+    <Negative>
+      <Word>decreased</Word>
+      <Word>fell</Word>
+      <Word>were down</Word>
+      <Word>softened</Word>
+      <Word>dropped</Word>
+    </Negative>
+    <Flat>
+      <Word>remained flat</Word>
+      <Word>were relatively unchanged</Word>
+      <Word>were about the same</Word>
+      <Word>were fairly even</Word>
+    </Flat>
+  </Synonyms>
+  <MacroVariables>
+    <MacroVariable>
+      <Name>HOMES</Name>
+      <Type></Type>
+      <Value> homes</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>METRIC CODE</Name>
+      <Type>MetricDefinition</Type>
+      <Value>Code</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>METRIC NAME</Name>
+      <Type>MetricDefinition</Type>
+      <Value>ShortName</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>METRIC LONGNAME</Name>
+      <Type>MetricDefinition</Type>
+      <Value>LongName</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>ACTUAL VALUE</Name>
+      <Type>VariableData</Type>
+      <Value>CurrentValue</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>PREVIOUS VALUE</Name>
+      <Type>VariableData</Type>
+      <Value>PreviousValue</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>PCT</Name>
+      <Type>VariableData</Type>
+      <Value>PercentChange</Value>
+      <Format>{0}%</Format>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>ACTUAL NAME</Name>
+      <Type>VariableDefinition</Type>
+      <Value>ShortName</Value>
+    </MacroVariable>
+    <MacroVariable>
+      <Name>ACTUAL LONGNAME</Name>
+      <Type>VariableDefinition</Type>
+      <Value>LongName</Value>
+    </MacroVariable>
+  </MacroVariables>
+</AutoTextDefinition>

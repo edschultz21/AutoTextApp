@@ -1,0 +1,22 @@
+﻿http://reportrunner.showingtime.net:7777/report/CRMLS/MMI/2020-01/CRMLS_MMI
+New Listings decreased 14.2 percent for Single Family homes and 7.5 percent for Townhouse/Condo homes. Pending Sales decreased 8.5 percent for Single Family homes and 3.4 percent for Townhouse/Condo homes. Inventory decreased 36.5 percent for Single Family homes and 35.1 percent for Townhouse/Condo homes. 
+Median Sales Price increased 9.1 percent to $578,000 for Single Family homes and 6.7 percent to $475,000 for Townhouse/Condo homes. Days on Market decreased 3.8 percent for Single Family homes but remained flat for Townhouse/Condo homes. Months Supply of Inventory decreased 38.9 percent for Single Family homes and 37.5 percent for Townhouse/Condo homes. 
+
+http://reportrunner.showingtime.net:7777/report/CAR/MMI/2018-02/CAR_MMI
+New Listings decreased 11.4 percent for Detached Single-Family homes and 0.8 percent for Attached Single-Family homes. Closed Sales increased 1.1 percent for Detached Single-Family homes but decreased 1.0 percent for Attached Single-Family homes. Months Supply of Inventory decreased 17.8 percent for Detached Single-Family homes but increased 3.6 percent for Attached Single-Family homes. 
+Average Sales Price increased 5.3 percent for Detached Single-Family homes and 7.5 percent for Attached Single-Family homes. Median Sales Price increased 13.9 percent to $209,000 for Detached Single-Family homes and 14.2 percent to $340,250 for Attached Single-Family homes. Inventory decreased 16.1 percent for Detached Single-Family homes but increased 2.1 percent for Attached Single-Family homes. 
+http://reportrunner.showingtime.net:7777/report/Gallatin/MMI/2019-09/Gallatin_MMI
+New Listings decreased 1.2 percent for Single Family homes and 10.2 percent for Townhouse/Condo homes. Pending Sales increased 13.9 percent for Single Family homes and 41.7 percent for Townhouse/Condo homes. Inventory decreased 24.8 percent for Single Family homes and 43.5 percent for Townhouse/Condo homes. 
+Median Sales Price increased 8.7 percent for Single Family homes and 7.4 percent for Townhouse/Condo homes. Days on Market decreased 18.3 percent for Single Family homes and 13.4 percent for Townhouse/Condo homes. Months Supply of Inventory decreased 25.0 percent for Single Family homes and 60.0 percent for Townhouse/Condo homes. 
+http://reportrunner.showingtime.net:7777/report/MBR/MMI/2020-01/MBR_MMI
+New Listings decreased 2.5 percent for Residential homes and 33.3 percent for Condo homes. Pending Sales increased 65.0 percent for Residential homes and 100.0 percent for Condo homes. Inventory decreased 25.9 percent for Residential homes and 23.1 percent for Condo homes. 
+Median Sales Price increased 12.8 percent to $150,000 for Residential homes and 48.0 percent to $207,250 for Condo homes. Days on Market increased 3.2 percent for Residential homes and 485.1 percent for Condo homes. Months Supply of Inventory decreased 29.2 percent for Residential homes and 24.1 percent for Condo homes. 
+http://reportrunner.showingtime.net:7777/report/NYSAR_SLCBR/MMI/2018-10/New-York_Albany_NYSAR_SLCBR_MMI
+New Listings in Franklin, Hamilton and Saint Lawrence Counties decreased 14.9 percent to 80. Pending Sales decreased 3.4 percent to 57. Inventory decreased 19.7 percent to 763. 
+Median Sales Price increased 7.8 percent to $91,050 to $91,050. Days on Market decreased 26.3 percent to 129. Months Supply of Inventory decreased 20.8 percent to 12.2. 
+http://reportrunner.showingtime.net:7777/report/RealTracs_MTAR/MMI/2019-08/REALTRACS_MTAR_MMI
+New Listings remained flat for Single Family but decreased 34.4 percent for Townhouse/Condo properties. Pending Sales increased 16.3 percent for Single Family but decreased 10.3 percent for Townhouse/Condo. Inventory increased 14.2 percent for Single Family but decreased 23.3 percent for Townhouse/Condo. 
+Median Sales Price increased 8.0 percent to $269,999 for Single Family but decreased 0.9 percent to $193,282 for Townhouse/Condo. Days on Market remained flat for Single Family but increased 20.0 percent for Townhouse/Condo properties. Months Supply of Inventory increased 15.6 percent for Single Family but decreased 25.8 percent for Townhouse/Condo.
+
+
+

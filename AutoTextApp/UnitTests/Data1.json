@@ -1,0 +1,123 @@
+{
+    "Metrics": [
+        {
+            "Id": 1,
+            "Code": "NL"
+        },
+        {
+            "Id": 2,
+            "Code": "CS"
+        },
+        {
+            "Id": 3,
+            "Code": "MSP"
+        }
+    ],
+    "Variables": [
+        {
+            "Id": 101,
+            "Code": "SF"
+        },
+        {
+            "Id": 102,
+            "Code": "TC"
+        }
+    ],
+    "Blocks": [
+        {
+            "BlockType": "Sentence",
+            "BlockItems": [
+                {
+                    "MetricCode": "MSP",
+                    "Variables": [ "SF", "TC" ],
+                    "Type": "Standard"
+                },
+                {
+                    "MetricCode": "NL",
+                    "Variables": [ "SF", "TC" ],
+                    "Type": "Standard"
+                },
+                {
+                    "MetricCode": "CS",
+                    "Variables": [ "SF", "TC" ],
+                    "Type": "Standard"
+                }
+            ]
+        },
+        {
+            "BlockType": "Auto",
+            "BlockItems": [
+                {
+                    "MetricCode": "NL",
+                    "Variables": [ "SF", "TC" ],
+                    "Type": "Standard"
+                },
+                {
+                    "MetricCode": "CS",
+                    "Variables": [ "SF", "TC" ],
+                    "Type": "Standard"
+                }
+            ]
+        }
+    ],
+    "MetricData": [
+        {
+            "Id": 1,
+            "Variables": [
+                {
+                    "Id": 101,
+                    "CurrentValue": 82.5,
+                    "PreviousValue": 92.5,
+                    "PercentChange": 7.5,
+                    "ConsecutivePeriods": 1
+                },
+                {
+                    "Id": 102,
+                    "CurrentValue": 92.5,
+                    "PreviousValue": 82.5,
+                    "PercentChange": 7.5,
+                    "ConsecutivePeriods": 1
+                }
+            ]
+        },
+        {
+            "Id": 2,
+            "Variables": [
+                {
+                    "Id": 101,
+                    "CurrentValue": 82.5,
+                    "PreviousValue": 92.5,
+                    "PercentChange": 0.04,
+                    "ConsecutivePeriods": 1
+                },
+                {
+                    "Id": 102,
+                    "CurrentValue": 92.5,
+                    "PreviousValue": 82.5,
+                    "PercentChange": 0.04,
+                    "ConsecutivePeriods": 1
+                }
+            ]
+        },
+        {
+            "Id": 3,
+            "Variables": [
+                {
+                    "Id": 101,
+                    "CurrentValue": 82.5,
+                    "PreviousValue": 92.5,
+                    "PercentChange": 0.04,
+                    "ConsecutivePeriods": 1
+                },
+                {
+                    "Id": 102,
+                    "CurrentValue": 209000,
+                    "PreviousValue": 200000,
+                    "PercentChange": 13.9,
+                    "ConsecutivePeriods": 1,
+                    "DataFormat": "${0:n0}"
+                }
+            ]
+        }
+    ]
+}
