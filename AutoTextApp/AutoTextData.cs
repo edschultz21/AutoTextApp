@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace AutoTextApp

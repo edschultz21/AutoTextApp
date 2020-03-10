@@ -1,70 +1,65 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AutoTextApp
 {
-    public class MetricDefinition
-    {
-        public string Code { get; set; }
-
-        public string ShortName { get; set; }
-
-        public string LongName { get; set; }
-
-        public bool IsPlural { get; set; }
-
-        public bool IsIncreasePostive { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Code}: {ShortName}, {LongName}, IsPlural:{IsPlural}, IsIncreasePositive:{IsIncreasePostive}";
-        }
-    }
-
-    public class VariableDefinition
-    {
-        public string Code { get; set; }
-
-        public string ShortName { get; set; }
-
-        public string LongName { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Code}: {ShortName}, {LongName}";
-        }
-    }
-
-    public class Synonyms
-    {
-        [XmlArrayItem(typeof(string), ElementName = "Word")]
-        public string[] Positive { get; set; }
-
-        [XmlArrayItem(typeof(string), ElementName = "Word")]
-        public string[] Negative { get; set; }
-
-        [XmlArrayItem(typeof(string), ElementName = "Word")]
-        public string[] Flat { get; set; }
-    }
-
-    public class MacroVariable
-    {
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public string Value { get; set; }
-        public string Format { get; set; }
-    }
-
     public class AutoTextDefinition
     {
-        [XmlArrayItem(typeof(MetricDefinition), ElementName = "Metric")]
-        public MetricDefinition[] Metrics { get; set; }
+        private AutoTextDefinitions _definitions;
+        private MacroVariableKeyedDictionary _macroVariables; // Macro -> Value
 
-        [XmlArrayItem(typeof(VariableDefinition), ElementName = "Variable")]
-        public VariableDefinition[] Variables { get; set; }
+        public AutoTextDefinition(AutoTextDefinitions definitions)
+        {
+            _definitions = definitions;
 
-        public Synonyms Synonyms { get; set; }
+            // Setup macro variables
+            _macroVariables = new MacroVariableKeyedDictionary();
+            if (_definitions.MacroVariables != null)
+            {
+                Array.ForEach(_definitions.MacroVariables, x => _macroVariables.Add(x));
+            }
 
-        public MacroVariable[] MacroVariables { get; set; }
+            // Normalize casing
+            Array.ForEach(_definitions.Metrics, x => x.Code = x.Code.ToUpper());
+            Array.ForEach(_definitions.Variables, x => x.Code = x.Code.ToUpper());
+            Array.ForEach(_definitions.MacroVariables, x => x.Name = x.Name.ToUpper());
+        }
 
+        public MetricDefinition GetMetricDefinition(string code)
+        {
+            return _definitions.Metrics.FirstOrDefault(x => x.Code == code);
+        }
+
+        public VariableDefinition GetVariableDefinition(string variable)
+        {
+            return _definitions.Variables.FirstOrDefault(x => x.Code == variable);
+        }
+
+        public MacroVariable GetMacroVariable(string macroName)
+        {
+            return _definitions.MacroVariables.FirstOrDefault(x => x.Name == macroName.TrimStart('[').TrimEnd(']'));
+        }
+
+        public string GetDirection(DirectionType direction, Random random)
+        {
+            if (direction == DirectionType.FLAT)
+            {
+                var index = random.Next(_definitions.Synonyms.Flat.Length);
+                return _definitions.Synonyms.Flat[index];
+            }
+            else if (direction == DirectionType.POSITIVE)
+            {
+                var index = random.Next(_definitions.Synonyms.Positive.Length);
+                return _definitions.Synonyms.Positive[index];
+            }
+            else // direction == DirectionType.NEGATIVE
+            {
+                var index = random.Next(_definitions.Synonyms.Negative.Length);
+                return _definitions.Synonyms.Negative[index];
+            }
+        }
     }
 }

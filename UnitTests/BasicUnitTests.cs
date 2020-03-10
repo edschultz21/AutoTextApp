@@ -24,7 +24,7 @@ namespace UnitTests
 
         private AutoText GetAutoText(string definitionsFilename, string testDataFilename)
         {
-            var definitions = Utils.ReadXmlData<AutoTextDefinition>(definitionsFilename);
+            var definitions = Utils.ReadXmlData<AutoTextDefinitions>(definitionsFilename);
             var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(testDataFilename), typeof(AutoTextData));
             return new AutoText(definitions, data);
         }

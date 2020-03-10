@@ -10,20 +10,18 @@ namespace AutoTextApp
     public class AutoText
     {
         private const string DIR_TEXT = "[DIR]";
-        private AutoTextDefinition _definitions;
+        private readonly AutoTextDefinition _definition;
         private AutoTextData _data;
-        private Dictionary<string, MacroVariable> _macroVariables; // Macro -> Value (consider using KeyedCollection)
         private Dictionary<string, int> _metricToId;
         private Dictionary<string, int> _variableToId;
 
-        public AutoText(AutoTextDefinition definitions, AutoTextData data)
+        public AutoText(AutoTextDefinitions definitions, AutoTextData data)
         {
-            _definitions = definitions;
+            _definition = new AutoTextDefinition(definitions);
             _data = data;
 
             NormalizeCasing();
 
-            _macroVariables = _definitions.MacroVariables?.ToDictionary(x => $"[{x.Name}]", y => y) ?? new Dictionary<string, MacroVariable>();
             _metricToId = _data.Metrics.ToDictionary(x => x.Code, x => x.Id, StringComparer.OrdinalIgnoreCase);
             _variableToId = _data.Variables.ToDictionary(x => x.Code, x => x.Id, StringComparer.OrdinalIgnoreCase);
             SetDirection();
@@ -31,11 +29,6 @@ namespace AutoTextApp
 
         private void NormalizeCasing()
         {
-            // Definitions
-            Array.ForEach(_definitions.Metrics, x => x.Code = x.Code.ToUpper());
-            Array.ForEach(_definitions.Variables, x => x.Code = x.Code.ToUpper());
-            Array.ForEach(_definitions.MacroVariables, x => x.Name = x.Name.ToUpper());
-
             // Data
             Array.ForEach(_data.Blocks,
                 x => Array.ForEach(x.BlockItems, y =>
@@ -61,7 +54,7 @@ namespace AutoTextApp
                         var metricIdCode = _data.Metrics.FirstOrDefault(x => x.Id == metricData.Id);
                         if (metricIdCode != null)
                         {
-                            var metric = GetMetricDefinition(metricIdCode.Code);
+                            var metric =_definition.GetMetricDefinition(metricIdCode.Code);
                             if (metric != null)
                             {
                                 isPositive = metric.IsIncreasePostive ? isPositive : !isPositive;
@@ -72,21 +65,6 @@ namespace AutoTextApp
                     }
                 }
             }
-        }
-
-        private MetricDefinition GetMetricDefinition(string code)
-        {
-            return _definitions.Metrics.FirstOrDefault(x => x.Code == code);
-        }
-
-        private VariableDefinition GetVariableDefinition(string variable)
-        {
-            return _definitions.Variables.FirstOrDefault(x => x.Code == variable);
-        }
-
-        private MacroVariable GetMacroVariable(string macroName)
-        {
-            return _definitions.MacroVariables.FirstOrDefault(x => x.Name == macroName);
         }
 
         private bool ContainsValue(string text)
@@ -108,25 +86,6 @@ namespace AutoTextApp
             }
 
             return null;
-        }
-
-        private string GetDirection(DirectionType direction, Random random)
-        {
-            if (direction == DirectionType.FLAT)
-            {
-                var index = random.Next(_definitions.Synonyms.Flat.Length);
-                return _definitions.Synonyms.Flat[index];
-            }
-            else if (direction == DirectionType.POSITIVE)
-            {
-                var index = random.Next(_definitions.Synonyms.Positive.Length);
-                return _definitions.Synonyms.Positive[index];
-            }
-            else // direction == DirectionType.NEGATIVE
-            {
-                var index = random.Next(_definitions.Synonyms.Negative.Length);
-                return _definitions.Synonyms.Negative[index];
-            }
         }
 
         // If we have a direction that is flat, we need to remove some descriptive text that
@@ -163,7 +122,7 @@ namespace AutoTextApp
             variableCode = variableCode.ToUpper();
 
             var random = new Random(seed);
-            var metric = GetMetricDefinition(metricCode);
+            var metric = _definition.GetMetricDefinition(metricCode);
             if (metric == null)
             {
                 //throw new Exception($"Metric not found {metricCode}"); - EZSTODO
@@ -191,24 +150,25 @@ namespace AutoTextApp
                         {
                             result = FixDirectionText(result);
                         }
-                        result = result.Replace(item.Value, GetDirection(variableData.Direction, random));
+                        result = result.Replace(item.Value, _definition.GetDirection(variableData.Direction, random));
                         break;
                     default:
-                        if (_macroVariables.TryGetValue(itemValue, out MacroVariable macro))
+                        var macroVariable = _definition.GetMacroVariable(itemValue);
+                        if (macroVariable != null)
                         {
-                            string macroValue = _macroVariables[itemValue]?.Value;
+                            string macroValue = macroVariable.Value;
 
-                            if (!string.IsNullOrEmpty(macro.Type))
+                            if (!string.IsNullOrEmpty(macroVariable.Type))
                             {
-                                var reflectedType = Type.GetType($"{GetType().Namespace}.{macro.Type}");
-                                var macroVariable = GetMacroVariable(macro.Name);
-                                if (macroVariable != null)
+                                var reflectedType = Type.GetType($"{GetType().Namespace}.{macroVariable.Type}");
+                                //var macroVariable = _definition.GetMacroVariable(macro.Name);
+                                //if (macroVariable != null)
                                 {
-                                    if (metric.GetType().Name == macro.Type)
+                                    if (metric.GetType().Name == macroVariable.Type)
                                     {
                                         macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(metric).ToString();
                                     }
-                                    else if (variableData.GetType().Name == macro.Type)
+                                    else if (variableData.GetType().Name == macroVariable.Type)
                                     {
                                         macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variableData).ToString();
                                         if (!string.IsNullOrEmpty(variableData.DataFormat) && ContainsValue(macroVariable.Value))
@@ -218,8 +178,8 @@ namespace AutoTextApp
                                     }
                                     else if (!string.IsNullOrEmpty(variableCode))
                                     {
-                                        var variable = GetVariableDefinition(variableCode);
-                                        if (variable?.GetType().Name == macro.Type)
+                                        var variable = _definition.GetVariableDefinition(variableCode);
+                                        if (variable?.GetType().Name == macroVariable.Type)
                                         {
                                             macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variable).ToString();
                                         }
@@ -229,9 +189,9 @@ namespace AutoTextApp
 
                             if (macroValue != null)
                             {
-                                if (!string.IsNullOrEmpty(macro.Format))
+                                if (!string.IsNullOrEmpty(macroVariable.Format))
                                 {
-                                    macroValue = string.Format(macro.Format, macroValue);
+                                    macroValue = string.Format(macroVariable.Format, macroValue);
                                 }
                                 result = result.Replace(item.Value, macroValue);
                             }

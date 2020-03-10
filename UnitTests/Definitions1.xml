@@ -1,4 +1,4 @@
-﻿<AutoTextDefinition>
+﻿<AutoTextDefinitions>
   <Metrics>
     <Metric>
       <Code>NL</Code>
@@ -132,4 +132,4 @@
       <Value>LongName</Value>
     </MacroVariable>
   </MacroVariables>
-</AutoTextDefinition>
+</AutoTextDefinitions>
