@@ -11,7 +11,9 @@ namespace AutoTextApp
     {
         private const string DIR_TEXT = "[DIR]";
         private readonly AutoTextDefinitionHandler _definition;
-        private AutoTextDataHandler _data;
+        private readonly AutoTextDataHandler _data;
+
+        public AutoTextHandlers Handlers { get { return new AutoTextHandlers(_definition, _data); } }
 
         public AutoText(AutoTextDefinitions definitions, AutoTextData data)
         {
