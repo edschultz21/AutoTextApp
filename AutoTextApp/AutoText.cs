@@ -10,82 +10,18 @@ namespace AutoTextApp
     public class AutoText
     {
         private const string DIR_TEXT = "[DIR]";
-        private readonly AutoTextDefinition _definition;
-        private AutoTextData _data;
-        private Dictionary<string, int> _metricToId;
-        private Dictionary<string, int> _variableToId;
+        private readonly AutoTextDefinitionHandler _definition;
+        private AutoTextDataHandler _data;
 
         public AutoText(AutoTextDefinitions definitions, AutoTextData data)
         {
-            _definition = new AutoTextDefinition(definitions);
-            _data = data;
-
-            NormalizeCasing();
-
-            _metricToId = _data.Metrics.ToDictionary(x => x.Code, x => x.Id, StringComparer.OrdinalIgnoreCase);
-            _variableToId = _data.Variables.ToDictionary(x => x.Code, x => x.Id, StringComparer.OrdinalIgnoreCase);
-            SetDirection();
-        }
-
-        private void NormalizeCasing()
-        {
-            // Data
-            Array.ForEach(_data.Blocks,
-                x => Array.ForEach(x.BlockItems, y =>
-                {
-                    y.MetricCode = y.MetricCode.ToUpper();
-                    y.Variables = Array.ConvertAll(y.Variables, z => z.ToUpper());
-                }));
-            Array.ForEach(_data.Metrics, x => x.Code = x.Code.ToUpper());
-            Array.ForEach(_data.Variables, x => x.Code = x.Code.ToUpper());
-        }
-
-        private void SetDirection()
-        {
-            foreach (var metricData in _data.MetricData)
-            {
-                foreach (var variableData in metricData.VariableData)
-                {
-                    variableData.Direction = DirectionType.FLAT;
-                    if (variableData.PercentChange >= 0.05)
-                    {
-                        var isPositive = (variableData.CurrentValue - variableData.PreviousValue) > 0;
-
-                        var metricIdCode = _data.Metrics.FirstOrDefault(x => x.Id == metricData.Id);
-                        if (metricIdCode != null)
-                        {
-                            var metric =_definition.GetMetricDefinition(metricIdCode.Code);
-                            if (metric != null)
-                            {
-                                isPositive = metric.IsIncreasePostive ? isPositive : !isPositive;
-                            }
-                        }
-
-                        variableData.Direction = isPositive ? DirectionType.POSITIVE : DirectionType.NEGATIVE;
-                    }
-                }
-            }
+            _definition = new AutoTextDefinitionHandler(definitions);
+            _data = new AutoTextDataHandler(data);
         }
 
         private bool ContainsValue(string text)
         {
             return text.EndsWith("Value");
-        }
-
-        // EZSTODO - need to handle case of no variable
-        // EZSTODO - need to handle cases of missing metric/variable
-        private VariableData GetVariableData(string metricCode, string variableCode)
-        {
-            if (_metricToId.TryGetValue(metricCode, out int metricId) && _variableToId.TryGetValue(variableCode, out int variableId))
-            {
-                var metricData = _data.MetricData.FirstOrDefault(x => x.Id == metricId);
-                if (metricData != null)
-                {
-                    return metricData.VariableData.FirstOrDefault(x => x.Id == variableId);
-                }
-            }
-
-            return null;
         }
 
         // If we have a direction that is flat, we need to remove some descriptive text that
@@ -128,7 +64,7 @@ namespace AutoTextApp
                 //throw new Exception($"Metric not found {metricCode}"); - EZSTODO
                 return $"Metric not found {metricCode}";
             }
-            var variableData = GetVariableData(metricCode, variableCode);
+            var variableData = _data.GetVariableData(metricCode, variableCode);
             if (variableData == null)
             {
                 //throw new Exception($"Metric not found {variableCode}"); - EZSTODO
@@ -150,7 +86,7 @@ namespace AutoTextApp
                         {
                             result = FixDirectionText(result);
                         }
-                        result = result.Replace(item.Value, _definition.GetDirection(variableData.Direction, random));
+                        result = result.Replace(item.Value, _definition.GetDirectionText(metric, variableData.Direction, random));
                         break;
                     default:
                         var macroVariable = _definition.GetMacroVariable(itemValue);
@@ -161,28 +97,24 @@ namespace AutoTextApp
                             if (!string.IsNullOrEmpty(macroVariable.Type))
                             {
                                 var reflectedType = Type.GetType($"{GetType().Namespace}.{macroVariable.Type}");
-                                //var macroVariable = _definition.GetMacroVariable(macro.Name);
-                                //if (macroVariable != null)
+                                if (metric.GetType().Name == macroVariable.Type)
                                 {
-                                    if (metric.GetType().Name == macroVariable.Type)
+                                    macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(metric).ToString();
+                                }
+                                else if (variableData.GetType().Name == macroVariable.Type)
+                                {
+                                    macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variableData).ToString();
+                                    if (!string.IsNullOrEmpty(variableData.DataFormat) && ContainsValue(macroVariable.Value))
                                     {
-                                        macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(metric).ToString();
+                                        macroValue = string.Format(variableData.DataFormat, float.Parse(macroValue));
                                     }
-                                    else if (variableData.GetType().Name == macroVariable.Type)
+                                }
+                                else if (!string.IsNullOrEmpty(variableCode))
+                                {
+                                    var variable = _definition.GetVariableDefinition(variableCode);
+                                    if (variable?.GetType().Name == macroVariable.Type)
                                     {
-                                        macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variableData).ToString();
-                                        if (!string.IsNullOrEmpty(variableData.DataFormat) && ContainsValue(macroVariable.Value))
-                                        {
-                                            macroValue = string.Format(variableData.DataFormat, float.Parse(macroValue));
-                                        }
-                                    }
-                                    else if (!string.IsNullOrEmpty(variableCode))
-                                    {
-                                        var variable = _definition.GetVariableDefinition(variableCode);
-                                        if (variable?.GetType().Name == macroVariable.Type)
-                                        {
-                                            macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variable).ToString();
-                                        }
+                                        macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(variable).ToString();
                                     }
                                 }
                             }
@@ -219,7 +151,7 @@ namespace AutoTextApp
                     // "and"ed while the two are "or"ed.
                     foreach (var variable in blockItem.Variables)
                     {
-                        var variableData = GetVariableData(blockItem.MetricCode, variable);
+                        var variableData = _data.GetVariableData(blockItem.MetricCode, variable);
                         if (variableData != null)
                         {
                             var result = GetSentenceFragment(blockItem.MetricCode, variable, "[METRIC NAME] [DIR] [PCT] percent to [ACTUAL VALUE] for [ACTUAL NAME][HOMES]", seed);

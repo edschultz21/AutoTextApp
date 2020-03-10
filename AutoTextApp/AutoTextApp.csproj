@@ -48,7 +48,8 @@
   <ItemGroup>
     <Compile Include="AutoText.cs" />
     <Compile Include="AutoTextData.cs" />
-    <Compile Include="AutoTextDefinition.cs" />
+    <Compile Include="AutoTextDataHandler.cs" />
+    <Compile Include="AutoTextDefinitionHandler.cs" />
     <Compile Include="AutoTextDefinitions.cs" />
     <Compile Include="FragmentClasses.cs" />
     <Compile Include="Program.cs" />

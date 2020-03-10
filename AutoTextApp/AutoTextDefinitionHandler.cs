@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoTextApp
 {
-    public class AutoTextDefinition
+    public class AutoTextDefinitionHandler
     {
         private AutoTextDefinitions _definitions;
         private MacroVariableKeyedDictionary _macroVariables; // Macro -> Value
 
-        public AutoTextDefinition(AutoTextDefinitions definitions)
+        public AutoTextDefinitionHandler(AutoTextDefinitions definitions)
         {
             _definitions = definitions;
 
@@ -43,8 +40,23 @@ namespace AutoTextApp
             return _definitions.MacroVariables.FirstOrDefault(x => x.Name == macroName.TrimStart('[').TrimEnd(']'));
         }
 
-        public string GetDirection(DirectionType direction, Random random)
+        private DirectionType GetDirection(MetricDefinition metric, DirectionType direction)
         {
+            if (direction != DirectionType.FLAT && !metric.IsIncreasePostive)
+            {
+                if (direction == DirectionType.NEGATIVE)
+                {
+                    return DirectionType.POSITIVE;
+                }
+                return DirectionType.NEGATIVE;
+            }
+
+            return direction;
+        }
+
+        public string GetDirectionText(MetricDefinition metric, DirectionType direction, Random random)
+        {
+            direction = GetDirection(metric, direction);
             if (direction == DirectionType.FLAT)
             {
                 var index = random.Next(_definitions.Synonyms.Flat.Length);
