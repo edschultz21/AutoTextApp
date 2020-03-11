@@ -72,6 +72,18 @@
           "ConsecutivePeriods": 1
         }
       ]
+    },
+    {
+      "Id": 2,
+      "Variables": [
+        {
+          "Id": 102,
+          "CurrentValue": 67.4,
+          "PreviousValue": 66.4,
+          "PercentChange": 0.04,
+          "ConsecutivePeriods": 1
+        }
+      ]
     }
   ]
 }

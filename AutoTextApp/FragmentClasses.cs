@@ -41,7 +41,7 @@ namespace AutoTextApp
             _metric = handlers.DefinitionHandler.GetMetricDefinition(metricCode);
             if (_metric == null)
             {
-                throw new Exception($"Metric not found {metricCode}");
+                throw new Exception($"Metric not found {metricCode}"); // EZSTODO - needs correct exception
             }
 
             _template = template;
@@ -49,52 +49,23 @@ namespace AutoTextApp
 
         public override string GetFragment()
         {
-            var result = _template;
-            var items = Regex.Matches(_template, @"\[([^]]*)\]");
-
-            foreach (Match item in items)
-            {
-                var itemValue = item.Value.ToUpper();
-                var macroVariable = _handlers.DefinitionHandler.GetMacroVariable(itemValue);
-                if (macroVariable != null)
-                {
-                    string macroValue = macroVariable.Value;
-
-                    if (!string.IsNullOrEmpty(macroVariable.Type))
-                    {
-                        var reflectedType = Type.GetType($"{GetType().Namespace}.{macroVariable.Type}");
-                        if (_metric.GetType().Name == macroVariable.Type)
-                        {
-                            macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(_metric).ToString();
-                        }
-                    }
-
-                    if (macroValue != null)
-                    {
-                        if (!string.IsNullOrEmpty(macroVariable.Format))
-                        {
-                            macroValue = string.Format(macroVariable.Format, macroValue);
-                        }
-                        result = result.Replace(item.Value, macroValue);
-                    }
-                }
-            }
-
-            return result;
+            return AutoTextUtils.ProcessMacros(_metric, _template, _handlers.DefinitionHandler.GetMacroVariable);
         }
     }
 
-#if NOTYET
     // Handle "", "in Franklin, Hamilton and Saint Lawrence Counties"
     // [METRIC LOCATIONS]
     public class MetricLocationFragment : ClauseFragment
     {
+        public MetricLocationFragment(AutoTextHandlers handlers, string template) : base(handlers, template) { }
+
         public override string GetFragment()
         {
             throw new NotImplementedException();
         }
     }
 
+#if NOTYET
     // Handle "increased 1.1%", "stayed the same", "decreased 13.9 percent to $209,000"
     // Where  [PERCENT] -("%", " percent")
     // [DIR] [PCT] [ACTUAL/PREVIOUS VALUE]
@@ -107,17 +78,29 @@ namespace AutoTextApp
             throw new NotImplementedException();
         }
     }
+#endif
 
     // Handle "for Single Family", "for Single Family and Townhouse/Condos"
     // [ACTUAL NAME/LONGNAME]
     public class VariableFragment : ClauseFragment
     {
+        private readonly VariableData _variableData;
+
+        public VariableFragment(AutoTextHandlers handlers, string metricCode, string variableCode, string template) : base(handlers, template) 
+        {
+            _variableData = _handlers.DataHandler.GetVariableData(metricCode, variableCode);
+            if (_variableData == null)
+            {
+                throw new Exception($"Metric {metricCode} or variable {variableCode} not found"); // EZSTODO - needs correct exception
+            }
+        }
+
         public override string GetFragment()
         {
-            throw new NotImplementedException();
+            var ezs = AutoTextUtils.ProcessMacros(_variableData, _template, _handlers.DefinitionHandler.GetMacroVariable);
+            return ezs;
         }
     }
-#endif
 
     public class TemplateFragment : ISentenceFragment
     {

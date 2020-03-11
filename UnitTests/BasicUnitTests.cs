@@ -24,7 +24,7 @@ namespace UnitTests
 
         private AutoText GetAutoText(string definitionsFilename, string testDataFilename)
         {
-            var definitions = Utils.ReadXmlData<AutoTextDefinitions>(definitionsFilename);
+            var definitions = AutoTextUtils.ReadXmlData<AutoTextDefinitions>(definitionsFilename);
             var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(testDataFilename), typeof(AutoTextData));
             return new AutoText(definitions, data);
         }
@@ -108,24 +108,6 @@ namespace UnitTests
 
             var result = autoText.GetSentenceFragment("MSP", "SF", "[METRIC CODE], [METRIC NAME], [METRIC LONGNAME], [ACTUAL VALUE], [PREVIOUS VALUE], [PCT], [DIR], [ACTUAL NAME], [ACTUAL LONGNAME], [HOMES], [MATCHES NONE]", _seed);
             Assert.AreEqual("MSP, Median Sales Price, MSP LongName, 82.5, 92.5, 0.04%, were about the same, Single Family, Single Family homes,  homes, [MATCHES NONE]", result);
-        }
-
-        [TestMethod]
-        public void MetricFragment1()
-        {
-            var autoText = GetAutoText("Definitions1.xml", "Data1.json");
-
-            var fragment = new MetricFragment(autoText.Handlers, "MSP", "[METRIC CODE]");
-            var result = fragment.GetFragment();
-            Assert.AreEqual("MSP", result);
-
-            fragment = new MetricFragment(autoText.Handlers, "MSP", "[METRIC NAME]");
-            result = fragment.GetFragment();
-            Assert.AreEqual("Median Sales Price", result);
-
-            fragment = new MetricFragment(autoText.Handlers, "MSP", "[METRIC LONGNAME]");
-            result = fragment.GetFragment();
-            Assert.AreEqual("MSP LongName", result);
         }
     }
 }

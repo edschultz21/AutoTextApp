@@ -15,7 +15,7 @@ namespace AutoTextApp
 
         public AutoTextHandlers Handlers { get { return new AutoTextHandlers(_definition, _data); } }
 
-        public AutoText(AutoTextDefinitions definitions, AutoTextData data)
+        public AutoText(AutoTextDefinitions definitions, AutoTextData data) // EZSTODO - move to good home
         {
             _definition = new AutoTextDefinitionHandler(definitions);
             _data = new AutoTextDataHandler(data);
