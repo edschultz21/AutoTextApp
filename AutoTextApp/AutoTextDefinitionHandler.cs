@@ -5,24 +5,28 @@ namespace AutoTextApp
 {
     public class AutoTextDefinitionHandler
     {
+        private const string DIR_TEXT = "DIR";
+
         private AutoTextDefinitions _definitions;
         private MacroVariableKeyedDictionary _macroVariables; // Macro -> Value
+        private Random _random = new Random(381654729);
 
         public AutoTextDefinitionHandler(AutoTextDefinitions definitions)
         {
             _definitions = definitions;
 
-            // Setup macro variables
-            _macroVariables = new MacroVariableKeyedDictionary();
-            if (_definitions.MacroVariables != null)
-            {
-                Array.ForEach(_definitions.MacroVariables, x => _macroVariables.Add(x));
-            }
-
             // Normalize casing
             Array.ForEach(_definitions.Metrics, x => x.Code = x.Code.ToUpper());
             Array.ForEach(_definitions.Variables, x => x.Code = x.Code.ToUpper());
             Array.ForEach(_definitions.MacroVariables, x => x.Name = x.Name.ToUpper());
+
+            // Setup macro variables
+            _macroVariables = new MacroVariableKeyedDictionary();
+            _macroVariables.Add(new MacroVariable { Name = DIR_TEXT, Value = "" });
+            if (_definitions.MacroVariables != null)
+            {
+                Array.ForEach(_definitions.MacroVariables, x => _macroVariables.Add(x));
+            }
         }
 
         public MetricDefinition GetMetricDefinition(string code)
@@ -37,7 +41,7 @@ namespace AutoTextApp
 
         public MacroVariable GetMacroVariable(string macroName)
         {
-            return _definitions.MacroVariables.FirstOrDefault(x => x.Name == macroName.TrimStart('[').TrimEnd(']'));
+            return _macroVariables.FirstOrDefault(x => x.Name == macroName.TrimStart('[').TrimEnd(']'));
         }
 
         private DirectionType GetDirection(MetricDefinition metric, DirectionType direction)
@@ -54,6 +58,31 @@ namespace AutoTextApp
             return direction;
         }
 
+        public void UpdateDirectionText(MetricDefinition metric, DirectionType direction)
+        {
+            var directionText = "";
+
+            direction = GetDirection(metric, direction);
+            if (direction == DirectionType.FLAT)
+            {
+                var index = _random.Next(_definitions.Synonyms.Flat.Length);
+                directionText = _definitions.Synonyms.Flat[index];
+            }
+            else if (direction == DirectionType.POSITIVE)
+            {
+                var index = _random.Next(_definitions.Synonyms.Positive.Length);
+                directionText = _definitions.Synonyms.Positive[index];
+            }
+            else // direction == DirectionType.NEGATIVE
+            {
+                var index = _random.Next(_definitions.Synonyms.Negative.Length);
+                directionText = _definitions.Synonyms.Negative[index];
+            }
+
+            _macroVariables[DIR_TEXT].Value = directionText;
+        }
+
+        // EZSTODO - Remove
         public string GetDirectionText(MetricDefinition metric, DirectionType direction, Random random)
         {
             direction = GetDirection(metric, direction);

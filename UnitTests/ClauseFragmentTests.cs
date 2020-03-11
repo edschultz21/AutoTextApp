@@ -64,7 +64,7 @@ namespace UnitTests
         [TestMethod]
         public void VariableFragment_Current()
         {
-            var fragment = new VariableFragment(_handlers, "MSP", "SF", "[ACTUAL VALUE]");
+            var fragment = new VariableFragment(_handlers, "MSP", "SF", "[ACTUAL VALUE]", "[ACTUAL VALUE]");
             var result = fragment.GetFragment();
             Assert.AreEqual("82.5", result);
         }
@@ -72,7 +72,7 @@ namespace UnitTests
         [TestMethod]
         public void VariableFragment_Previous()
         {
-            var fragment = new VariableFragment(_handlers, "MSP", "SF", "[PREVIOUS VALUE]");
+            var fragment = new VariableFragment(_handlers, "MSP", "SF", "[PREVIOUS VALUE]", "[PREVIOUS VALUE]");
             var result = fragment.GetFragment();
             Assert.AreEqual("92.5", result);
         }
@@ -80,7 +80,7 @@ namespace UnitTests
         [TestMethod]
         public void VariableFragment_Percent()
         {
-            var fragment = new VariableFragment(_handlers, "MSP", "SF", "[PCT]");
+            var fragment = new VariableFragment(_handlers, "MSP", "SF", "[PCT]", "[PCT]");
             var result = fragment.GetFragment();
             Assert.AreEqual("0.04", result);
         }
@@ -88,7 +88,8 @@ namespace UnitTests
         [TestMethod]
         public void VariableFragment_All()
         {
-            var fragment = new VariableFragment(_handlers, "CS", "TC", "[ACTUAL VALUE] [PREVIOUS VALUE] [PCT]");
+            var template = "[ACTUAL VALUE] [PREVIOUS VALUE] [PCT]";
+            var fragment = new VariableFragment(_handlers, "CS", "TC", template, template);
             var result = fragment.GetFragment();
             Assert.AreEqual("92.5 82.5 0.04", result);
         }
@@ -96,9 +97,34 @@ namespace UnitTests
         [TestMethod]
         public void VariableFragment_Mix()
         {
-            var fragment = new VariableFragment(_handlers, "CS", "TC", "[METRIC NAME] [ACTUAL VALUE] [PREVIOUS VALUE] [PCT][homes]");
+            var template = "[METRIC NAME] [ACTUAL VALUE] [PREVIOUS VALUE] [PCT][homes]";
+            var fragment = new VariableFragment(_handlers, "CS", "TC", template, template);
             var result = fragment.GetFragment();
             Assert.AreEqual("[METRIC NAME] 92.5 82.5 0.04 homes", result);
+        }
+
+        [TestMethod]
+        public void VariableFragment_FlatDir()
+        {
+            var fragment = new VariableFragment(_handlers, "CS", "TC", " [DIR] [PCT] percent to [ACTUAL VALUE]", "[DIR]");
+            var result = fragment.GetFragment();
+            Assert.AreEqual("were relatively unchanged", result);
+        }
+
+        [TestMethod]
+        public void VariableFragment_IncreasedDir()
+        {
+            var fragment = new VariableFragment(_handlers, "NL", "TC", "[DIR] [PCT] percent to [ACTUAL VALUE]", "[DIR]");
+            var result = fragment.GetFragment();
+            Assert.AreEqual("were down 7.5 percent to 92.5", result);
+        }
+
+        [TestMethod]
+        public void VariableFragment_DecreasedDir()
+        {
+            var fragment = new VariableFragment(_handlers, "NL", "SF", "[DIR] [PCT]% to [Previous VALUE]", "[DIR]");
+            var result = fragment.GetFragment();
+            Assert.AreEqual("were up 7.5% to 92.5", result);
         }
     }
 }

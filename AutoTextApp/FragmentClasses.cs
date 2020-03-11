@@ -85,20 +85,32 @@ namespace AutoTextApp
     public class VariableFragment : ClauseFragment
     {
         private readonly VariableData _variableData;
+        private readonly MetricDefinition _metric;
+        private readonly string _flatTemplate;
 
-        public VariableFragment(AutoTextHandlers handlers, string metricCode, string variableCode, string template) : base(handlers, template) 
+        public VariableFragment(AutoTextHandlers handlers, string metricCode, string variableCode, string template, string flatTemplate) 
+            : base(handlers, template) 
         {
             _variableData = _handlers.DataHandler.GetVariableData(metricCode, variableCode);
             if (_variableData == null)
             {
                 throw new Exception($"Metric {metricCode} or variable {variableCode} not found"); // EZSTODO - needs correct exception
             }
+
+            _metric = handlers.DefinitionHandler.GetMetricDefinition(metricCode);
+            if (_metric == null)
+            {
+                throw new Exception($"Metric not found {metricCode}"); // EZSTODO - needs correct exception
+            }
+
+            _flatTemplate = flatTemplate;
         }
 
         public override string GetFragment()
         {
-            var ezs = AutoTextUtils.ProcessMacros(_variableData, _template, _handlers.DefinitionHandler.GetMacroVariable);
-            return ezs;
+            _handlers.DefinitionHandler.UpdateDirectionText(_metric, _variableData.Direction);
+            var template = _variableData.Direction == DirectionType.FLAT ? _flatTemplate : _template;
+            return AutoTextUtils.ProcessMacros(_variableData, template, _handlers.DefinitionHandler.GetMacroVariable);
         }
     }
 
