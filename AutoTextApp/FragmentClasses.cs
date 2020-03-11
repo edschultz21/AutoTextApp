@@ -28,6 +28,47 @@ namespace AutoTextApp
         }
 
         public abstract string GetFragment();
+
+        protected string ProcessMacros(object data)
+        {
+            return ProcessMacros(data, _template);
+        }
+
+        protected string ProcessMacros(object data, string template)
+        {
+            var result = template;
+            var items = Regex.Matches(template, @"\[([^]]*)\]");
+
+            foreach (Match item in items)
+            {
+                var itemValue = item.Value.ToUpper();
+                var macroVariable = _handlers.DefinitionHandler.GetMacroVariable(itemValue);
+                if (macroVariable != null)
+                {
+                    string macroValue = null;
+
+                    if (!string.IsNullOrEmpty(macroVariable.Type))
+                    {
+                        var reflectedType = Type.GetType($"{data.GetType().Namespace}.{macroVariable.Type}");
+                        if (data.GetType().Name == macroVariable.Type)
+                        {
+                            macroValue = reflectedType.GetProperty(macroVariable.Value).GetValue(data).ToString();
+                        }
+                    }
+                    else
+                    {
+                        macroValue = macroVariable.Value;
+                    }
+
+                    if (macroValue != null)
+                    {
+                        result = result.Replace(item.Value, macroValue);
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 
     // Handle "New Listings", "New Listings and Closed Sales"
@@ -43,13 +84,11 @@ namespace AutoTextApp
             {
                 throw new Exception($"Metric not found {metricCode}"); // EZSTODO - needs correct exception
             }
-
-            _template = template;
         }
 
         public override string GetFragment()
         {
-            return AutoTextUtils.ProcessMacros(_metric, _template, _handlers.DefinitionHandler.GetMacroVariable);
+            return ProcessMacros(_metric);
         }
     }
 
@@ -65,30 +104,16 @@ namespace AutoTextApp
         }
     }
 
-#if NOTYET
     // Handle "increased 1.1%", "stayed the same", "decreased 13.9 percent to $209,000"
     // Where  [PERCENT] -("%", " percent")
     // [DIR] [PCT] [ACTUAL/PREVIOUS VALUE]
     public class DataFragment : ClauseFragment
     {
-        public bool ShowShortForm { get; set; } // Useful for direction (set external to this class)
-
-        public override string GetFragment()
-        {
-            throw new NotImplementedException();
-        }
-    }
-#endif
-
-    // Handle "for Single Family", "for Single Family and Townhouse/Condos"
-    // [ACTUAL NAME/LONGNAME]
-    public class VariableFragment : ClauseFragment
-    {
         private readonly VariableData _variableData;
         private readonly MetricDefinition _metric;
         private readonly string _flatTemplate;
 
-        public VariableFragment(AutoTextHandlers handlers, string metricCode, string variableCode, string template, string flatTemplate) 
+        public DataFragment(AutoTextHandlers handlers, string metricCode, string variableCode, string template, string flatTemplate) 
             : base(handlers, template) 
         {
             _variableData = _handlers.DataHandler.GetVariableData(metricCode, variableCode);
@@ -110,7 +135,29 @@ namespace AutoTextApp
         {
             _handlers.DefinitionHandler.UpdateDirectionText(_metric, _variableData.Direction);
             var template = _variableData.Direction == DirectionType.FLAT ? _flatTemplate : _template;
-            return AutoTextUtils.ProcessMacros(_variableData, template, _handlers.DefinitionHandler.GetMacroVariable);
+            return ProcessMacros(_variableData, template);
+        }
+    }
+
+    // Handle "for Single Family", "for Single Family and Townhouse/Condos"
+    // [ACTUAL NAME/LONGNAME]
+    public class VariableFragment : ClauseFragment
+    {
+        private readonly VariableDefinition _variable;
+
+        public VariableFragment(AutoTextHandlers handlers, string variableCode, string template)
+            : base(handlers, template)
+        {
+            _variable = handlers.DefinitionHandler.GetVariableDefinition(variableCode);
+            if (_variable == null)
+            {
+                throw new Exception($"Variable not found {variableCode}"); // EZSTODO - needs correct exception
+            }
+        }
+
+        public override string GetFragment()
+        {
+            return ProcessMacros(_variable);
         }
     }
 
