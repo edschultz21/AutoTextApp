@@ -10,14 +10,14 @@ namespace AutoTextApp
     public class AutoText
     {
         private const string DIR_TEXT = "[DIR]";
-        private readonly AutoTextDefinitionHandler _definition;
+        private readonly AutoTextDefinitionsHandler _definition;
         private readonly AutoTextDataHandler _data;
 
         public AutoTextHandlers Handlers { get { return new AutoTextHandlers(_definition, _data); } }
 
         public AutoText(AutoTextDefinitions definitions, AutoTextData data) // EZSTODO - move to good home
         {
-            _definition = new AutoTextDefinitionHandler(definitions);
+            _definition = new AutoTextDefinitionsHandler(definitions);
             _data = new AutoTextDataHandler(data);
         }
 

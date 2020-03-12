@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace AutoTextApp
 {
-    public class AutoTextDefinitionHandler
+    public class AutoTextDefinitionsHandler
     {
         private const string DIR_TEXT = "DIR";
 
@@ -11,7 +11,7 @@ namespace AutoTextApp
         private MacroVariableKeyedDictionary _macroVariables; // Macro -> Value
         private Random _random = new Random(381654729);
 
-        public AutoTextDefinitionHandler(AutoTextDefinitions definitions)
+        public AutoTextDefinitionsHandler(AutoTextDefinitions definitions)
         {
             _definitions = definitions;
 

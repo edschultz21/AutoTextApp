@@ -8,10 +8,10 @@ namespace AutoTextApp
 {
     public class AutoTextHandlers
     {
-        public AutoTextDefinitionHandler DefinitionHandler { get; private set; }
+        public AutoTextDefinitionsHandler DefinitionHandler { get; private set; }
         public AutoTextDataHandler DataHandler { get; private set; }
 
-        public AutoTextHandlers(AutoTextDefinitionHandler definitionHandler, AutoTextDataHandler dataHandler)
+        public AutoTextHandlers(AutoTextDefinitionsHandler definitionHandler, AutoTextDataHandler dataHandler)
         {
             DefinitionHandler = definitionHandler;
             DataHandler = dataHandler;

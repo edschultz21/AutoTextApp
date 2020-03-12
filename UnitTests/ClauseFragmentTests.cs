@@ -26,7 +26,7 @@ namespace UnitTests
             var definitions = Utils.ReadXmlData<AutoTextDefinitions>(definitionsFilename);
             var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(testDataFilename), typeof(AutoTextData));
 
-            return new AutoTextHandlers(new AutoTextDefinitionHandler(definitions), new AutoTextDataHandler(data));
+            return new AutoTextHandlers(new AutoTextDefinitionsHandler(definitions), new AutoTextDataHandler(data));
         }
 
         [TestMethod]
