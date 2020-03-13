@@ -9,9 +9,11 @@ namespace AutoTextApp
         {
             var definitions = Utils.ReadXmlData<AutoTextDefinitions>(@"..\..\..\UnitTests\Definitions1.xml");
             var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(@"..\..\..\UnitTests\Data1.json"), typeof(AutoTextData));
-            var autoText = new AutoText(definitions, data);
-            
-            autoText.Run();
+
+            var handlers = new AutoTextHandlers(new AutoTextDefinitionsHandler(definitions), new AutoTextDataHandler(data));
+
+            var fragment = new SentenceBuilder(handlers);
+            var result = fragment.GetFragment();
         }
     }
 }

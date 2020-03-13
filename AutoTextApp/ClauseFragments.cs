@@ -114,9 +114,7 @@ namespace AutoTextApp
         {
             public string MetricCode { get; set; }
             public string VariableCode { get; set; }
-            public string NormalTemplate { get; set; }
-            public string FlatTemplate { get; set; }
-            public string VariableTemplate { get; set; }
+            public AutoTextTemplate Templates { get; set; }
         }
 
         private readonly VariableData _variableData;
@@ -125,7 +123,7 @@ namespace AutoTextApp
         private readonly string _flatTemplate;
 
         public DataFragment(AutoTextHandlers handlers, Parameters parameters)
-            : base(handlers, parameters.NormalTemplate)
+            : base(handlers, parameters.Templates.Data)
         {
             _variableData = _handlers.DataHandler.GetVariableData(parameters.MetricCode, parameters.VariableCode);
             if (_variableData == null)
@@ -143,9 +141,9 @@ namespace AutoTextApp
                 new VariableFragment.Parameters 
                 { 
                     VariableCode = parameters.VariableCode, 
-                    Template = parameters.VariableTemplate 
+                    Template = parameters.Templates.Variable
                 });
-            _flatTemplate = parameters.FlatTemplate;
+            _flatTemplate = parameters.Templates.FlatData;
         }
 
         public override string GetFragment()

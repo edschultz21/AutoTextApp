@@ -9,24 +9,15 @@ namespace UnitTests
     [TestClass]
     public class SentenceFragmentTests
     {
-        private Random _random;
-        private int _seed;
         AutoTextHandlers _handlers;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _random = new Random(381654729);
-            _seed = _random.Next(int.MaxValue);
-            _handlers = GetHandlers("Definitions1.xml", "Data1.json");
-        }
+            var definitions = Utils.ReadXmlData<AutoTextDefinitions>("Definitions1.xml");
+            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText("Data1.json"), typeof(AutoTextData));
 
-        private AutoTextHandlers GetHandlers(string definitionsFilename, string testDataFilename)
-        {
-            var definitions = Utils.ReadXmlData<AutoTextDefinitions>(definitionsFilename);
-            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(testDataFilename), typeof(AutoTextData));
-
-            return new AutoTextHandlers(new AutoTextDefinitionsHandler(definitions), new AutoTextDataHandler(data));
+            _handlers = new AutoTextHandlers(new AutoTextDefinitionsHandler(definitions), new AutoTextDataHandler(data));
         }
 
         [TestMethod]
@@ -50,7 +41,7 @@ namespace UnitTests
         {
             var fragment = new SentenceBuilder(_handlers);
             var result = fragment.GetFragment();
-            Assert.AreEqual("New Listings were up 7.5 percent to 82.5 for Single Family and softened 7.5 percent to 92.5 for Townhouse/Condo. New Listings rose 7.5 percent to 82.5 for Single Family and fell 7.5 percent to 92.5 for Townhouse/Condo.", result);
+            Assert.AreEqual("Median Sales Price were relatively unchanged for Single Family and softened 13.9 percent to 209000 for Townhouse/Condo. New Listings rose 7.5 percent to 82.5 for Single Family and fell 7.5 percent to 92.5 for Townhouse/Condo. Closed Sales were fairly even for Single Family and remained flat for Townhouse/Condo. New Listings were up 7.5 percent to 82.5 for Single Family and fell 7.5 percent to 92.5 for Townhouse/Condo. Closed Sales were about the same for Single Family and were down 27.5 percent to 264.7 for Mobile.", result);
         }
     }
 }

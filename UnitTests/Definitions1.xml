@@ -1,7 +1,7 @@
 ﻿<AutoTextDefinitions>
   <Metrics>
     <Metric>
-      <Code>NL</Code>
+      <Code>nl</Code>
       <ShortName>New Listings</ShortName>
       <LongName>New Listings LongName</LongName>
       <IsPlural>true</IsPlural>
@@ -57,7 +57,7 @@
       <LongName>Single Family homes</LongName>
     </Variable>
     <Variable>
-      <Code>TC</Code>
+      <Code>tc</Code>
       <ShortName>Townhouse/Condo</ShortName>
       <LongName>Townhouse/Condo homes</LongName>
     </Variable>

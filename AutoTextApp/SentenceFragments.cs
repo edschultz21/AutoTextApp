@@ -77,9 +77,12 @@ namespace AutoTextApp
             var dataParameters = new DataFragment.Parameters
             {
                 MetricCode = blockItem.MetricCode,
-                NormalTemplate = " [DIR] [PCT] percent to [ACTUAL VALUE]",
-                FlatTemplate = " [DIR]",
-                VariableTemplate = " for [ACTUAL NAME]"
+                Templates = new AutoTextTemplate
+                {
+                    Data = " [DIR] [PCT] percent to [ACTUAL VALUE]",
+                    FlatData = " [DIR]",
+                    Variable = " for [ACTUAL NAME]"
+                }
             };
 
             foreach (var variableCode in blockItem.VariableCodes)
@@ -105,26 +108,6 @@ namespace AutoTextApp
 
             return result.ToString();
         }
-
-        /*
-            "BlockType": "Auto",
-            "BlockItems": [
-                {
-                    "MetricCode": "NL",
-                    "Variables": [ "SF", "TC" ],
-                    "Type": "Standard"
-                },
-                {
-                    "MetricCode": "CS",
-                    "Variables": [ "SF", "TC" ],
-                    "Type": "Standard"
-                }
-            ]
-        }
-        New Listings were down 7.5 percent to 82.5 for Single Family and were down 7.5 percent to 92.5 percent for Townhouse/Condo.
-        Closed Sales were relatively unchanged for Single Family and were relatively unchanged for Townhouse/Condo.
-        NICE TO HAVE: Closed Sales were relatively unchanged for Single Family and Townhouse/Condo.
-        */
 
         // Takes template, fragment objects and creates sentence fragment
         // Create sentence fragments here

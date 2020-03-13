@@ -46,12 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoText.cs" />
     <Compile Include="AutoTextData.cs" />
     <Compile Include="AutoTextDataHandler.cs" />
     <Compile Include="AutoTextDefinitionsHandler.cs" />
     <Compile Include="AutoTextDefinitions.cs" />
     <Compile Include="AutoTextHandlers.cs" />
+    <Compile Include="AutoTextTemplate.cs" />
     <Compile Include="SentenceFragments.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="ClauseFragments.cs" />
@@ -60,15 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="CRMLS_Data.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Definitions.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Readme.txt" />
     <Content Include="Sample.txt" />
   </ItemGroup>
