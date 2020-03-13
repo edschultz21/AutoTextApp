@@ -23,7 +23,7 @@ namespace AutoTextApp
                 x => Array.ForEach(x.BlockItems, y =>
                 {
                     y.MetricCode = y.MetricCode.ToUpper();
-                    y.Variables = Array.ConvertAll(y.Variables, z => z.ToUpper());
+                    y.VariableCodes = Array.ConvertAll(y.VariableCodes, z => z.ToUpper());
                 }));
             Array.ForEach(_data.Metrics, x => x.Code = x.Code.ToUpper());
             Array.ForEach(_data.Variables, x => x.Code = x.Code.ToUpper());

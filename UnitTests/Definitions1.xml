@@ -61,6 +61,11 @@
       <ShortName>Townhouse/Condo</ShortName>
       <LongName>Townhouse/Condo homes</LongName>
     </Variable>
+    <Variable>
+      <Code>MB</Code>
+      <ShortName>Mobile</ShortName>
+      <LongName>Mobile homes</LongName>
+    </Variable>
   </Variables>
   <Synonyms>
     <Positive>

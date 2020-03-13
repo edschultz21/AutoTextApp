@@ -11,11 +11,6 @@ namespace AutoTextApp
         string GetFragment();
     }
 
-    public interface ISentenceFragment
-    {
-
-    }
-
     public abstract class ClauseFragment : IClauseFragment
     {
         protected string _template { get; set; }
@@ -75,14 +70,20 @@ namespace AutoTextApp
     // [METRIC NAME/LONGNAME/CODE]
     public class MetricFragment : ClauseFragment
     {
+        public class Parameters
+        {
+            public string MetricCode { get; set; }
+            public string Template { get; set; }
+        }
+
         private readonly MetricDefinition _metric;
 
-        public MetricFragment(AutoTextHandlers handlers, string metricCode, string template) : base(handlers, template)
+        public MetricFragment(AutoTextHandlers handlers, Parameters parameters) : base(handlers, parameters.Template)
         {
-            _metric = handlers.DefinitionHandler.GetMetricDefinition(metricCode);
+            _metric = handlers.DefinitionHandler.GetMetricDefinition(parameters.MetricCode);
             if (_metric == null)
             {
-                throw new Exception($"Metric not found {metricCode}"); // EZSTODO - needs correct exception
+                throw new Exception($"Metric not found {parameters.MetricCode}"); // EZSTODO - needs correct exception
             }
         }
 
@@ -109,33 +110,49 @@ namespace AutoTextApp
     // [DIR] [PCT] [ACTUAL/PREVIOUS VALUE]
     public class DataFragment : ClauseFragment
     {
+        public class Parameters
+        {
+            public string MetricCode { get; set; }
+            public string VariableCode { get; set; }
+            public string NormalTemplate { get; set; }
+            public string FlatTemplate { get; set; }
+            public string VariableTemplate { get; set; }
+        }
+
         private readonly VariableData _variableData;
         private readonly MetricDefinition _metric;
+        private readonly VariableFragment _variableFragment;
         private readonly string _flatTemplate;
 
-        public DataFragment(AutoTextHandlers handlers, string metricCode, string variableCode, string template, string flatTemplate) 
-            : base(handlers, template) 
+        public DataFragment(AutoTextHandlers handlers, Parameters parameters)
+            : base(handlers, parameters.NormalTemplate)
         {
-            _variableData = _handlers.DataHandler.GetVariableData(metricCode, variableCode);
+            _variableData = _handlers.DataHandler.GetVariableData(parameters.MetricCode, parameters.VariableCode);
             if (_variableData == null)
             {
-                throw new Exception($"Metric {metricCode} or variable {variableCode} not found"); // EZSTODO - needs correct exception
+                throw new Exception($"Metric {parameters.MetricCode} or variable {parameters.VariableCode} not found"); // EZSTODO - needs correct exception
             }
 
-            _metric = handlers.DefinitionHandler.GetMetricDefinition(metricCode);
+            _metric = handlers.DefinitionHandler.GetMetricDefinition(parameters.MetricCode);
             if (_metric == null)
             {
-                throw new Exception($"Metric not found {metricCode}"); // EZSTODO - needs correct exception
+                throw new Exception($"Metric not found {parameters.MetricCode}"); // EZSTODO - needs correct exception
             }
 
-            _flatTemplate = flatTemplate;
+            _variableFragment = new VariableFragment(handlers, 
+                new VariableFragment.Parameters 
+                { 
+                    VariableCode = parameters.VariableCode, 
+                    Template = parameters.VariableTemplate 
+                });
+            _flatTemplate = parameters.FlatTemplate;
         }
 
         public override string GetFragment()
         {
             _handlers.DefinitionHandler.UpdateDirectionText(_metric, _variableData.Direction);
             var template = _variableData.Direction == DirectionType.FLAT ? _flatTemplate : _template;
-            return ProcessMacros(_variableData, template);
+            return ProcessMacros(_variableData, template) + _variableFragment.GetFragment();
         }
     }
 
@@ -143,15 +160,21 @@ namespace AutoTextApp
     // [ACTUAL NAME/LONGNAME]
     public class VariableFragment : ClauseFragment
     {
+        public class Parameters
+        {
+            public string VariableCode { get; set; }
+            public string Template { get; set; }
+        }
+
         private readonly VariableDefinition _variable;
 
-        public VariableFragment(AutoTextHandlers handlers, string variableCode, string template)
-            : base(handlers, template)
+        public VariableFragment(AutoTextHandlers handlers, Parameters parameters)
+            : base(handlers, parameters.Template)
         {
-            _variable = handlers.DefinitionHandler.GetVariableDefinition(variableCode);
+            _variable = handlers.DefinitionHandler.GetVariableDefinition(parameters.VariableCode);
             if (_variable == null)
             {
-                throw new Exception($"Variable not found {variableCode}"); // EZSTODO - needs correct exception
+                throw new Exception($"Variable not found {parameters.VariableCode}"); // EZSTODO - needs correct exception
             }
         }
 
@@ -159,17 +182,5 @@ namespace AutoTextApp
         {
             return ProcessMacros(_variable);
         }
-    }
-
-    public class TemplateFragment : ISentenceFragment
-    {
-        // Takes template, fragment objects and creates sentence fragment
-        // Create sentence fragments here
-    }
-
-    public class StandardFragment : ISentenceFragment
-    {
-        // Takes template, fragment objects and creates sentence fragment
-        // Create sentence fragments here
     }
 }

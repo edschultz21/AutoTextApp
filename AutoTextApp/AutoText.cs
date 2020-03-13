@@ -151,7 +151,7 @@ namespace AutoTextApp
                     // EZSTODO - sort property values by percent change (largest to smallest)
                     // - need to handle conjunction correctly. Above needs to be sorted by pos/neg change. All positive/negatives are
                     // "and"ed while the two are "or"ed.
-                    foreach (var variable in blockItem.Variables)
+                    foreach (var variable in blockItem.VariableCodes)
                     {
                         var variableData = _data.GetVariableData(blockItem.MetricCode, variable);
                         if (variableData != null)

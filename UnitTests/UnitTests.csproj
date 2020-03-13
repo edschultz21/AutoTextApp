@@ -55,6 +55,7 @@
     <Compile Include="BasicUnitTests.cs" />
     <Compile Include="ClauseFragmentTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SentenceFragmentTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data1.json">

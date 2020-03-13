@@ -7,8 +7,8 @@ namespace AutoTextApp
     {
         public static void Main(string[] args)
         {
-            var definitions = Utils.ReadXmlData<AutoTextDefinitions>("Definitions.xml");
-            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText("CRMLS_Data.json"), typeof(AutoTextData));
+            var definitions = Utils.ReadXmlData<AutoTextDefinitions>(@"..\..\..\UnitTests\Definitions1.xml");
+            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(@"..\..\..\UnitTests\Data1.json"), typeof(AutoTextData));
             var autoText = new AutoText(definitions, data);
             
             autoText.Run();

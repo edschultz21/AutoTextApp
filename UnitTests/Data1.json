@@ -1,123 +1,148 @@
 {
-    "Metrics": [
+  "Metrics": [
+    {
+      "Id": 1,
+      "Code": "NL"
+    },
+    {
+      "Id": 2,
+      "Code": "CS"
+    },
+    {
+      "Id": 3,
+      "Code": "MSP"
+    }
+  ],
+  "Variables": [
+    {
+      "Id": 101,
+      "Code": "SF"
+    },
+    {
+      "Id": 102,
+      "Code": "TC"
+    },
+    {
+      "Id": 103,
+      "Code": "MB"
+    }
+  ],
+  "Blocks": [
+    {
+      "BlockType": "Sentence",
+      "BlockItems": [
         {
-            "Id": 1,
-            "Code": "NL"
+          "MetricCode": "MSP",
+          "Variables": [ "SF", "TC" ],
+          "Type": "Standard"
         },
         {
-            "Id": 2,
-            "Code": "CS"
+          "MetricCode": "NL",
+          "Variables": [ "SF", "TC" ],
+          "Type": "Standard"
         },
         {
-            "Id": 3,
-            "Code": "MSP"
+          "MetricCode": "CS",
+          "Variables": [ "SF", "TC" ],
+          "Type": "Standard"
         }
-    ],
-    "Variables": [
+      ]
+    },
+    {
+      "BlockType": "Auto",
+      "BlockItems": [
         {
-            "Id": 101,
-            "Code": "SF"
+          "MetricCode": "NL",
+          "Variables": [ "SF", "TC" ],
+          "Type": "Standard"
         },
         {
-            "Id": 102,
-            "Code": "TC"
+          "MetricCode": "CS",
+          "Variables": [ "SF", "MB" ],
+          "Type": "Standard"
         }
-    ],
-    "Blocks": [
+      ]
+    }
+  ],
+  "MetricData": [
+    {
+      "Id": 1,
+      "Variables": [
         {
-            "BlockType": "Sentence",
-            "BlockItems": [
-                {
-                    "MetricCode": "MSP",
-                    "Variables": [ "SF", "TC" ],
-                    "Type": "Standard"
-                },
-                {
-                    "MetricCode": "NL",
-                    "Variables": [ "SF", "TC" ],
-                    "Type": "Standard"
-                },
-                {
-                    "MetricCode": "CS",
-                    "Variables": [ "SF", "TC" ],
-                    "Type": "Standard"
-                }
-            ]
+          "Id": 101,
+          "CurrentValue": 82.5,
+          "PreviousValue": 92.5,
+          "PercentChange": 7.5,
+          "ConsecutivePeriods": 1
         },
         {
-            "BlockType": "Auto",
-            "BlockItems": [
-                {
-                    "MetricCode": "NL",
-                    "Variables": [ "SF", "TC" ],
-                    "Type": "Standard"
-                },
-                {
-                    "MetricCode": "CS",
-                    "Variables": [ "SF", "TC" ],
-                    "Type": "Standard"
-                }
-            ]
+          "Id": 102,
+          "CurrentValue": 92.5,
+          "PreviousValue": 82.5,
+          "PercentChange": 7.5,
+          "ConsecutivePeriods": 1
+        },
+        {
+          "Id": 103,
+          "CurrentValue": 164.7,
+          "PreviousValue": 154.8,
+          "PercentChange": 17.5,
+          "ConsecutivePeriods": 1
         }
-    ],
-    "MetricData": [
+      ]
+    },
+    {
+      "Id": 2,
+      "Variables": [
         {
-            "Id": 1,
-            "Variables": [
-                {
-                    "Id": 101,
-                    "CurrentValue": 82.5,
-                    "PreviousValue": 92.5,
-                    "PercentChange": 7.5,
-                    "ConsecutivePeriods": 1
-                },
-                {
-                    "Id": 102,
-                    "CurrentValue": 92.5,
-                    "PreviousValue": 82.5,
-                    "PercentChange": 7.5,
-                    "ConsecutivePeriods": 1
-                }
-            ]
+          "Id": 101,
+          "CurrentValue": 82.5,
+          "PreviousValue": 92.5,
+          "PercentChange": 0.04,
+          "ConsecutivePeriods": 1
         },
         {
-            "Id": 2,
-            "Variables": [
-                {
-                    "Id": 101,
-                    "CurrentValue": 82.5,
-                    "PreviousValue": 92.5,
-                    "PercentChange": 0.04,
-                    "ConsecutivePeriods": 1
-                },
-                {
-                    "Id": 102,
-                    "CurrentValue": 92.5,
-                    "PreviousValue": 82.5,
-                    "PercentChange": 0.04,
-                    "ConsecutivePeriods": 1
-                }
-            ]
+          "Id": 102,
+          "CurrentValue": 92.5,
+          "PreviousValue": 82.5,
+          "PercentChange": 0.04,
+          "ConsecutivePeriods": 1
         },
         {
-            "Id": 3,
-            "Variables": [
-                {
-                    "Id": 101,
-                    "CurrentValue": 82.5,
-                    "PreviousValue": 92.5,
-                    "PercentChange": 0.04,
-                    "ConsecutivePeriods": 1
-                },
-                {
-                    "Id": 102,
-                    "CurrentValue": 209000,
-                    "PreviousValue": 200000,
-                    "PercentChange": 13.9,
-                    "ConsecutivePeriods": 1,
-                    "DataFormat": "${0:n0}"
-                }
-            ]
+          "Id": 103,
+          "CurrentValue": 264.7,
+          "PreviousValue": 254.8,
+          "PercentChange": 27.5,
+          "ConsecutivePeriods": 1
         }
-    ]
+      ]
+    },
+    {
+      "Id": 3,
+      "Variables": [
+        {
+          "Id": 101,
+          "CurrentValue": 82.5,
+          "PreviousValue": 92.5,
+          "PercentChange": 0.04,
+          "ConsecutivePeriods": 1
+        },
+        {
+          "Id": 102,
+          "CurrentValue": 209000,
+          "PreviousValue": 200000,
+          "PercentChange": 13.9,
+          "ConsecutivePeriods": 1,
+          "DataFormat": "${0:n0}"
+        },
+        {
+          "Id": 103,
+          "CurrentValue": 364.7,
+          "PreviousValue": 354.8,
+          "PercentChange": 37.5,
+          "ConsecutivePeriods": 1
+        }
+      ]
+    }
+  ]
 }

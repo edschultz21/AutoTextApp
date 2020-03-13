@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Xml.Serialization;
 
 namespace AutoTextApp
 {
@@ -53,13 +54,14 @@ namespace AutoTextApp
     public class BlockItem
     {
         public string MetricCode { get; set; }
-        public string[] Variables { get; set; }
+        [JsonProperty("Variables")]
+        public string[] VariableCodes { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public BlockItemType Type { get; set; }
 
         public override string ToString()
         {
-            var temp = string.Join(",", Variables);
+            var temp = string.Join(",", VariableCodes);
             return $"{MetricCode}->{temp}";
         }
     }
