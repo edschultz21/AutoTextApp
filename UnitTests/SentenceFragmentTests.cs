@@ -14,10 +14,15 @@ namespace UnitTests
         [TestInitialize]
         public void TestInitialize()
         {
-            var definitions = Utils.ReadXmlData<AutoTextDefinitions>("Definitions1.xml");
-            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText("Data1.json"), typeof(AutoTextData));
+            _handlers = GetHandlers("Definitions1.xml", "Data1.json");
+        }
 
-            _handlers = new AutoTextHandlers(new AutoTextDefinitionsHandler(definitions), new AutoTextDataHandler(data));
+        private AutoTextHandlers GetHandlers(string definitionFilename, string dataFilename)
+        {
+            var definitions = Utils.ReadXmlData<AutoTextDefinitions>(definitionFilename);
+            var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(dataFilename), typeof(AutoTextData));
+
+            return new AutoTextHandlers(new AutoTextDefinitionsHandler(definitions), new AutoTextDataHandler(data));
         }
 
         [TestMethod]
@@ -37,11 +42,26 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void TemplateFragment1()
+        {
+            var fragment = new TemplateFragment(_handlers, _handlers.DataHandler.Blocks[0].BlockItems[0], 
+                new AutoTextTemplate
+                {
+                    Metric = "[METRIC CODE]",
+                    Data = " with value of [ACTUAL VALUE] [DIR] by [PCT] percent"
+                });
+            var result = fragment.GetFragment();
+            Assert.AreEqual("MSI with value of 2.4 were up by 12.3 percent", result);
+        }
+
+        [TestMethod]
         public void SentenceFragment1()
         {
-            var fragment = new SentenceBuilder(_handlers);
+            var handlers = GetHandlers("Definitions1.xml", "Data2.json");
+
+            var fragment = new SentenceBuilder(handlers);
             var result = fragment.GetFragment();
-            Assert.AreEqual("Median Sales Price were relatively unchanged for Single Family and softened 13.9 percent to 209000 for Townhouse/Condo. New Listings rose 7.5 percent to 82.5 for Single Family and fell 7.5 percent to 92.5 for Townhouse/Condo. Closed Sales were fairly even for Single Family and remained flat for Townhouse/Condo. New Listings were up 7.5 percent to 82.5 for Single Family and fell 7.5 percent to 92.5 for Townhouse/Condo. Closed Sales were about the same for Single Family and were down 27.5 percent to 264.7 for Mobile.", result);
+            Assert.AreEqual("Median Sales Price were relatively unchanged for Single Family and softened 13.9 percent to 209000 for Townhouse/Condo. New Listings rose 7.5 percent to 82.5 for Single Family and fell 7.5 percent to 92.5 for Townhouse/Condo. Closed Sales were fairly even for Single Family and remained flat for Townhouse/Condo.", result);
         }
     }
 }

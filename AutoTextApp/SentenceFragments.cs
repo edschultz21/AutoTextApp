@@ -20,9 +20,19 @@ namespace AutoTextApp
             _sentenceFragments = new List<ISentenceFragment>();
             foreach (var block in handlers.DataHandler.Blocks)
             {
+                // EZSTODO - BlockType 
+                //   Sentence - Keep as is and do not change order
+                //   Auto - Reorganize as needed
                 foreach (var blockItem in block.BlockItems)
                 {
-                    _sentenceFragments.Add(new StandardFragment(handlers, blockItem));
+                    if (blockItem.Templates != null)
+                    {
+                        _sentenceFragments.Add(new TemplateFragment(handlers, blockItem, blockItem.Templates));
+                    }
+                    else
+                    {
+                        _sentenceFragments.Add(new StandardFragment(handlers, blockItem));
+                    }
                 }
             }
         }
@@ -50,45 +60,38 @@ namespace AutoTextApp
 
     public class TemplateFragment : ISentenceFragment
     {
-        // Takes template, fragment objects and creates sentence fragment
-        // Create sentence fragments here
-        public string GetFragment()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class StandardFragment : ISentenceFragment
-    {
         private List<IClauseFragment> _dataFragments;
         private MetricFragment _metricFragment;
 
-        public StandardFragment(AutoTextHandlers handlers, BlockItem blockItem)
+        public TemplateFragment(AutoTextHandlers handlers, BlockItem blockItem, AutoTextTemplate templates)
         {
             _dataFragments = new List<IClauseFragment>();
 
             var metricParameters = new MetricFragment.Parameters
             {
                 MetricCode = blockItem.MetricCode,
-                Template = "[METRIC NAME]"
+                Template = templates.Metric
             };
             _metricFragment = new MetricFragment(handlers, metricParameters);
 
             var dataParameters = new DataFragment.Parameters
             {
                 MetricCode = blockItem.MetricCode,
-                Templates = new AutoTextTemplate
-                {
-                    Data = " [DIR] [PCT] percent to [ACTUAL VALUE]",
-                    FlatData = " [DIR]",
-                    Variable = " for [ACTUAL NAME]"
-                }
+                Templates = templates
             };
 
-            foreach (var variableCode in blockItem.VariableCodes)
+            if (blockItem.VariableCodes == null || blockItem.VariableCodes.Length == 0)
             {
-                dataParameters.VariableCode = variableCode;
+                dataParameters.VariableCode = null;
                 _dataFragments.Add(new DataFragment(handlers, dataParameters));
+            }
+            else
+            {
+                foreach (var variableCode in blockItem.VariableCodes)
+                {
+                    dataParameters.VariableCode = variableCode;
+                    _dataFragments.Add(new DataFragment(handlers, dataParameters));
+                }
             }
         }
 
@@ -108,8 +111,27 @@ namespace AutoTextApp
 
             return result.ToString();
         }
+    }
 
-        // Takes template, fragment objects and creates sentence fragment
-        // Create sentence fragments here
+    public class StandardFragment : ISentenceFragment
+    {
+        private TemplateFragment _templateFragment;
+
+        public StandardFragment(AutoTextHandlers handlers, BlockItem blockItem)
+        {
+            var templates = new AutoTextTemplate
+            {
+                Metric = "[METRIC NAME]",
+                Data = " [DIR] [PCT] percent to [ACTUAL VALUE]",
+                FlatData = " [DIR]",
+                Variable = " for [ACTUAL NAME]"
+            };
+            _templateFragment = new TemplateFragment(handlers, blockItem, templates);
+        }
+
+        public string GetFragment()
+        {
+            return _templateFragment.GetFragment();
+        }
     }
 }

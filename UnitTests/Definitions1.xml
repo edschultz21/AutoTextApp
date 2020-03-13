@@ -44,8 +44,8 @@
     </Metric>
     <Metric>
       <Code>MSI</Code>
-      <ShortName>Months Supply Inventory</ShortName>
-      <LongName>MSI LongName</LongName>
+      <ShortName>MSI</ShortName>
+      <LongName>Months Supply Inventory</LongName>
       <IsPlural>true</IsPlural>
       <IsIncreasePositive>false</IsIncreasePositive>
     </Metric>

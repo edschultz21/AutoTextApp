@@ -9,15 +9,11 @@ namespace UnitTests
     [TestClass]
     public class ClauseFragmentTests
     {
-        private Random _random;
-        private int _seed;
         AutoTextHandlers _handlers;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _random = new Random(381654729);
-            _seed = _random.Next(int.MaxValue);
             _handlers = GetHandlers("Definitions1.xml", "Data1.json");
         }
 
@@ -27,6 +23,11 @@ namespace UnitTests
             var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(testDataFilename), typeof(AutoTextData));
 
             return new AutoTextHandlers(new AutoTextDefinitionsHandler(definitions), new AutoTextDataHandler(data));
+        }
+
+        private AutoTextTemplate GetTemplate(string data, string flatData)
+        {
+            return new AutoTextTemplate { Data = data, FlatData = flatData };
         }
 
         [TestMethod]
@@ -68,12 +69,7 @@ namespace UnitTests
                 new DataFragment.Parameters { 
                     MetricCode = "MSP",
                     VariableCode = "SF",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = "[ACTUAL VALUE]",
-                        FlatData = "[ACTUAL VALUE]",
-                        Variable = ""
-                    }
+                    Templates = GetTemplate("[ACTUAL VALUE]", "[ACTUAL VALUE]")
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("82.5", result);
@@ -87,12 +83,7 @@ namespace UnitTests
                 {
                     MetricCode = "MSP",
                     VariableCode = "SF",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = "[PREVIOUS VALUE]",
-                        FlatData = "[PREVIOUS VALUE]",
-                        Variable = ""
-                    }
+                    Templates = GetTemplate("[PREVIOUS VALUE]", "[PREVIOUS VALUE]")
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("92.5", result);
@@ -106,12 +97,7 @@ namespace UnitTests
                 {
                     MetricCode = "MSP",
                     VariableCode = "SF",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = "[PCT]",
-                        FlatData = "[PCT]",
-                        Variable = ""
-                    }
+                    Templates = GetTemplate("[PCT]", "[PCT]")
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("0.04", result);
@@ -126,12 +112,7 @@ namespace UnitTests
                 {
                     MetricCode = "CS",
                     VariableCode = "TC",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = template,
-                        FlatData = template,
-                        Variable = ""
-                    }
+                    Templates = GetTemplate(template, template)
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("92.5 82.5 0.04", result);
@@ -146,12 +127,7 @@ namespace UnitTests
                 {
                     MetricCode = "CS",
                     VariableCode = "TC",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = template,
-                        FlatData = template,
-                        Variable = ""
-                    }
+                    Templates = GetTemplate(template, template)
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("[METRIC NAME] 92.5 82.5 0.04 homes", result);
@@ -165,12 +141,7 @@ namespace UnitTests
                 {
                     MetricCode = "CS",
                     VariableCode = "TC",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = " [DIR] [PCT] percent to [ACTUAL VALUE]",
-                        FlatData = "[DIR]",
-                        Variable = ""
-                    }
+                    Templates = GetTemplate(" [DIR] [PCT] percent to [ACTUAL VALUE]", "[DIR]")
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("were relatively unchanged", result);
@@ -184,12 +155,7 @@ namespace UnitTests
                 {
                     MetricCode = "NL",
                     VariableCode = "TC",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = "[DIR] [PCT] percent to [ACTUAL VALUE]",
-                        FlatData = "[DIR]",
-                        Variable = ""
-                    }
+                    Templates = GetTemplate("[DIR] [PCT] percent to [ACTUAL VALUE]", "[DIR]")
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("were down 7.5 percent to 92.5", result);
@@ -203,12 +169,7 @@ namespace UnitTests
                 {
                     MetricCode = "NL",
                     VariableCode = "SF",
-                    Templates = new AutoTextTemplate
-                    {
-                        Data = "[DIR] [PCT]% to [Previous VALUE]",
-                        FlatData = "[DIR]",
-                        Variable = ""
-                    }
+                    Templates = GetTemplate("[DIR] [PCT]% to [Previous VALUE]", "[DIR]")
                 });
             var result = fragment.GetFragment();
             Assert.AreEqual("were up 7.5% to 92.5", result);

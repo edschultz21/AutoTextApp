@@ -57,11 +57,26 @@ namespace AutoTextApp
         public string[] VariableCodes { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public BlockItemType Type { get; set; }
+        public AutoTextTemplate Templates { get; set; }
 
         public override string ToString()
         {
             var temp = string.Join(",", VariableCodes);
             return $"{MetricCode}->{temp}";
+        }
+    }
+
+    public class AutoTextTemplate
+    {
+        public string Metric { get; set; }
+        public string MetricLocation { get; set; }
+        public string Data { get; set; }
+        public string FlatData { get; set; }
+        public string Variable { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Metric}; {MetricLocation}; {Data}; {FlatData}; {Variable}";
         }
     }
 

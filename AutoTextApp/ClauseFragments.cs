@@ -31,6 +31,11 @@ namespace AutoTextApp
 
         protected string ProcessMacros(object data, string template)
         {
+            if (string.IsNullOrEmpty(template))
+            {
+                return "";
+            }
+
             var result = template;
             var items = Regex.Matches(template, @"\[([^]]*)\]");
 
@@ -126,10 +131,6 @@ namespace AutoTextApp
             : base(handlers, parameters.Templates.Data)
         {
             _variableData = _handlers.DataHandler.GetVariableData(parameters.MetricCode, parameters.VariableCode);
-            if (_variableData == null)
-            {
-                throw new Exception($"Metric {parameters.MetricCode} or variable {parameters.VariableCode} not found"); // EZSTODO - needs correct exception
-            }
 
             _metric = handlers.DefinitionHandler.GetMetricDefinition(parameters.MetricCode);
             if (_metric == null)
@@ -170,10 +171,6 @@ namespace AutoTextApp
             : base(handlers, parameters.Template)
         {
             _variable = handlers.DefinitionHandler.GetVariableDefinition(parameters.VariableCode);
-            if (_variable == null)
-            {
-                throw new Exception($"Variable not found {parameters.VariableCode}"); // EZSTODO - needs correct exception
-            }
         }
 
         public override string GetFragment()

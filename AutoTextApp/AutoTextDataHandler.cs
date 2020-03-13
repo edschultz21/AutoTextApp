@@ -23,7 +23,7 @@ namespace AutoTextApp
                 x => Array.ForEach(x.BlockItems, y =>
                 {
                     y.MetricCode = y.MetricCode.ToUpper();
-                    y.VariableCodes = Array.ConvertAll(y.VariableCodes, z => z.ToUpper());
+                    y.VariableCodes = y.VariableCodes == null ? null : Array.ConvertAll(y.VariableCodes, z => z.ToUpper());
                 }));
             Array.ForEach(_data.Metrics, x => x.Code = x.Code.ToUpper());
             Array.ForEach(_data.Variables, x => x.Code = x.Code.ToUpper());
@@ -51,14 +51,23 @@ namespace AutoTextApp
         // EZSTODO - need to handle cases of missing metric/variable
         public VariableData GetVariableData(string metricCode, string variableCode)
         {
-            if (_metricToId.TryGetValue(metricCode, out int metricId) && _variableToId.TryGetValue(variableCode, out int variableId))
+            MetricData metricData = null;
+            if (_metricToId.TryGetValue(metricCode, out int metricId))
             {
-                var metricData = _data.MetricData.FirstOrDefault(x => x.Id == metricId);
-                if (metricData != null)
+                metricData = _data.MetricData.FirstOrDefault(x => x.Id == metricId);
+            }
+            if (metricData != null)
+            {
+                if (string.IsNullOrEmpty(variableCode))
+                {
+                    return metricData.VariableData.FirstOrDefault();
+                }
+                else if (_variableToId.TryGetValue(variableCode, out int variableId))
                 {
                     return metricData.VariableData.FirstOrDefault(x => x.Id == variableId);
                 }
             }
+
 
             return null;
         }
