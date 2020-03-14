@@ -228,3 +228,24 @@ More comments from Andrei:
 
     and for direction words, that should probably come from Provider where you pass in direction and maybe magnitude and it gives you word to use.. 
 
+Yet more comments from Andrei:
+    AutoTextHandlers - split into IDataProvider and IDefinitionProvider
+    GetFragment - ONLY generates a string (no logic)
+    Everything an element needs to know should be known at construction
+
+    DataFragment - ONLY needs metric direction. yet passed everything
+      Hence, only need to keep ONE template (for normal flat)
+    VariableFragment - pass variable fragment(?) so it does not need to know
+      how to get constructed (???)
+
+    Even for macro processing a good assumption to work from, is, say you wanted to change a format, 
+    or support multiple formats for macros.
+
+    Well, these classes would be responsible for assembling the fragments.
+    ​or building fragments themselves, not verifying that user passed some valid configuration.
+    ​When you have to use helper methods to create unit tests, thats integration tests (smile)
+    that was something ive read that really stuck in my head.
+
+    Like that shouold be done using something like MetricFragmentBuilder
+    ​which would be responsible for 1) verifying config 2) building metricfragments.
+    Then we could assume that metricfragment would always be valid.
