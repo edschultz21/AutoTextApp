@@ -6,17 +6,17 @@ using System.Text.RegularExpressions;
 // [MetricFragment] [MetricLocationFragment]? [ChangeFragment] [VariableFragment]?
 namespace AutoTextApp
 {
-    public interface IClauseFragment
+    public interface IClauseFragment_Old
     {
         string GetFragment();
     }
 
-    public abstract class ClauseFragment : IClauseFragment
+    public abstract class ClauseFragment_Old : IClauseFragment_Old
     {
         protected string _template { get; set; }
         protected AutoTextHandlers _handlers { get; set; }
 
-        protected ClauseFragment(AutoTextHandlers handlers, string template)
+        protected ClauseFragment_Old(AutoTextHandlers handlers, string template)
         {
             _handlers = handlers;
             _template = template;
@@ -73,7 +73,7 @@ namespace AutoTextApp
 
     // Handle "New Listings", "New Listings and Closed Sales"
     // [METRIC NAME/LONGNAME/CODE]
-    public class MetricFragment : ClauseFragment
+    public class MetricFragment_Old : ClauseFragment_Old
     {
         public class Parameters
         {
@@ -83,7 +83,7 @@ namespace AutoTextApp
 
         private readonly MetricDefinition _metric;
 
-        public MetricFragment(AutoTextHandlers handlers, Parameters parameters) : base(handlers, parameters.Template)
+        public MetricFragment_Old(AutoTextHandlers handlers, Parameters parameters) : base(handlers, parameters.Template)
         {
             _metric = handlers.DefinitionHandler.GetMetricDefinition(parameters.MetricCode);
             if (_metric == null)
@@ -100,9 +100,9 @@ namespace AutoTextApp
 
     // Handle "", "in Franklin, Hamilton and Saint Lawrence Counties"
     // [METRIC LOCATIONS]
-    public class MetricLocationFragment : ClauseFragment
+    public class MetricLocationFragment_Old : ClauseFragment_Old
     {
-        public MetricLocationFragment(AutoTextHandlers handlers, string template) : base(handlers, template) { }
+        public MetricLocationFragment_Old(AutoTextHandlers handlers, string template) : base(handlers, template) { }
 
         public override string GetFragment()
         {
@@ -113,7 +113,7 @@ namespace AutoTextApp
     // Handle "increased 1.1%", "stayed the same", "decreased 13.9 percent to $209,000"
     // Where  [PERCENT] -("%", " percent")
     // [DIR] [PCT] [ACTUAL/PREVIOUS VALUE]
-    public class DataFragment : ClauseFragment
+    public class DataFragment_Old : ClauseFragment_Old
     {
         public class Parameters
         {
@@ -124,10 +124,10 @@ namespace AutoTextApp
 
         private readonly VariableData _variableData;
         private readonly MetricDefinition _metric;
-        private readonly VariableFragment _variableFragment;
+        private readonly VariableFragment_Old _variableFragment;
         private readonly string _flatTemplate;
 
-        public DataFragment(AutoTextHandlers handlers, Parameters parameters)
+        public DataFragment_Old(AutoTextHandlers handlers, Parameters parameters)
             : base(handlers, parameters.Templates.Data)
         {
             _variableData = _handlers.DataHandler.GetVariableData(parameters.MetricCode, parameters.VariableCode);
@@ -138,8 +138,8 @@ namespace AutoTextApp
                 throw new Exception($"Metric not found {parameters.MetricCode}"); // EZSTODO - needs correct exception
             }
 
-            _variableFragment = new VariableFragment(handlers, 
-                new VariableFragment.Parameters 
+            _variableFragment = new VariableFragment_Old(handlers, 
+                new VariableFragment_Old.Parameters 
                 { 
                     VariableCode = parameters.VariableCode, 
                     Template = parameters.Templates.Variable
@@ -149,15 +149,15 @@ namespace AutoTextApp
 
         public override string GetFragment()
         {
-            _handlers.DefinitionHandler.UpdateDirectionText(_metric, _variableData.Direction);
-            var template = _variableData.Direction == DirectionType.FLAT ? _flatTemplate : _template;
+            _handlers.DefinitionHandler.UpdateDirectionText(_metric, _variableData.Direction_Old);
+            var template = _variableData.Direction_Old == DirectionType.FLAT ? _flatTemplate : _template;
             return ProcessMacros(_variableData, template) + _variableFragment.GetFragment();
         }
     }
 
     // Handle "for Single Family", "for Single Family and Townhouse/Condos"
     // [ACTUAL NAME/LONGNAME]
-    public class VariableFragment : ClauseFragment
+    public class VariableFragment_Old : ClauseFragment_Old
     {
         public class Parameters
         {
@@ -167,7 +167,7 @@ namespace AutoTextApp
 
         private readonly VariableDefinition _variable;
 
-        public VariableFragment(AutoTextHandlers handlers, Parameters parameters)
+        public VariableFragment_Old(AutoTextHandlers handlers, Parameters parameters)
             : base(handlers, parameters.Template)
         {
             _variable = handlers.DefinitionHandler.GetVariableDefinition(parameters.VariableCode);

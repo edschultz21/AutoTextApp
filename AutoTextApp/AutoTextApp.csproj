@@ -47,10 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoTextData.cs" />
-    <Compile Include="AutoTextDataHandler.cs" />
-    <Compile Include="AutoTextDefinitionsHandler.cs" />
+    <Compile Include="AutoTextDataProvider.cs" />
+    <Compile Include="AutoTextDefinitionsProvider.cs" />
     <Compile Include="AutoTextDefinitions.cs" />
     <Compile Include="AutoTextHandlers.cs" />
+    <Compile Include="FragmentGenerators.cs" />
+    <Compile Include="Fragments.cs" />
     <Compile Include="SentenceFragments.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="ClauseFragments.cs" />

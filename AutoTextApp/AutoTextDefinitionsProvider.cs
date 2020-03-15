@@ -3,7 +3,13 @@ using System.Linq;
 
 namespace AutoTextApp
 {
-    public class AutoTextDefinitionsHandler
+    public interface IDefinitionProvider
+    {
+        MetricDefinition GetMetricDefinition(string metricCode);
+        VariableDefinition GetVariableDefinition(string variableCode);
+    }
+
+    public class AutoTextDefinitionsProvider : IDefinitionProvider
     {
         private const string DIR_TEXT = "DIR";
 
@@ -11,7 +17,7 @@ namespace AutoTextApp
         private MacroVariableKeyedDictionary _macroVariables; // Macro -> Value
         private Random _random = new Random(381654729);
 
-        public AutoTextDefinitionsHandler(AutoTextDefinitions definitions)
+        public AutoTextDefinitionsProvider(AutoTextDefinitions definitions)
         {
             _definitions = definitions;
 
@@ -44,9 +50,10 @@ namespace AutoTextApp
             return _macroVariables.FirstOrDefault(x => x.Name == macroName.TrimStart('[').TrimEnd(']'));
         }
 
-        private DirectionType GetDirection(MetricDefinition metric, DirectionType direction)
+        // EZSTODO - find good home for this
+        public static DirectionType GetDirection(bool isIncreasePostive, DirectionType direction)
         {
-            if (direction != DirectionType.FLAT && !metric.IsIncreasePostive)
+            if (direction != DirectionType.FLAT && !isIncreasePostive)
             {
                 if (direction == DirectionType.NEGATIVE)
                 {
@@ -58,11 +65,12 @@ namespace AutoTextApp
             return direction;
         }
 
+        // EZSTODO - does not belong here
         public void UpdateDirectionText(MetricDefinition metric, DirectionType direction)
         {
             var directionText = "";
 
-            direction = GetDirection(metric, direction);
+            direction = GetDirection(metric.IsIncreasePostive, direction); // EZSTODO - Remove
             if (direction == DirectionType.FLAT)
             {
                 var index = _random.Next(_definitions.Synonyms.Flat.Length);
@@ -85,7 +93,7 @@ namespace AutoTextApp
         // EZSTODO - Remove
         public string GetDirectionText(MetricDefinition metric, DirectionType direction, Random random)
         {
-            direction = GetDirection(metric, direction);
+            direction = GetDirection(metric.IsIncreasePostive, direction);
             if (direction == DirectionType.FLAT)
             {
                 var index = random.Next(_definitions.Synonyms.Flat.Length);

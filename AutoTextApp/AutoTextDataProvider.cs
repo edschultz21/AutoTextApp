@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoTextApp
 {
-    public class AutoTextDataHandler
+    public interface IDataProvider
+    {
+        VariableData GetVariableData(string metricCode, string variableCode);
+    }
+
+    public class AutoTextDataProvider : IDataProvider
     {
         private readonly AutoTextData _data;
         private Dictionary<string, int> _metricToId;
@@ -14,7 +17,7 @@ namespace AutoTextApp
 
         public Block[] Blocks { get { return _data.Blocks; } } // EZSTODO - remove?
 
-        public AutoTextDataHandler(AutoTextData data)
+        public AutoTextDataProvider(AutoTextData data)
         {
             _data = data;
 
@@ -37,11 +40,11 @@ namespace AutoTextApp
             {
                 foreach (var variableData in metricData.VariableData)
                 {
-                    variableData.Direction = DirectionType.FLAT;
+                    variableData.Direction_Old = DirectionType.FLAT;
                     if (variableData.PercentChange >= 0.05)
                     {
                         var isPositive = (variableData.CurrentValue - variableData.PreviousValue) > 0;
-                        variableData.Direction = isPositive ? DirectionType.POSITIVE : DirectionType.NEGATIVE;
+                        variableData.Direction_Old = isPositive ? DirectionType.POSITIVE : DirectionType.NEGATIVE;
                     }
                 }
             }
@@ -67,7 +70,6 @@ namespace AutoTextApp
                     return metricData.VariableData.FirstOrDefault(x => x.Id == variableId);
                 }
             }
-
 
             return null;
         }

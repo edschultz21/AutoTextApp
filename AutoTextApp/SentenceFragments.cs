@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoTextApp
 {
@@ -60,21 +58,21 @@ namespace AutoTextApp
 
     public class TemplateFragment : ISentenceFragment
     {
-        private List<IClauseFragment> _dataFragments;
-        private MetricFragment _metricFragment;
+        private List<IClauseFragment_Old> _dataFragments;
+        private MetricFragment_Old _metricFragment;
 
         public TemplateFragment(AutoTextHandlers handlers, BlockItem blockItem, AutoTextTemplate templates)
         {
-            _dataFragments = new List<IClauseFragment>();
+            _dataFragments = new List<IClauseFragment_Old>();
 
-            var metricParameters = new MetricFragment.Parameters
+            var metricParameters = new MetricFragment_Old.Parameters
             {
                 MetricCode = blockItem.MetricCode,
                 Template = templates.Metric
             };
-            _metricFragment = new MetricFragment(handlers, metricParameters);
+            _metricFragment = new MetricFragment_Old(handlers, metricParameters);
 
-            var dataParameters = new DataFragment.Parameters
+            var dataParameters = new DataFragment_Old.Parameters
             {
                 MetricCode = blockItem.MetricCode,
                 Templates = templates
@@ -83,14 +81,14 @@ namespace AutoTextApp
             if (blockItem.VariableCodes == null || blockItem.VariableCodes.Length == 0)
             {
                 dataParameters.VariableCode = null;
-                _dataFragments.Add(new DataFragment(handlers, dataParameters));
+                _dataFragments.Add(new DataFragment_Old(handlers, dataParameters));
             }
             else
             {
                 foreach (var variableCode in blockItem.VariableCodes)
                 {
                     dataParameters.VariableCode = variableCode;
-                    _dataFragments.Add(new DataFragment(handlers, dataParameters));
+                    _dataFragments.Add(new DataFragment_Old(handlers, dataParameters));
                 }
             }
         }

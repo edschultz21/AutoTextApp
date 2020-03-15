@@ -88,7 +88,7 @@ namespace AutoTextApp
         public MetricData[] MetricData { get; set; }
     }
 
-    public class VariableData
+    public class VariableData : IFragmentData
     {
         public int Id { get; set; }
 
@@ -103,7 +103,7 @@ namespace AutoTextApp
         public string DataFormat { get; set; }
 
         [JsonIgnore]
-        public DirectionType Direction { get; set; }
+        public DirectionType Direction_Old { get; set; }
 
         public override string ToString()
         {

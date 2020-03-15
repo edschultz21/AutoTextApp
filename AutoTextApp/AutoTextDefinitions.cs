@@ -3,7 +3,11 @@ using System.Xml.Serialization;
 
 namespace AutoTextApp
 {
-    public class MetricDefinition
+    public interface IFragmentData
+    {
+    }
+
+    public class MetricDefinition : IFragmentData
     {
         public string Code { get; set; }
 
@@ -21,7 +25,7 @@ namespace AutoTextApp
         }
     }
 
-    public class VariableDefinition
+    public class VariableDefinition : IFragmentData
     {
         public string Code { get; set; }
 
@@ -47,6 +51,7 @@ namespace AutoTextApp
         public string[] Flat { get; set; }
     }
 
+    // EZSTODO - Does not belong here
     public class MacroVariableKeyedDictionary : KeyedCollection<string, MacroVariable>
     {
         protected override string GetKeyForItem(MacroVariable item)
