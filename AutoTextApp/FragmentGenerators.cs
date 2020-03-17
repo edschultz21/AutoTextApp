@@ -6,15 +6,36 @@ using System.Threading.Tasks;
 
 namespace AutoTextApp
 {
-    public class FragmentGenerators
+    public interface IFragmentGenerators
+    {
+        MetricFragment CreateMetricFragment(string metricCode, string template);
+
+        VariableFragment CreateVariableFragment(string variableCode, string template);
+
+        DataFragment CreateDataFragment(
+            VariableFragment variableFragment,
+            string metricCode,
+            string variableCode,
+            string template,
+            string flatTemplate);
+
+        SentenceFragment CreateSentenceFragment(string metricCode, string[] variableCodes, AutoTextTemplate templates);
+    }
+
+    public class FragmentGenerators : IFragmentGenerators
     {
         private IDefinitionProvider _definitionProvider;
         private IDataProvider _dataProvider;
+        private IDirection _direction;
 
-        public FragmentGenerators(IDefinitionProvider definitionProvider, IDataProvider dataProvider)
+        public FragmentGenerators(
+            IDefinitionProvider definitionProvider, 
+            IDataProvider dataProvider,
+            IDirection direction)
         {
             _definitionProvider = definitionProvider;
             _dataProvider = dataProvider;
+            _direction = direction;
         }
 
         public MetricFragment CreateMetricFragment(string metricCode, string template)
@@ -39,7 +60,7 @@ namespace AutoTextApp
             return new VariableFragment(variable, template, variableCode);
         }
 
-        private DirectionType GetDirection(bool isIncreasePostive, DirectionType direction)
+        private DirectionType GetDirection(DirectionType direction, bool isIncreasePostive)
         {
             if (direction != DirectionType.FLAT && !isIncreasePostive)
             {
@@ -67,10 +88,32 @@ namespace AutoTextApp
             }
 
             var variableData = _dataProvider.GetVariableData(metricCode, variableCode);
-            var actualDirection = GetDirection(metric.IsIncreasePostive, variableData.Direction_Old);
+            var actualDirection = GetDirection(variableData.Direction_Old, metric.IsIncreasePostive);
             var actualTemplate = variableData.Direction_Old == DirectionType.FLAT ? flatTemplate : template;
+            var directionText = _direction.GetDirectionText(actualDirection, metric.IsIncreasePostive);
 
-            return new DataFragment(variableData, actualTemplate, variableCode, variableFragment, actualDirection);
+            return new DataFragment(variableData, actualTemplate, variableCode, variableFragment, actualDirection, directionText);
+        }
+
+        public SentenceFragment CreateSentenceFragment(string metricCode, string[] variableCodes, AutoTextTemplate templates)
+        {
+            var sentenceFragment = new SentenceFragment();
+
+            var metric = CreateMetricFragment(metricCode, templates.Metric);
+            sentenceFragment.AddMetric(metric);
+            if (variableCodes != null)
+            {
+                foreach (var variableCode in variableCodes)
+                {
+                    var variable = CreateVariableFragment(variableCode, templates.Variable);
+                    var data = CreateDataFragment(variable, metricCode, variableCode, templates.Data, templates.FlatData);
+                    sentenceFragment.AddData(data);
+                }
+            }
+
+            return sentenceFragment;
         }
     }
+
+
 }

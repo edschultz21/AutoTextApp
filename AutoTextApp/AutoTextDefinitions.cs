@@ -51,23 +51,6 @@ namespace AutoTextApp
         public string[] Flat { get; set; }
     }
 
-    // EZSTODO - Does not belong here
-    public class MacroVariableKeyedDictionary : KeyedCollection<string, MacroVariable>
-    {
-        protected override string GetKeyForItem(MacroVariable item)
-        {
-            return item.Name;
-        }
-    }
-
-    public class MacroVariable
-    {
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public string Value { get; set; }
-        public string Format { get; set; }
-    }
-
     public class AutoTextDefinitions
     {
         [XmlArrayItem(typeof(MetricDefinition), ElementName = "Metric")]

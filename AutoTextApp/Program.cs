@@ -10,10 +10,7 @@ namespace AutoTextApp
             var definitions = Utils.ReadXmlData<AutoTextDefinitions>(@"..\..\..\UnitTests\Definitions1.xml");
             var data = (AutoTextData)JsonConvert.DeserializeObject(File.ReadAllText(@"..\..\..\UnitTests\Data1.json"), typeof(AutoTextData));
 
-            var handlers = new AutoTextHandlers(new AutoTextDefinitionsProvider(definitions), new AutoTextDataProvider(data));
-
-            var fragment = new SentenceBuilder(handlers);
-            var result = fragment.GetFragment();
+            var autoText = new AutoTextMain(definitions, data);
         }
     }
 }

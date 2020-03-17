@@ -5,6 +5,22 @@ namespace UnitTests
 {
     public class TestDefinitionProvider : IDefinitionProvider
     {
+        public string GetDirectionText(DirectionType direction, bool isIncreasePostive)
+        {
+            if (direction == DirectionType.FLAT)
+            {
+                return "stayed flat";
+            }
+            else if (direction == DirectionType.POSITIVE)
+            {
+                return "went up";
+            }
+            else // direction == DirectionType.NEGATIVE
+            {
+                return "went down";
+            }
+        }
+
         public MetricDefinition GetMetricDefinition(string metricCode)
         {
             switch (metricCode.ToUpper())
