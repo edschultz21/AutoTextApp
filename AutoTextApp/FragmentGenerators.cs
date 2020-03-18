@@ -1,44 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoTextApp
 {
     public interface IFragmentGenerators
     {
-        MetricFragment CreateMetricFragment(string metricCode, string template);
+        MetricFragment CreateMetricFragment(string metricCode);
 
-        VariableFragment CreateVariableFragment(string variableCode, string template);
+        VariableFragment CreateVariableFragment(string variableCode);
 
         DataFragment CreateDataFragment(
             VariableFragment variableFragment,
             string metricCode,
-            string variableCode,
-            string template,
-            string flatTemplate);
+            string variableCode);
 
-        SentenceFragment CreateSentenceFragment(string metricCode, string[] variableCodes, AutoTextTemplate templates);
+        SentenceFragment CreateSentenceFragment(string metricCode, string[] variableCodes);
     }
 
     public class FragmentGenerators : IFragmentGenerators
     {
         private IDefinitionProvider _definitionProvider;
         private IDataProvider _dataProvider;
-        private IDirection _direction;
 
         public FragmentGenerators(
             IDefinitionProvider definitionProvider, 
-            IDataProvider dataProvider,
-            IDirection direction)
+            IDataProvider dataProvider)
         {
             _definitionProvider = definitionProvider;
             _dataProvider = dataProvider;
-            _direction = direction;
         }
 
-        public MetricFragment CreateMetricFragment(string metricCode, string template)
+        public MetricFragment CreateMetricFragment(string metricCode)
         {
             var metric = _definitionProvider.GetMetricDefinition(metricCode);
             if (metric == null)
@@ -46,10 +37,10 @@ namespace AutoTextApp
                 throw new Exception($"Metric not found {metricCode}"); // EZSTODO - needs correct exception
             }
 
-            return new MetricFragment(metric, template, metricCode);
+            return new MetricFragment(metric, metricCode);
         }
 
-        public VariableFragment CreateVariableFragment(string variableCode, string template)
+        public VariableFragment CreateVariableFragment(string variableCode)
         {
             var variable = _definitionProvider.GetVariableDefinition(variableCode);
             if (variable == null)
@@ -57,7 +48,7 @@ namespace AutoTextApp
                 throw new Exception($"Variable not found {variableCode}"); // EZSTODO - needs correct exception
             }
 
-            return new VariableFragment(variable, template, variableCode);
+            return new VariableFragment(variable, variableCode);
         }
 
         private DirectionType GetDirection(DirectionType direction, bool isIncreasePostive)
@@ -77,9 +68,7 @@ namespace AutoTextApp
         public DataFragment CreateDataFragment(
             VariableFragment variableFragment,
             string metricCode,
-            string variableCode,
-            string template,
-            string flatTemplate)
+            string variableCode)
         {
             var metric = _definitionProvider.GetMetricDefinition(metricCode);
             if (metric == null)
@@ -88,25 +77,23 @@ namespace AutoTextApp
             }
 
             var variableData = _dataProvider.GetVariableData(metricCode, variableCode);
-            var actualDirection = GetDirection(variableData.Direction_Old, metric.IsIncreasePostive);
-            var actualTemplate = variableData.Direction_Old == DirectionType.FLAT ? flatTemplate : template;
-            var directionText = _direction.GetDirectionText(actualDirection, metric.IsIncreasePostive);
+            var actualDirection = GetDirection(variableData.Direction, metric.IsIncreasePostive);
 
-            return new DataFragment(variableData, actualTemplate, variableCode, variableFragment, actualDirection, directionText);
+            return new DataFragment(variableData, variableCode, variableFragment, actualDirection);
         }
 
-        public SentenceFragment CreateSentenceFragment(string metricCode, string[] variableCodes, AutoTextTemplate templates)
+        public SentenceFragment CreateSentenceFragment(string metricCode, string[] variableCodes)
         {
             var sentenceFragment = new SentenceFragment();
 
-            var metric = CreateMetricFragment(metricCode, templates.Metric);
+            var metric = CreateMetricFragment(metricCode);
             sentenceFragment.AddMetric(metric);
             if (variableCodes != null)
             {
                 foreach (var variableCode in variableCodes)
                 {
-                    var variable = CreateVariableFragment(variableCode, templates.Variable);
-                    var data = CreateDataFragment(variable, metricCode, variableCode, templates.Data, templates.FlatData);
+                    var variable = CreateVariableFragment(variableCode);
+                    var data = CreateDataFragment(variable, metricCode, variableCode);
                     sentenceFragment.AddData(data);
                 }
             }

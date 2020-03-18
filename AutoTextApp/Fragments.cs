@@ -5,20 +5,12 @@ namespace AutoTextApp
 {
     public interface IClauseFragment
     {
-        string Template { get; }
-
         IFragmentData Data { get; }
     }
 
     public abstract class ClauseFragment : IClauseFragment
     {
-        public string Template { get; private set; }
         public abstract IFragmentData Data { get; }
-
-        public ClauseFragment(string template)
-        {
-            Template = template;
-        }
     }
 
     public class MetricFragment : ClauseFragment
@@ -27,8 +19,7 @@ namespace AutoTextApp
         public MetricDefinition Metric { get; set; }
         public override IFragmentData Data { get { return Metric; } }
 
-        public MetricFragment(MetricDefinition metric, string template, string metricCode) :
-            base(template)
+        public MetricFragment(MetricDefinition metric, string metricCode)
         {
             Metric = metric;
             MetricCode = metricCode;
@@ -40,8 +31,7 @@ namespace AutoTextApp
         public string MetricLocation { get; private set; }
         public override IFragmentData Data { get { return null; } }
 
-        public MetricLocationFragment(IFragmentData data, string template, string metricLocation) :
-            base(template)
+        public MetricLocationFragment(IFragmentData data, string metricLocation)
         {
             MetricLocation = metricLocation;
         }
@@ -53,23 +43,18 @@ namespace AutoTextApp
         public VariableData VariableData { get; set; }
         public VariableFragment VariableFragment { get; set; }
         public DirectionType Direction { get; set; }
-        public string DirectionText { get; set; }
         public override IFragmentData Data { get { return VariableData; } }
 
         public DataFragment(
             VariableData variableData, 
-            string template, 
             string variableCode, 
             VariableFragment variableFragment, 
-            DirectionType direction,
-            string directionText) :
-            base(template)
+            DirectionType direction)
         {
             VariableData = variableData;
             VariableCode = variableCode;
             VariableFragment = variableFragment;
             Direction = direction;
-            DirectionText = directionText;
         }
     }
 
@@ -79,8 +64,7 @@ namespace AutoTextApp
         public VariableDefinition Variable { get; set; }
         public override IFragmentData Data { get { return Variable; } }
 
-        public VariableFragment(VariableDefinition variable, string template, string variableCode) :
-            base(template)
+        public VariableFragment(VariableDefinition variable, string variableCode)
         {
             Variable = variable;
             VariableCode = variableCode;
@@ -89,6 +73,10 @@ namespace AutoTextApp
 
     public interface ISentenceFragment
     {
+        MetricFragment MetricFragment { get; }
+
+        List<DataFragment> DataFragments { get; }
+
         void AddMetric(MetricFragment metric);
 
         void AddData(DataFragment data);
@@ -97,7 +85,7 @@ namespace AutoTextApp
     public class SentenceFragment : ISentenceFragment
     {
         public MetricFragment MetricFragment { get; set; }
-        public List<IClauseFragment> DataFragments { get; set; } = new List<IClauseFragment>();
+        public List<DataFragment> DataFragments { get; set; } = new List<DataFragment>();
 
         public void AddMetric(MetricFragment metric)
         {

@@ -51,12 +51,14 @@
     <Compile Include="AutoTextDefinitionsProvider.cs" />
     <Compile Include="AutoTextDefinitions.cs" />
     <Compile Include="AutoTextMain.cs" />
+    <Compile Include="Basic10KRenderer.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="FragmentGenerators.cs" />
     <Compile Include="Fragments.cs" />
     <Compile Include="MacroVariableProcessor.cs" />
     <Compile Include="MacroVariables.cs" />
     <Compile Include="SentenceFragments.cs" />
+    <Compile Include="Templates.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

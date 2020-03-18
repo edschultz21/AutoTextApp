@@ -10,7 +10,7 @@ namespace AutoTextApp
     {
         DirectionType GetDirection(bool isIncreasePostive, DirectionType direction);
 
-        string GetDirectionText(DirectionType direction, bool isIncreasePostive);
+        string GetDirectionText(DirectionType direction);
     }
 
     public class Direction : IDirection
@@ -37,9 +37,8 @@ namespace AutoTextApp
             return direction;
         }
 
-        public string GetDirectionText(DirectionType direction, bool isIncreasePostive)
+        public string GetDirectionText(DirectionType direction)
         {
-            direction = GetDirection(isIncreasePostive, direction);
             if (direction == DirectionType.FLAT)
             {
                 var index = _random.Next(_synonyms.Flat.Length);

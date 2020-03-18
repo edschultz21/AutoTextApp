@@ -11,25 +11,22 @@ namespace UnitTests
         private IDataProvider _dataProvider;
         private IMacroVariables _macroVariables;
 
-        private AutoTextTemplate GetStandardTemplates()
-        {
-            return new AutoTextTemplate
-            {
-                Metric = "[METRIC NAME]",
-                Data = " [DIR] [PCT] percent to [ACTUAL VALUE]",
-                FlatData = " [DIR]",
-                Variable = " for [ACTUAL NAME]"
-            };
-        }
-
         [TestInitialize]
         public void TestInitialize()
         {
             _definitionProvider = new TestDefinitionProvider();
             _dataProvider = new TestDataProvider();
-            var direction = new Direction(TestSynonyms.GetSynonyms());
-            _generator = new FragmentGenerators(_definitionProvider, _dataProvider, direction);
+            _generator = new FragmentGenerators(_definitionProvider, _dataProvider);
             _macroVariables = new TestMacroVariables();
+        }
+
+        private void ValidateDataFragment(VariableData variable, int id, float current, float previous, float percent, DirectionType direction)
+        {
+            Assert.AreEqual(id, variable.Id);
+            Assert.AreEqual(current, variable.CurrentValue);
+            Assert.AreEqual(previous, variable.PreviousValue);
+            Assert.AreEqual(percent, variable.PercentChange);
+            Assert.AreEqual(direction, variable.Direction);
         }
 
         [TestMethod]
@@ -55,104 +52,73 @@ namespace UnitTests
         {
             var variable = _dataProvider.GetVariableData("CS", "SF");
 
-            Assert.AreEqual(101, variable.Id);
-            Assert.AreEqual(82.5F, variable.CurrentValue);
-            Assert.AreEqual(92.5F, variable.PreviousValue);
-            Assert.AreEqual(0.04F, variable.PercentChange);
-            Assert.AreEqual(DirectionType.FLAT, variable.Direction_Old);
+            ValidateDataFragment(variable, 101, 82.5F, 92.5F, 0.04F, DirectionType.FLAT);
         }
 
         [TestMethod]
         public void MetricFragment()
         {
-            var metric = _generator.CreateMetricFragment("NL", "[METRIC CODE]");
+            var metric = _generator.CreateMetricFragment("NL");
 
             Assert.AreEqual("NL", metric.MetricCode);
-            Assert.AreEqual("[METRIC CODE]", metric.Template);
             Assert.AreEqual("New Listings", metric.Metric.ShortName);
         }
 
         [TestMethod]
         public void VariableFragment()
         {
-            var variable = _generator.CreateVariableFragment("SF", "[ACTUAL NAME]");
+            var variable = _generator.CreateVariableFragment("SF");
 
             Assert.AreEqual("SF", variable.VariableCode);
-            Assert.AreEqual("[ACTUAL NAME]", variable.Template);
             Assert.AreEqual("Single Family", variable.Variable.ShortName);
         }
 
         [TestMethod]
         public void DataFragment()
         {
-            var variable = _generator.CreateVariableFragment("SF", "[ACTUAL NAME]");
-            var data = _generator.CreateDataFragment(variable, "CS", "SF", "[DIR] [PCT] percent to [ACTUAL VALUE]", "[DIR]");
+            var variable = _generator.CreateVariableFragment("SF");
+            var data = _generator.CreateDataFragment(variable, "CS", "SF");
 
             Assert.AreEqual("SF", data.VariableCode);
-            Assert.AreEqual("[ACTUAL NAME]", data.VariableFragment.Template);
-            Assert.AreEqual(101, data.VariableData.Id);
-            Assert.AreEqual(82.5F, data.VariableData.CurrentValue);
-            Assert.AreEqual(92.5F, data.VariableData.PreviousValue);
-            Assert.AreEqual(0.04F, data.VariableData.PercentChange);
-            Assert.AreEqual(DirectionType.FLAT, data.Direction);
-            Assert.AreEqual("[DIR]", data.Template);
+            ValidateDataFragment(data.VariableData, 101, 82.5F, 92.5F, 0.04F, DirectionType.FLAT);
         }
 
         [TestMethod]
         public void DataFragmentNegativeDir()
         {
-            var variable = _generator.CreateVariableFragment("SF", "[ACTUAL LONGNAME]");
-            var data = _generator.CreateDataFragment(variable, "NL", "SF", "[DIR] [PCT] percent to [ACTUAL VALUE]", "[DIR]");
+            var variable = _generator.CreateVariableFragment("SF");
+            var data = _generator.CreateDataFragment(variable, "NL", "SF");
 
             Assert.AreEqual("SF", data.VariableCode);
-            Assert.AreEqual("[ACTUAL LONGNAME]", data.VariableFragment.Template);
-            Assert.AreEqual(101, data.VariableData.Id);
-            Assert.AreEqual(82.5F, data.VariableData.CurrentValue);
-            Assert.AreEqual(92.5F, data.VariableData.PreviousValue);
-            Assert.AreEqual(7.5F, data.VariableData.PercentChange);
-            Assert.AreEqual(DirectionType.NEGATIVE, data.Direction);
-            Assert.AreEqual("[DIR] [PCT] percent to [ACTUAL VALUE]", data.Template);
+            ValidateDataFragment(data.VariableData, 101, 82.5F, 92.5F, 7.5F, DirectionType.NEGATIVE);
         }
 
         [TestMethod]
         public void DataFragmentFlippedDir()
         {
-            var data = _generator.CreateDataFragment(null, "MSI", null, "[DIR] [PCT] percent to [ACTUAL VALUE]", "[DIR]");
+            var data = _generator.CreateDataFragment(null, "MSI", null);
 
-            Assert.AreEqual(-1, data.VariableData.Id);
-            Assert.AreEqual(2.4F, data.VariableData.CurrentValue);
-            Assert.AreEqual(7.2F, data.VariableData.PreviousValue);
-            Assert.AreEqual(12.3F, data.VariableData.PercentChange);
             Assert.AreEqual(DirectionType.POSITIVE, data.Direction);
-            Assert.AreEqual("[DIR] [PCT] percent to [ACTUAL VALUE]", data.Template);
+            ValidateDataFragment(data.VariableData, -1, 2.4F, 7.2F, 12.3F, DirectionType.NEGATIVE);
         }
 
         [TestMethod]
         public void SentenceFragment1()
         {
-            var sentence = _generator.CreateSentenceFragment("MSP", new string[] { "SF", "TC" }, GetStandardTemplates());
+            var sentence = _generator.CreateSentenceFragment("MSP", new string[] { "SF", "TC" });
 
             Assert.AreEqual("MSP", sentence.MetricFragment.MetricCode);
-            Assert.AreEqual("[METRIC NAME]", sentence.MetricFragment.Template);
 
             var dataFragments = sentence.DataFragments;
             Assert.AreEqual(2, dataFragments.Count);
 
-            var data = sentence.DataFragments[0] as DataFragment;
-            Assert.AreEqual(DirectionType.FLAT, data.Direction);
-            Assert.AreEqual(" [DIR]", data.Template);
-            Assert.AreEqual("SF", data.VariableCode);
-            Assert.AreEqual(101, data.VariableData.Id);
-            Assert.AreEqual(82.5F, data.VariableData.CurrentValue);
+            var data = sentence.DataFragments[0];
             Assert.AreEqual("Single Family", data.VariableFragment.Variable.ShortName);
+            ValidateDataFragment(data.VariableData, 101, 82.5F, 92.5F, 0.04F, DirectionType.FLAT);
 
-            data = sentence.DataFragments[1] as DataFragment;
-            Assert.AreEqual(DirectionType.POSITIVE, data.Direction);
-            Assert.AreEqual(" [DIR] [PCT] percent to [ACTUAL VALUE]", data.Template);
-            Assert.AreEqual("TC", data.VariableCode);
-            Assert.AreEqual(102, data.VariableData.Id);
-            Assert.AreEqual(200000F, data.VariableData.PreviousValue);
+            data = sentence.DataFragments[1];
             Assert.AreEqual("Townhouse/Condo homes", data.VariableFragment.Variable.LongName);
+            ValidateDataFragment(data.VariableData, 102, 209000F, 200000F, 13.9F, DirectionType.POSITIVE);
         }
 
         // EZSTODO - find a home for this

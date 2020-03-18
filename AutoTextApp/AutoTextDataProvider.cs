@@ -42,11 +42,11 @@ namespace AutoTextApp
             {
                 foreach (var variableData in metricData.VariableData)
                 {
-                    variableData.Direction_Old = DirectionType.FLAT;
+                    variableData.Direction = DirectionType.FLAT;
                     if (variableData.PercentChange >= 0.05)
                     {
                         var isPositive = (variableData.CurrentValue - variableData.PreviousValue) > 0;
-                        variableData.Direction_Old = isPositive ? DirectionType.POSITIVE : DirectionType.NEGATIVE;
+                        variableData.Direction = isPositive ? DirectionType.POSITIVE : DirectionType.NEGATIVE;
                     }
                 }
             }

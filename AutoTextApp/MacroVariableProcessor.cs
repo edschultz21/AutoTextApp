@@ -5,11 +5,6 @@ namespace AutoTextApp
 {
     public class MacroVariableProcessor
     {
-        public static string ProcessMacros(IMacroVariables macroVariables, IClauseFragment fragment)
-        {
-            return ProcessMacros(macroVariables, fragment, fragment.Template);
-        }
-
         public static string ProcessMacros(IMacroVariables macroVariables, IClauseFragment fragment, string template)
         {
             if (string.IsNullOrEmpty(template))

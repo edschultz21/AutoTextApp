@@ -117,7 +117,7 @@ namespace UnitTests
                 CurrentValue = currentValue,
                 PreviousValue = previousValue,
                 PercentChange = percentChange,
-                Direction_Old = direction,
+                Direction = direction,
                 ConsecutivePeriods = 1
             };
         }

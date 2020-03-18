@@ -55,11 +55,13 @@
     <Compile Include="GeneratorTests.cs" />
     <Compile Include="ProcessFragmentTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SentenceTests.cs" />
     <Compile Include="TestProviders.cs" />
     <Compile Include="TestMacroVariables.cs" />
     <Compile Include="TestSynonyms.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data1.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +69,9 @@
       <Project>{4275cf87-a80b-4214-8515-8d6241716f7d}</Project>
       <Name>AutoTextApp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Definitions1.xml" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
