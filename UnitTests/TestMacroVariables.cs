@@ -20,10 +20,12 @@ namespace UnitTests
                 new MacroVariable { Name = "METRIC LONGNAME", Value ="LongName", Type = "MetricFragment"},
                 new MacroVariable { Name = "ACTUAL VALUE", Value ="CurrentValue", Type = "DataFragment"},
                 new MacroVariable { Name = "PREVIOUS VALUE", Value ="PreviousValue", Type = "DataFragment"},
-                new MacroVariable { Name = "DIR", Value ="" },
                 new MacroVariable { Name = "PCT", Value ="PercentChange", Type = "DataFragment"},
+                new MacroVariable { Name = "DATA UNITS", Value = "Units", Type = "DataFragment" },
                 new MacroVariable { Name = "ACTUAL NAME", Value ="ShortName", Type = "VariableFragment"},
-                new MacroVariable { Name = "ACTUAL LONGNAME", Value ="LongName", Type = "VariableFragment"}
+                new MacroVariable { Name = "ACTUAL LONGNAME", Value ="LongName", Type = "VariableFragment"},
+                new MacroVariable { Name = "VAR UNITS", Value = "Units", Type = "VariableFragment" },
+                new MacroVariable { Name = "DIR", Value ="" }
             };
             MacroVariables.Add(macroList);
         }

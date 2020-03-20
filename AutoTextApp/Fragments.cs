@@ -43,6 +43,7 @@ namespace AutoTextApp
         public VariableData VariableData { get; set; }
         public VariableFragment VariableFragment { get; set; }
         public DirectionType Direction { get; set; }
+        public string Units { get; set; } = "";
         public override IFragmentData Data { get { return VariableData; } }
 
         public DataFragment(

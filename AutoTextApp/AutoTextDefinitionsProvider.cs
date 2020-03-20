@@ -8,11 +8,15 @@ namespace AutoTextApp
         MetricDefinition GetMetricDefinition(string metricCode);
 
         VariableDefinition GetVariableDefinition(string variableCode);
+
+        Templates Templates { get; }
     }
 
     public class AutoTextDefinitionsProvider : IDefinitionProvider
     {
         private AutoTextDefinitions _definitions;
+
+        public Templates Templates { get { return _definitions.Templates; } }
 
         public AutoTextDefinitionsProvider(AutoTextDefinitions definitions)
         {

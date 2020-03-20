@@ -88,7 +88,12 @@ namespace AutoTextApp
 
             var metric = CreateMetricFragment(metricCode);
             sentenceFragment.AddMetric(metric);
-            if (variableCodes != null)
+            if (variableCodes == null || variableCodes.Length == 0)
+            {
+                var data = CreateDataFragment(null, metricCode, null);
+                sentenceFragment.AddData(data);
+            }
+            else
             {
                 foreach (var variableCode in variableCodes)
                 {

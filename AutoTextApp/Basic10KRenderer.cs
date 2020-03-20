@@ -13,19 +13,21 @@ namespace AutoTextApp
     {
         private IMacroVariables _macroVariable;
         private IDirection _direction;
+        private Templates _templates;
 
-        private readonly Templates _defaultTemplates = new Templates
+        private readonly Templates DefaultTemplates = new Templates
         {
             Metric = "[METRIC NAME]",
-            Data = " [DIR] [PCT] percent to [ACTUAL VALUE]",
-            FlatData = " [DIR]",
-            Variable = " for [ACTUAL NAME]"
+            Data = "[DIR] [PCT] percent to [ACTUAL VALUE][DATA UNITS]",
+            FlatData = "[DIR]",
+            Variable = " for [ACTUAL NAME][VAR UNITS]"
         };
 
-        public Basic10KRenderer(IMacroVariables macroVariable, IDirection direction)
+        public Basic10KRenderer(IMacroVariables macroVariable, Templates templates, IDirection direction)
         {
             _macroVariable = macroVariable;
             _direction = direction;
+            _templates = templates ?? DefaultTemplates;
         }
 
         private string Process(IClauseFragment fragment, string template)
@@ -46,7 +48,7 @@ namespace AutoTextApp
                 }
                 else if (dataFragments[0].Direction == DirectionType.FLAT || dataFragments[1].Direction == DirectionType.FLAT)
                 {
-                    conjugations.Add(" while");
+                    conjugations.Add(" while it");
                 }
                 else
                 {
@@ -55,7 +57,11 @@ namespace AutoTextApp
             }
             else if (dataFragments.Count > 2)
             {
-                // EZSTODO - need to handle (dataFragments.Count > 2)
+                // EZSTODO - need to handle better (dataFragments.Count > 2)
+                for (int i = 0; i < dataFragments.Count - 1; i++)
+                {
+                    conjugations.Add(" and");
+                }
             }
 
             return conjugations;
@@ -65,7 +71,7 @@ namespace AutoTextApp
         {
             StringBuilder result = new StringBuilder();
 
-            result.Append(Process(sentenceFragment.MetricFragment, _defaultTemplates.Metric));
+            result.Append(Process(sentenceFragment.MetricFragment, _templates.Metric));
 
             var conjugations = GetConjugations(sentenceFragment.DataFragments);
             for (int i = 0; i < sentenceFragment.DataFragments.Count; i++)
@@ -76,11 +82,22 @@ namespace AutoTextApp
                 }
 
                 var dataFragment = sentenceFragment.DataFragments[i];
-                _macroVariable.Get("DIR").Value = _direction.GetDirectionText(dataFragment.Direction);
+                dataFragment.Units = sentenceFragment.MetricFragment.Metric.Units;
 
-                var template = dataFragment.Direction == DirectionType.FLAT ? _defaultTemplates.FlatData : _defaultTemplates.Data;
+                // Trivial optimization (works only for two variables).
+                // Instead of "were flat for A and were flat for B" we now get "were flat for A and B".
+                if (i != 0 && dataFragment.Direction == DirectionType.FLAT && sentenceFragment.DataFragments[i - 1].Direction == DirectionType.FLAT)
+                {
+                    _macroVariable.Get("DIR").Value = "";
+                }
+                else
+                {
+                    _macroVariable.Get("DIR").Value = " " + _direction.GetDirectionText(dataFragment.Direction);
+                }
+
+                var template = dataFragment.Direction == DirectionType.FLAT ? _templates.FlatData : _templates.Data;
                 result.Append(Process(dataFragment, template));
-                result.Append(Process(dataFragment.VariableFragment, _defaultTemplates.Variable));
+                result.Append(Process(dataFragment.VariableFragment, _templates.Variable));
             }
 
             return result.ToString();

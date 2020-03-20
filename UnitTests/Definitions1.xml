@@ -25,6 +25,7 @@
       <Code>DOM</Code>
       <ShortName>DOM</ShortName>
       <LongName>Days on Market</LongName>
+      <Units>days</Units>
       <IsPlural>false</IsPlural>
       <IsIncreasePositive>false</IsIncreasePositive>
     </Metric>
@@ -46,6 +47,7 @@
       <Code>MSI</Code>
       <ShortName>MSI</ShortName>
       <LongName>Months Supply Inventory</LongName>
+      <Units>months</Units>
       <IsPlural>true</IsPlural>
       <IsIncreasePositive>false</IsIncreasePositive>
     </Metric>
@@ -55,16 +57,19 @@
       <Code>SF</Code>
       <ShortName>Single Family</ShortName>
       <LongName>Single Family homes</LongName>
+      <Units>homes</Units>
     </Variable>
     <Variable>
       <Code>tc</Code>
       <ShortName>Townhouse/Condo</ShortName>
       <LongName>Townhouse/Condo homes</LongName>
+      <Units>homes</Units>
     </Variable>
     <Variable>
       <Code>MB</Code>
       <ShortName>Mobile</ShortName>
       <LongName>Mobile homes</LongName>
+      <Units>homes</Units>
     </Variable>
   </Variables>
   <Synonyms>
@@ -127,6 +132,12 @@
       <Format>{0}%</Format>
     </MacroVariable>
     <MacroVariable>
+      <Name>DATA UNITS</Name>
+      <Type>VariableData</Type>
+      <Value>Units</Value>
+      <Format>{0}%</Format>
+    </MacroVariable>
+    <MacroVariable>
       <Name>ACTUAL NAME</Name>
       <Type>VariableDefinition</Type>
       <Value>ShortName</Value>
@@ -137,4 +148,15 @@
       <Value>LongName</Value>
     </MacroVariable>
   </MacroVariables>
+  <MacroVariable>
+    <Name>VAR UNITS</Name>
+    <Type>VariableDefinition</Type>
+    <Value>Units</Value>
+  </MacroVariable>
+  <Templates>
+    <Metric>[METRIC NAME]</Metric>
+    <Data>[DIR] [PCT] percent to [ACTUAL VALUE][DATA UNITS]</Data>
+    <FlatData>[DIR]</FlatData>
+    <Variable> for [ACTUAL NAME][VAR UNITS]</Variable>
+  </Templates>
 </AutoTextDefinitions>

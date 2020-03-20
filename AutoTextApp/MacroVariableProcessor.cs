@@ -7,7 +7,7 @@ namespace AutoTextApp
     {
         public static string ProcessMacros(IMacroVariables macroVariables, IClauseFragment fragment, string template)
         {
-            if (string.IsNullOrEmpty(template))
+            if (string.IsNullOrEmpty(template) || fragment == null)
             {
                 return "";
             }

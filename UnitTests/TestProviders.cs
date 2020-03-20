@@ -5,6 +5,8 @@ namespace UnitTests
 {
     public class TestDefinitionProvider : IDefinitionProvider
     {
+        public Templates Templates { get; }
+
         public string GetDirectionText(DirectionType direction, bool isIncreasePostive)
         {
             if (direction == DirectionType.FLAT)
@@ -58,6 +60,7 @@ namespace UnitTests
                         Code = "MSI",
                         ShortName = "MSI",
                         LongName = "Months Supply Inventory",
+                        Units = " months",
                         IsPlural = true,
                         IsIncreasePostive = false
                     };
@@ -75,16 +78,16 @@ namespace UnitTests
                     {
                         Code = "SF",
                         ShortName = "Single Family",
-                        LongName = "Single Family homes"
-
+                        LongName = "Single Family homes",
+                        Units = " homes"
                     };
                 case "TC":
                     return new VariableDefinition
                     {
                         Code = "TC",
                         ShortName = "Townhouse/Condo",
-                        LongName = "Townhouse/Condo homes"
-
+                        LongName = "Townhouse/Condo homes",
+                        Units = " homes"
                     };
                 case "MB":
                     return new VariableDefinition
@@ -92,7 +95,6 @@ namespace UnitTests
                         Code = "MB",
                         ShortName = "Mobile",
                         LongName = "Mobile homes"
-
                     };
                 default:
                     throw new Exception($"Variable {variableCode} not found");
@@ -133,6 +135,7 @@ namespace UnitTests
                         case "SF": return CreateVariableData(101, 82.5F, 92.5F, 7.5F);
                         case "TC": return CreateVariableData(102, 92.5F, 82.5F, 7.5F);
                         case "MB": return CreateVariableData(103, 164.7F, 154.8F, 17.5F);
+                        default: return CreateVariableData(-1, 12.3F, 45.6F, 7F);
                     }
                     break;
                 case "CS":

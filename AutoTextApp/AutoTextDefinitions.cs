@@ -15,13 +15,15 @@ namespace AutoTextApp
 
         public string LongName { get; set; }
 
+        public string Units { get; set; } = "";
+
         public bool IsPlural { get; set; }
 
         public bool IsIncreasePostive { get; set; }
 
         public override string ToString()
         {
-            return $"{Code}: {ShortName}, {LongName}, IsPlural:{IsPlural}, IsIncreasePositive:{IsIncreasePostive}";
+            return $"{Code}: {ShortName}, {LongName}, {Units}, IsPlural:{IsPlural}, IsIncreasePositive:{IsIncreasePostive}";
         }
     }
 
@@ -33,9 +35,11 @@ namespace AutoTextApp
 
         public string LongName { get; set; }
 
+        public string Units { get; set; } = "";
+
         public override string ToString()
         {
-            return $"{Code}: {ShortName}, {LongName}";
+            return $"{Code}: {ShortName}, {LongName}, {Units}";
         }
     }
 
@@ -62,6 +66,8 @@ namespace AutoTextApp
         public Synonyms Synonyms { get; set; }
 
         public MacroVariable[] MacroVariables { get; set; }
+
+        public Templates Templates { get; set; }
 
     }
 }
